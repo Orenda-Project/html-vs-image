@@ -698,5 +698,26 @@
     "model": "nano-banana-2-lite",
     "concept": "scene",
     "prompt": "happy schoolchildren in a classroom learning Mathematics, friendly"
+  },
+  "ff106ffdb72def2a": {
+    "file": "ff106ffdb72def2a.png",
+    "mime": "image/png",
+    "model": "nano-banana-2",
+    "concept": "diagram",
+    "prompt": "Clean instructional place-value addition diagram showing numbers written one under the other with Ones under Ones, Tens under Tens, Hundreds under Hundreds, and Thousands under Thousands."
+  },
+  "64d42512431f9edb": {
+    "file": "64d42512431f9edb.jpg",
+    "mime": "image/jpeg",
+    "model": "nano-banana-2-lite",
+    "concept": "scene",
+    "prompt": "Pakistani Grade 4 and Grade 5 children working in pairs in a classroom addition race, solving two-number sums on paper while marking carries, with a teacher supervising."
+  },
+  "87857dbaf56bddae": {
+    "file": "87857dbaf56bddae.png",
+    "mime": "image/png",
+    "model": "nano-banana-2",
+    "concept": "diagram",
+    "prompt": "A clean mathematics diagram showing whole numbers written one under the other with Ones aligned under Ones, Tens under Tens, Hundreds under Hundreds, and Thousands under Thousands."
   }
 }

@@ -53,6 +53,8 @@ Hard rules:
 - Image prompts must describe the SUBJECT plainly. Do NOT over-specify style or details the model may not honour ("plain background", "flat cartoon", "speed lines", "no face"): the quality gate compares the image to its prompt, so an over-specified prompt makes a good image fail. Keep prompts subject-focused.
 - IN-IMAGE TEXT LANGUAGE: if the lesson is NOT in English, any label or word that appears INSIDE the image must be written in the lesson's language and script — never English. State this in the prompt of every "diagram" (e.g. Arabic → "…with each part labelled in Arabic"; Kiswahili → "…labelled in Kiswahili"). Give the actual labels in that language where you can (Arabic e.g. الأنف، الرئة، القلب). An English label inside an Arabic/Kiswahili lesson image is a defect.
 - Images must be INFORMATIVE and content-relevant, like a good textbook illustration that helps the teacher explain the concept — never decorative or irrelevant filler. For vocabulary/parts, prefer a LABELLED "diagram" (e.g. a family with each member labelled by name: أبي، أمي، أخت …; the parts of a plant; a process). 1–3 well-chosen images per lesson is plenty; not every section needs one.
+- MATHS CONCEPTS as clean diagrams: for a number/maths idea, prompt a clean flat-vector infographic that TEACHES it — a place-value staircase (×10 each step), grouping bundles / base-ten blocks, a number line, "leave a space every three digits", a column-addition layout. Keep the prompt short and conceptual, not tied to one exact number.
+- EXACT NUMBERS GO IN CODE, NOT IMAGES: never ask an image model for a place-value chart with specific digits, a filled expanded-form line, or a formula — image models get the digits wrong. Use a "table" section for a place-value/digit grid and a "math" section (or inline $…$) for formulas/expanded form. Only send concepts and scenes to image generation.
 - Cultural grounding: any people or places in a prompt must match the lesson's region — Arabic → Yemeni children in a Yemeni setting; Kiswahili → Kenyan children in a Kenyan setting; otherwise Pakistani — so local teachers recognise their own pupils.
 - Where the concept involves children doing something (counting, an activity, a family, playing), prefer a "scene" that SHOWS the region's own children doing it — e.g. "Kenyan children in a classroom counting stones to add 3 + 2 = 5"; "a Yemeni family" — so local children see themselves in the picture. Use a bare labelled diagram only when labelling parts is the actual point.
 - PLACE EACH IMAGE INLINE, with the point it explains (this is the user-friendly pattern): whenever a section explains a concept, a step, a story or an activity that would be clearer with a picture, attach ONE image to THAT section via its "image" field (the image id) so the picture appears directly under that heading, next to the text it illustrates. Declare the image in the top-level "images" array. Do NOT collect the pictures into a separate "Lesson Images" gallery. Use a standalone "images" section (imageIds) only for a set of pictures that genuinely belong together as a group; the hero picture is meta.banner, not an inline image.
@@ -286,22 +288,26 @@ function finalizeBanner(content) {
 // Deterministically pull place-value charts out of the raw JSON and build "table"
 // sections — the LLM is unreliable at turning a {"Ten Thousands":6,…} object into a
 // grid, but the source structure is unambiguous, so we do it in code and guarantee it.
+const PLACE_NAME = /^(ones|tens|hundreds|thousands|ten[_\s]?thousands|hundred[_\s]?thousands|millions?)$/i;
 function placeValueTables(raw, meta) {
   let obj; try { obj = JSON.parse(String(raw)); } catch (_) { return []; }
   const out = [];
-  const isG5 = (k) => /(grade[_\s]?5|g5|hundred[_\s]?thousand)/i.test(k);
-  const walk = (o) => {
+  const walk = (o, parentKey) => {
     if (!o || typeof o !== 'object') return;
     for (const [k, v] of Object.entries(o)) {
-      if (/place[_\s]?value[_\s]?chart/i.test(k) && v && typeof v === 'object' && !Array.isArray(v)) {
+      // A place-value / column table is ANY object whose keys are place names
+      // (Ones…Hundred Thousands) with single-number values — regardless of the wrapping
+      // key ("place_value_chart", "column_setup", …).
+      if (v && typeof v === 'object' && !Array.isArray(v)) {
         const cols = Object.keys(v);
         const vals = Object.values(v).map((x) => String(x).trim());
-        if (cols.length >= 2 && vals.every((x) => /^\d+$/.test(x))) {
-          const g = (isG5(k) || cols.some(isG5)) ? 'b' : 'a';
+        const isTable = cols.length >= 2 && cols.every((c) => PLACE_NAME.test(c.trim())) && vals.every((x) => /^\d+$/.test(x));
+        if (isTable) {
+          const g = /(grade[_\s]?5|g5)/i.test(k) || cols.some((c) => /hundred[_\s]?thousand/i.test(c)) ? 'b' : 'a';
           const label = g === 'b' ? (meta.gradeB || 'Grade 5') : (meta.gradeA || 'Grade 4');
           out.push({ type: 'table', heading: `Board Prep — ${label}`, grade: g, columns: cols, rows: [vals] });
-        }
-      } else walk(v);
+        } else { walk(v, k); }
+      }
     }
   };
   walk(obj);

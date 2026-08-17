@@ -281,6 +281,24 @@ same place. Do NOT collect pictures into a separate "Lesson Images" gallery. A s
 `meta.banner`. (Renderer: any section may carry `image`; `structure.js` attaches it and
 rewrites the id across chunk merges; `render.js` `inlineImage`.)
 
+## R33 — Match the image to the content: clean instructional diagrams that teach
+Pick the picture the content actually needs, in a clean, teach-the-concept style — like a
+good textbook, never decorative filler:
+- For a MATHS / number concept, use a clean **flat-vector educational infographic** that
+  shows the idea: a place-value staircase ("×10, each step ten times bigger"), grouping
+  bundles / base-ten blocks (100 000 · 10 000 · 1 000 · 100 · 10 · 1), a number line, a
+  "leave a space every three digits" demonstration, a column-addition layout. Bold labels,
+  plain white background, minimal — no realistic photo, no clutter.
+- Anything that needs EXACT numerals or a precise grid — a place-value chart, a digit
+  table, a filled expanded-form line, a formula — is rendered in CODE, not AI: a `table`
+  section (R31) or a `math` section / inline `$…$` (R14). AI image models DRIFT on exact
+  numbers (a wrong digit, a mislabelled place), so never trust them for precise notation.
+- Reserve AI generation for (a) conceptual infographics in the clean style above and
+  (b) real scenes with the region's children. Each image sits INLINE with the point it
+  explains (R32).
+The style is enforced in the diagram scaffold (`imagegen/prompts/scaffold.js`) and the
+structurer prefers `table`/`math` for exact content.
+
 ## GATE_POLICY
 - The image must be correct for the exact concept named in the content. For a labeled
   diagram, every label must be spelled correctly and point to the right part; reject
