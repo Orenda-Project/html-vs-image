@@ -1,0 +1,340 @@
+{
+ "meta": {
+  "id": "addition-putting-numbers-together",
+  "locale": "en",
+  "subject": "Mathematics",
+  "grade": "Grade 4 + Grade 5",
+  "region": "pk",
+  "title": "Addition — Putting Numbers Together",
+  "subtitle": "Addition of Whole Numbers",
+  "multigrade": true,
+  "gradeA": "Grade 4",
+  "gradeB": "Grade 5",
+  "chips": [
+   {
+    "label": "Duration",
+    "value": "45 Minutes"
+   },
+   {
+    "label": "Curriculum",
+    "value": "Punjab Textbook"
+   }
+  ],
+  "banner": "lesson-hero"
+ },
+ "images": [
+  {
+   "id": "line-up-the-places",
+   "concept": "diagram",
+   "label": "Line Up The Places",
+   "prompt": "A clean mathematics diagram showing whole numbers written one under the other with Ones aligned under Ones, Tens under Tens, Hundreds under Hundreds, and Thousands under Thousands."
+  },
+  {
+   "id": "add-from-the-right",
+   "concept": "diagram",
+   "label": "Add From The Right",
+   "prompt": "A clean mathematics diagram showing column addition progressing from the Ones column to Tens, Hundreds, and Thousands, with arrows moving from right to left."
+  },
+  {
+   "id": "carrying-ten-ones",
+   "concept": "diagram",
+   "label": "Carrying — Ten Ones Make One Ten",
+   "prompt": "A clean mathematics diagram showing ten Ones regrouped as one Ten and ten Tens regrouped as one Hundred, illustrating carrying between place-value columns."
+  },
+  {
+   "id": "lesson-hero",
+   "concept": "scene",
+   "label": "",
+   "prompt": "happy schoolchildren in a classroom learning Mathematics, friendly"
+  }
+ ],
+ "sections": [
+  {
+   "heading": "Addition — Putting Numbers Together",
+   "type": "duo",
+   "a": {
+    "label": "Grade 4",
+    "body": "Add two 4-digit and 5-digit whole numbers with carrying, up to a sum of 100 000.\n\nDo dukan se cheezein khareedein — dono ke daam jorne ke liye kya karte hain?\n\n3 250 + 1 780 — rupees saved in two months\n12 400 + 9 600 — bricks for two walls"
+   },
+   "b": {
+    "label": "Grade 5",
+    "body": "Add two 5-digit and 6-digit whole numbers with carrying, up to a sum of 1 000 000.\n\nDo bade numbers jorte waqt carry kaise sambhalte hain?\n\n145 000 + 82 500 — people at two cricket matches\n236 400 + 190 600 — litres of water in two tanks"
+   }
+  },
+  {
+   "heading": "Start · Hook — Whole Class",
+   "type": "note",
+   "label": "Time: 0-5 min",
+   "body": "pages: 1-2"
+  },
+  {
+   "heading": "Step 1 · I Do — Teacher Teaches Grade 4",
+   "type": "duo",
+   "image": "line-up-the-places",
+   "a": {
+    "label": "Grade 4",
+    "role": "teacher",
+    "body": "Add 14 273 + 8 469 on the board. Line up the places, add from the right, carry each time a column reaches ten. Say the carry aloud: 'three and nine is twelve — write two, carry one.'"
+   },
+   "b": {
+    "label": "Grade 5",
+    "role": "own",
+    "body": "Add in your notebook: 45 231 + 38 907 · 152 640 + 74 380 (Mathematics 5, Exercise 2, page 4)"
+   }
+  },
+  {
+   "heading": "Step 1 · I Do — Teacher Teaches Grade 5",
+   "type": "duo",
+   "image": "add-from-the-right",
+   "a": {
+    "label": "Grade 4",
+    "role": "own",
+    "body": "Add in your notebook: 3 250 + 1 780 · 12 400 + 9 600 (Mathematics 4, Exercise 2, page 3)"
+   },
+   "b": {
+    "label": "Grade 5",
+    "role": "teacher",
+    "body": "Add 236 400 + 190 600 on the board. Line up six places, add from the right, carry through the Thousands and Ten-Thousands. Total: 427 000."
+   }
+  },
+  {
+   "heading": "Step 2 · We Do — Carrying Race",
+   "type": "duo",
+   "image": "carrying-ten-ones",
+   "a": {
+    "label": "Grade 4",
+    "role": "teacher",
+    "body": "Sums up to 5 digits with two carries."
+   },
+   "b": {
+    "label": "Grade 5",
+    "role": "teacher",
+    "body": "Sums up to 6 digits with three carries."
+   }
+  },
+  {
+   "heading": "Step 3 · You Do, Then Close",
+   "type": "duo",
+   "a": {
+    "label": "Grade 4",
+    "role": "teacher",
+    "body": "Add and check the carries: 24 615 + 7 398 · 46 720 + 39 585 (Mathematics 4, Exercise 2, page 3, Q3)"
+   },
+   "b": {
+    "label": "Grade 5",
+    "role": "own",
+    "body": "Add and check the carries: 348 176 + 291 934 · 605 208 + 88 999 (Mathematics 5, Exercise 2, page 4, Q3)"
+   }
+  },
+  {
+   "heading": "Carrying Race",
+   "type": "note",
+   "label": "duration: 27-35 min",
+   "body": "Whole class. Teacher writes a two-number sum; the first pair to add it correctly with every carry marked wins a point."
+  },
+  {
+   "heading": "Line Up The Places",
+   "type": "text",
+   "body": "Write the numbers one under the other so Ones sit under Ones, Tens under Tens, Hundreds under Hundreds. A neat place-value column is half the work.",
+   "image": "line-up-the-places"
+  },
+  {
+   "heading": "Add From The Right",
+   "type": "text",
+   "body": "Always start at the Ones column and move left: Ones, then Tens, then Hundreds, then Thousands.",
+   "image": "add-from-the-right"
+  },
+  {
+   "heading": "Carrying — Ten Ones Make One Ten",
+   "type": "text",
+   "body": "When a column adds to ten or more, write the Ones digit and carry the extra to the next column on the left. Ten Ones become one Ten; ten Tens become one Hundred.",
+   "image": "carrying-ten-ones"
+  },
+  {
+   "heading": "Concept Note",
+   "type": "note",
+   "body": "Addition means putting two amounts together to find the total. We line up the places and add column by column from the right, carrying to the next place when a column makes ten or more."
+  },
+  {
+   "heading": "Carrying Race",
+   "type": "note",
+   "label": "duration: 35-42 min",
+   "body": "2 min with Grade 4 <-> 2 min with Grade 5. Never more than 3 minutes with one class."
+  },
+  {
+   "heading": "Carrying Race — Whole Class",
+   "type": "duo",
+   "a": {
+    "label": "Grade 4",
+    "role": "teacher",
+    "body": "Add and check the carries: 24 615 + 7 398 · 46 720 + 39 585 (Mathematics 4, Exercise 2, page 3, Q3)"
+   },
+   "b": {
+    "label": "Grade 5",
+    "role": "own",
+    "body": "Add and check the carries: 348 176 + 291 934 · 605 208 + 88 999 (Mathematics 5, Exercise 2, page 4, Q3)"
+   }
+  },
+  {
+   "heading": "Step 3 · You Do, Then Close",
+   "type": "duo",
+   "a": {
+    "label": "Grade 4",
+    "role": "teacher",
+    "body": "Today we added 4- and 5-digit numbers, lining up the places and carrying when a column reached ten."
+   },
+   "b": {
+    "label": "Grade 5",
+    "role": "own",
+    "body": "Today we added 5- and 6-digit numbers, carrying through several places up to a sum of 1 000 000."
+   }
+  },
+  {
+   "heading": "Exit Check",
+   "type": "qa",
+   "marker": "alpha",
+   "items": [
+    {
+     "q": "Add 18 476 + 6 559.",
+     "a": "25 035 — the Ones, Tens and Thousands columns carried."
+    },
+    {
+     "q": "Which columns needed a carry?"
+    },
+    {
+     "q": "Add 274 683 + 158 429.",
+     "a": "433 112 — four carries."
+    },
+    {
+     "q": "How many carries did you make?"
+    }
+   ]
+  },
+  {
+   "heading": "Additional Resources",
+   "type": "chips",
+   "items": [
+    "chalk",
+    "place-value chart",
+    "bundles of sticks and loose sticks for carrying"
+   ]
+  },
+  {
+   "heading": "Homework",
+   "type": "duo",
+   "a": {
+    "label": "Grade 4",
+    "body": "Mathematics 4, Exercise 2, page 3, Q3 (e) to (h): add 15 342 + 8 679, 27 508 + 6 495, 41 260 + 38 917, 53 084 + 29 636."
+   },
+   "b": {
+    "label": "Grade 5",
+    "body": "Mathematics 5, Exercise 2, page 4, Q3 (c) to (f): add 249 187 + 163 425, 508 640 + 291 076, 376 519 + 84 288, 612 903 + 187 099."
+   }
+  },
+  {
+   "heading": "Record and Send",
+   "type": "note",
+   "body": "Record 5-10 minutes of this lesson. WhatsApp to +92 329 5012345. Coaching notes back within 24 hours — free."
+  },
+  {
+   "heading": "Next Lesson",
+   "type": "duo",
+   "a": {
+    "label": "Grade 4",
+    "body": "Subtraction with borrowing, page 4."
+   },
+   "b": {
+    "label": "Grade 5",
+    "body": "Word problems on addition and subtraction, page 6."
+   }
+  },
+  {
+   "heading": "Lesson Schedule",
+   "type": "schedule",
+   "gradeA": "Grade 4",
+   "gradeB": "Grade 5",
+   "items": [
+    {
+     "time": "0-5 min",
+     "phase": "Start · Hook — Whole Class",
+     "teacher": "both",
+     "pages": "1-2"
+    },
+    {
+     "time": "5-15 min",
+     "phase": "Step 1 · I Do — Teacher Teaches Grade 4",
+     "teacher": "a",
+     "pages": "3"
+    },
+    {
+     "time": "16-26 min",
+     "phase": "Step 1 · I Do — Teacher Teaches Grade 5",
+     "teacher": "b",
+     "pages": "3"
+    },
+    {
+     "time": "27-35 min",
+     "phase": "Step 2 · We Do — Carrying Race",
+     "teacher": "both",
+     "pages": "4"
+    },
+    {
+     "time": "35-42 min",
+     "phase": "Step 3 · You Do, Then Close",
+     "teacher": "both",
+     "pages": "4-5"
+    },
+    {
+     "time": "42-45 min",
+     "phase": "Step 3 · You Do, Then Close",
+     "teacher": "both",
+     "pages": "4-5"
+    }
+   ]
+  },
+  {
+   "type": "table",
+   "heading": "Board Prep — Grade 4",
+   "grade": "a",
+   "columns": [
+    "Ten Thousands",
+    "Thousands",
+    "Hundreds",
+    "Tens",
+    "Ones"
+   ],
+   "rows": [
+    [
+     "1",
+     "4",
+     "2",
+     "7",
+     "3"
+    ]
+   ]
+  },
+  {
+   "type": "table",
+   "heading": "Board Prep — Grade 5",
+   "grade": "b",
+   "columns": [
+    "Hundred Thousands",
+    "Ten Thousands",
+    "Thousands",
+    "Hundreds",
+    "Tens",
+    "Ones"
+   ],
+   "rows": [
+    [
+     "1",
+     "4",
+     "5",
+     "0",
+     "0",
+     "0"
+    ]
+   ]
+  }
+ ]
+}
