@@ -59,8 +59,16 @@ async function checkCulture({ apiKey, imageUrl, region, textless = false, fetchI
       { type: 'image_url', image_url: { url: imageUrl } },
     ] }],
   });
+  // A CULTURAL VERDICT MUST NOT BE ABLE TO STALL A RENDER. Without an explicit timeout
+  // this call inherits the image-job budget (KIE_FETCH_TIMEOUT_MS, 180s by default),
+  // which is sized for polling a generation — and the gate can run three times per
+  // image (first check plus two re-rolls), so one slow checker turned a render into a
+  // nine-minute wait. Measured on a Kiswahili render before this was bounded. A check
+  // that times out returns checked:false below, which is an honest "cannot verify"
+  // rather than a silent pass.
+  const timeoutMs = Number(process.env.LP_CULTURE_TIMEOUT_MS || 45000);
   try {
-    const res = await fetchImpl(VLM_URL, { method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, body });
+    const res = await fetchImpl(VLM_URL, { method: 'POST', timeoutMs, headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, body });
     const json = JSON.parse(typeof res.body === 'string' ? res.body : res.body.toString('utf8'));
     const text = json.choices && json.choices[0] && json.choices[0].message && json.choices[0].message.content;
     const m = String(text || '').match(/\{[\s\S]*\}/);

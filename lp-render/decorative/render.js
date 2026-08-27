@@ -7,11 +7,11 @@ const { esc } = require('../template/shell');
 const { icon, hasIcon } = require('../template/icons');
 const { headerMotifs, headTwinkle, sparkle } = require('./motifs');
 const { accentFor } = require('./theme');
-const { renderMath, richText, katexCss, cleanHeading, isolateMath } = require('../math/math');
+const { renderMath, richText, katexCss, cleanHeading } = require('../math/math');
 
-// Label text: escaped, then any arithmetic run isolated left-to-right so «٢/٤» or
-// «١٥ ÷ ٥ = ٣» in a caption or a board label cannot be mirrored by the RTL page.
-const lbl = (v) => isolateMath(esc(cleanHeading(v == null ? '' : v)));
+// Label text: escaped and stripped of markdown noise. Direction is the page's —
+// see cfText for why arithmetic is not special-cased.
+const lbl = (v) => esc(cleanHeading(v == null ? '' : v));
 
 const ALPHA = 'abcdefghijklmnopqrstuvwxyz';
 const mark = (kind, i) => (kind === 'alpha' ? ALPHA[i] + ')' : kind === 'num' ? String(i + 1) : '•');
@@ -99,11 +99,35 @@ function renderBody(section, accent, images) {
       return `<table class="d-gtable"${style}>${cap}${head}<tbody>${body}</tbody></table>`;
     }
     case 'rubric': {
-      const COL = { exceeding: '--c-teal', meeting: '--c-green', approaching: '--c-amber', below: '--c-red' };
-      const SYM = { exceeding: '★', meeting: '✓', approaching: '▲', below: '✕' };
-      const rows = (section.items || []).map((it) => {
-        const key = String(it.level || '').toLowerCase().replace(/[^a-z]/g, '');
-        const c = COL[key] || accent; const sym = SYM[key] || '•';
+      // THE SEVERITY RAMP IS POSITIONAL, NOT LEXICAL. It used to be a lookup on four
+      // English words (exceeding / meeting / approaching / below), so any other level
+      // name — "Exceeding Expectation", a numbered band, a Kiswahili level, a three-band
+      // rubric — fell through to one flat accent colour and a bullet on every row, and
+      // the ramp that carries the meaning disappeared. A rubric's rows already arrive in
+      // order, so the ramp comes from POSITION; the words are consulted only to work out
+      // which end is the top, and a source can say so outright with order:'worst-first'.
+      const items = section.items || [];
+      const n = items.length;
+      const RAMP = {
+        1: ['--c-teal'],
+        2: ['--c-green', '--c-red'],
+        3: ['--c-teal', '--c-amber', '--c-red'],
+        4: ['--c-teal', '--c-green', '--c-amber', '--c-red'],
+      };
+      const SYMS = { 1: ['★'], 2: ['✓', '✕'], 3: ['★', '▲', '✕'], 4: ['★', '✓', '▲', '✕'] };
+      const spread = (a) => items.map((_, i) => a[Math.min(3, Math.floor((i * 4) / Math.max(1, n)))]);
+      const cols = RAMP[n] || spread(RAMP[4]);
+      const syms = SYMS[n] || spread(SYMS[4]);
+      const TOP = /exceed|excellent|advanced|distinction|outstanding|above|ممتاز/i;
+      const BOTTOM = /below|beginning|emerging|needs|weak|poor|ضعيف/i;
+      const first = String((items[0] || {}).level || '');
+      const last = String((items[n - 1] || {}).level || '');
+      const worstFirst = section.order === 'worst-first'
+        || (n > 1 && !TOP.test(first) && !BOTTOM.test(last)
+            && (BOTTOM.test(first) || TOP.test(last)));
+      const rank = (i) => (worstFirst ? n - 1 - i : i);
+      const rows = items.map((it, i) => {
+        const c = cols[rank(i)] || accent; const sym = syms[rank(i)] || '•';
         const lvl = cleanHeading(it.level || '').replace(/^[^\p{L}]+/u, ''); // drop any leading emoji/symbol (the badge already shows one)
         return `<div class="rrow"><div class="ric" style="background:var(${c})">${sym}</div>`
           + `<div><span class="rlevel">${esc(lvl)}:</span> `
@@ -222,17 +246,14 @@ const CF = { fill: '#f5c33b', empty: '#ffffff', stroke: '#2f3e63', ink: '#0a1220
 function cfSvg(inner, w = 240, h = 200, cls = 'cf-svg') {
   return '<svg class="' + cls + '" viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg">' + inner + '</svg>';
 }
-// Arabic labels are RTL, but a mathematical expression is not: «١٢ ÷ ٢ = ٦» inside an
-// RTL run can be reordered by the bidi algorithm, so the drawing would disagree with
-// the equation the lesson meant. Anything that is digits and operators only is emitted
-// left-to-right, isolated from its surroundings.
-const MATHY = /^[\s\u0660-\u06690-9+\-×÷*/=<>().,:]+$/;
+// Labels — including equations — carry the lesson's own direction. An Arabic
+// expression is written with its first operand on the right, so rtl is correct for
+// both prose and arithmetic; forcing ltr on digit-and-operator strings is what made
+// «١٦ ÷ ٤ = ٤» read backwards in figures. See lp-render/math/math.js.
 function cfText(x, y, s, size = 13, weight = 700, fill = CF.ink, anchor = 'middle') {
   const txt = String(s || '');
-  const dir = txt.trim() && MATHY.test(txt) ? 'ltr' : 'rtl';
   return '<text x="' + x + '" y="' + y + '" text-anchor="' + anchor + '" font-size="' + size
-    + '" font-weight="' + weight + '" fill="' + fill + '" direction="' + dir + '"'
-    + (dir === 'ltr' ? ' style="unicode-bidi:isolate-override"' : '') + '>' + esc(txt) + '</text>';
+    + '" font-weight="' + weight + '" fill="' + fill + '" direction="rtl">' + esc(txt) + '</text>';
 }
 
 // N parts of one shape, K shaded (square grid or circle pie) — exact fractions.
@@ -309,12 +330,10 @@ function cfCompare({ items = [] }) {
 
 // A large expression/word (e.g. ٢/٤ or a key term) drawn as text, not generated.
 function cfExpression({ text }) {
-  // Only force left-to-right when the content really IS maths. isolate-override forces
-  // EVERY character to the container's direction, so applying it to an Arabic phrase
-  // («تبخر ≠ تكاثف») renders the words backwards — which is exactly what happened.
+  // No direction override: an Arabic phrase («تبخر ≠ تكاثف») and an Arabic equation
+  // are both written right-to-left at token level.
   const t = String(text || '');
-  const mathy = t.trim() && MATHY.test(t);
-  return '<div class="cf-expr' + (mathy ? ' ltr-math" dir="ltr"' : '"') + '>' + esc(t) + '</div>';
+  return '<div class="cf-expr">' + esc(t) + '</div>';
 }
 
 
@@ -695,22 +714,13 @@ function renderDecorativeLesson(content, images = {}, cast = {}) {
   let prevHeading = '';
   const rot = { n: 0, t: 0, seed: seedOf(`${meta.id || ''}|${meta.subject || ''}|${meta.title || ''}`) };
   const used = new Set(); // no character repeats within one lesson
-  // How many step sets may take the card's full width. Each spanning stacked block
-  // costs roughly 200px, so a lesson that gives every stage one cannot hold two pages
-  // however terse its text. The first two span; the rest ride the figure column.
-  const SPANNING_STEP_BUDGET = 2;
-  const spanningSteps = new Set();
-  {
-    let n = 0;
-    for (const s of (content.sections || [])) {
-      const cf = s && s.codeFigure;
-      // Any step set may take the card's width — a pair of wide cards reads far better
-      // than a pair squeezed into the figure column, and a lesson made only of small
-      // 2-card sets was leaving half a page empty.
-      if (!cf || cf.kind !== 'steps' || (cf.items || []).length < 2) continue;
-      if (n < SPANNING_STEP_BUDGET) { spanningSteps.add(s.id); n++; }
-    }
-  }
+  // WHETHER A STEP SET TAKES THE CARD'S FULL WIDTH is a layout question about the
+  // figure, not a page budget. It used to be capped at two per lesson to protect a
+  // two-page contract; when that contract went I lifted the cap to Infinity, which made
+  // EVERY step set span — so every figure dropped below its text and the card stopped
+  // being the pilot's text-beside-figure anatomy. A row of 4+ cards genuinely needs the
+  // width; 2 or 3 cards read better beside the text, in the figure column.
+  const SPANNING_MIN_CARDS = 4;
   const sections = (content.sections || []).map((section, i) => {
     // Admin blocks (Lesson Details) use a neutral slate tab, not a warm accent.
     const accent = section.type === 'fields' ? '--c-slate' : accentFor(i);
@@ -763,7 +773,7 @@ function renderDecorativeLesson(content, images = {}, cast = {}) {
       // width as a ROW; only a pair stays stacked in the figure column.
       const stepCount = (cf.items || []).length;
       const spans = CF_WIDE.has(cf.kind)
-        || (cf.kind === 'steps' && stepCount >= 2 && spanningSteps.has(section.id));
+        || (cf.kind === 'steps' && stepCount >= SPANNING_MIN_CARDS);
       // Stacked cards at the card's full width are far larger than the same number
       // side by side; only 4+ cards need the row, which would otherwise run too tall.
       const spec = cf.kind === 'steps'
@@ -828,4 +838,6 @@ function renderDecorativeLesson(content, images = {}, cast = {}) {
   return { headerHtml, bodyHtml: body, headCss };
 }
 
-module.exports = { renderDecorativeLesson };
+// cfText is exported for lp-render/test/math-direction.test.js: the direction of a
+// figure label is a rule worth asserting directly, not only through a full render.
+module.exports = { renderDecorativeLesson, cfText };

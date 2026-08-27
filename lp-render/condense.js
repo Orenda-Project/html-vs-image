@@ -1,58 +1,65 @@
 'use strict';
-// Condense a FULL lesson content JSON into the 2-page "daily guide" template — the
-// region design sets' teacher-facing format (12 role sections, see
+// RESTRUCTURE a FULL lesson content JSON into the "daily guide" template — the region
+// design sets' teacher-facing format (12 role sections, see
 // decorative/regions/<region>/DESIGN.md). Same provider/key as the structurer.
-// It condenses ONLY from the source (never invents facts), keeps the lesson's
-// language, applies the EDITORIAL RULES below (how to choose well — distilled from
-// the hand-curated reference guides), and reuses the source's image prompts
-// VERBATIM so the asset store restores them free.
+//
+// This step SELECTS and PLACES the source's own sentences; it does not edit them. It
+// used to condense to word budgets, which was a temporary measure for fitting the Yemen
+// set into a two-page review format — design work is not licence to rewrite a teacher's
+// lesson. lp-render/text/verbatim.js checks the result and the Studio logs it.
+//
+// It keeps the lesson's language, applies the EDITORIAL RULES below (which role gets
+// which source content), and reuses the source's image prompts VERBATIM so the asset
+// store restores them free.
 const { defaultFetch } = require('../imagegen/kie/client');
 const { fixGuide } = require('./text/arabic-hygiene');
 
 const CHAT_URL = 'https://api.kie.ai/gpt-5-2/v1/chat/completions';
 
-const SYSTEM = `You condense a FULL lesson-plan JSON into a compact 2-page "daily teacher guide" JSON for the same renderer.
+const SYSTEM = `You RESTRUCTURE a FULL lesson-plan JSON into a "daily teacher guide" JSON for the same renderer.
+
+You are not an editor. You do not shorten, summarise, paraphrase, merge or reword anything. You SELECT the source's own sentences and place them under the right role. The lesson text is the source of truth and reaches the page unchanged.
 
 Output ONLY the JSON object — no markdown, no prose, no code fences.
 
 THE TARGET SHAPE — exactly these 12 sections, with these EXACT "id" values, in this order:
 1  { "id":"lesson-line",    "heading":"درس" (or "Lesson"), "type":"text", "body": subject · grade · lesson topic (page ref) — ONE line }
-2  { "id":"goal",           "heading": goal word, "type":"note", "body": starts with the bolded goal label (Arabic: "**هدف اليوم:** …"; English: "**Today's goal:** …") then the lesson goal in ≤ 35 words }
-3  { "id":"errors",         "heading": common-mistakes title (Arabic: "أخطاء شائعة — انتبه لها"), "type":"qa", "items": exactly 2: { "q":"✗ خطأ" (or "✗ Mistake"), "a": the misconception ≤ 30 words } and { "q":"✓ صواب" (or "✓ Correct"), "a": the correction ≤ 30 words } }
-4  { "id":"errors-caption", "heading":"ملاحظة", "type":"text", "body": one concrete teacher move that prevents/disproves the mistake, ≤ 22 words }
-5  { "id":"stage-tamhid",   "heading": warm-up stage name (Arabic "التمهيد"), "type":"steps", "time": "<minutes> · أنا أفعل", "items":[ { "label":"", "body": the stage's activities condensed ≤ 50 words }, { "label":"تحقق" (or "Check"), "body": one observable pupil criterion ≤ 20 words } ] }
+2  { "id":"goal",           "heading": goal word, "type":"note", "body": starts with the bolded goal label (Arabic: "**هدف اليوم:** …"; English: "**Today's goal:** …") then the lesson's goal, verbatim and complete }
+3  { "id":"errors",         "heading": common-mistakes title (Arabic: "أخطاء شائعة — انتبه لها"), "type":"qa", "items": exactly 2: { "q":"✗ خطأ" (or "✗ Mistake"), "a": the misconception in the source's own words } and { "q":"✓ صواب" (or "✓ Correct"), "a": the correction in the source's own words } }
+4  { "id":"errors-caption", "heading":"ملاحظة", "type":"text", "body": the source's own sentence describing the teacher move that disproves the mistake }
+5  { "id":"stage-tamhid",   "heading": warm-up stage name (Arabic "التمهيد"), "type":"steps", "time": "<minutes> · أنا أفعل", "items":[ { "label":"", "body": ALL of the stage's activities, in the source's own words, complete — every activity, question, instruction and quoted line the source gives for this stage }, { "label":"تحقق" (or "Check"), "body": the source's own success criterion for this stage } ] }
 6  { "id":"stage-arad",     same shape, presentation/explanation stage (Arabic "العرض"), "time":"<minutes> · أنا أفعل ← نحن نفعل" }
 7  { "id":"stage-tatbiq",   same shape, practice stage (Arabic "التطبيق"), "time":"<minutes> · نحن نفعل ← أنت تفعل" }
 8  { "id":"stage-taqwim",   same shape, assessment/closing stage (Arabic "التقويم والختام"), "time":"<minutes> · أنت تفعل" }
-9  { "id":"solutions",      "heading": answers title + page ref, "type":"bullets", "marker":"num", "items": ≤ 3 items, each ≤ 28 words }
-10 { "id":"glossary",       "heading": vocabulary title (Arabic "مصطلحات"), "type":"fields", "items": 3-4 terms, each value ≤ 10 words }
-11 { "id":"multigrade",     "heading": multi-grade title (Arabic "تكييف متعدد الصفوف"), "type":"bullets", "marker":"num", "items": 3 one-line adaptations, each ≤ 16 words }
-12 { "id":"homework",       "heading": homework+teacher-corner title (Arabic "الواجب المنزلي · ركن المعلم"), "type":"note", "body": ≤ 55 words }
+9  { "id":"solutions",      "heading": answers title + page ref, "type":"bullets", "marker":"num", "items": EVERY answer the source gives, one item per exercise, verbatim }
+10 { "id":"glossary",       "heading": vocabulary title (Arabic "مصطلحات"), "type":"fields", "items": every concept term the source defines, with the source's own definition }
+11 { "id":"multigrade",     "heading": multi-grade title (Arabic "تكييف متعدد الصفوف"), "type":"bullets", "marker":"num", "items": the source's adaptations, one item each, in its own words }
+12 { "id":"homework",       "heading": homework+teacher-corner title (Arabic "الواجب المنزلي · ركن المعلم"), "type":"note", "body": the source's homework items and teacher-corner content, complete and verbatim }
 
-meta: keep the source's locale, subject, grade, region. Set "id" = source id + "-2p".
+meta: keep the source's locale, subject, grade, region. Set "id" = source id + "-guide".
 If locale is "ar" and region "ye": title "دليل الدرس اليومي", subtitle "الجمهورية اليمنية · وزارة التربية والتعليم · التعليم المجتمعي", footer "للتواصل مع المدرّب الرقمي: 160 661 778 967+ · دليل الدرس اليومي". Otherwise: title = the guide word in the lesson's language, keep source subtitle/footer if any. NEVER set meta.banner. Keep up to 3 short chips.
 
 EDITORIAL RULES — how to choose well (these decide quality; follow them for ANY subject):
 - MISCONCEPTION (section 3): when the source lists several watch-outs, pick the one most central to the lesson's CORE skill — the confusion between the two things the lesson exists to distinguish (letter-forms in reading, place value in numbers, congruence vs similarity in shapes). The ✓ صواب side must contain the distinguishing RULE plus a concrete pupil ACTION (trace with a finger, stack the shapes, point to the middle letter) — never just "the correct fact".
 - ERRORS-CAPTION (section 4): a physical teacher DEMONSTRATION that disproves the mistake in front of the class (show two different-length straight segments; hold up two same-shape different-size cutouts) — an action, not advice.
-- STAGE BODIES: imperative teacher voice. Each stage keeps: its ONE concrete hook BY NAME (the real object, song, string, cards — these anchors are what reviewers praise), the essential question verbatim if short, and one short call-and-response quote when the source has one. Cut administrative narration first, pedagogy last.
-- CHANT/SONG: if the source has a chant or song of ≤ 4 short lines, keep the lines VERBATIM inside التمهيد (memory anchors survive condensation).
+- STAGE BODIES: the source's own sentences for that stage, in the source's order, complete. Keep its hooks by name, its questions and its quoted call-and-response lines exactly as written. Nothing is cut — not administrative narration, not detail. If a stage is long, the page grows.
+- CHANT/SONG: keep every line of any chant or song VERBATIM inside التمهيد, however many lines it has.
 - تحقق LINES: observable pupil behaviour, action verb, SINGULAR pupil ("يذكر التلميذ…"), never pupil-count numbers, never teacher behaviour.
-- SOLUTIONS (section 9): answers stay factually EXACT per the source, grouped one item per exercise; keep the short "not X" discriminations when present ("لا مثلث (٣ أضلاع)") — they carry the teaching point.
+- SOLUTIONS (section 9): EVERY answer the source gives, verbatim, one item per exercise — never a subset. Keep the short "not X" discriminations ("لا مثلث (٣ أضلاع)").
 - GLOSSARY (section 10): CONCEPT terms (the skill words: المطابقة، التمييز البصري، التطابق، القيمة المنزلية) — NOT the lesson's vocabulary items that pupils learn inside the lesson (not أبي/أمي, not the numbers list). Definitions from the source where given.
 - MULTIGRADE (section 11): derive the lower grade from the source's scaffolding, the current grade = the lesson as-is, the higher grade from the source's extension activity. If the source has neither, write the natural simpler/harder variant of the SAME activity.
-- HOMEWORK/CORNER (section 12): the source's homework items numbered and near-verbatim, then the re-teach trigger, then exactly ONE reflection question.
-- NUMERALS: in Arabic lessons use Eastern Arabic numerals everywhere (٣٢، ٤٥ دقيقة، صفحة ٨٠) — including times, pages and marks. NEVER mix Latin digits (1,2,3) into Arabic text: Yemeni teachers flagged mixed numerals in a review as confusing for pupils. This applies ONLY to reader-visible Arabic strings — every JSON NUMBER (parts, shaded, total, len, and any value outside quotes) MUST be written with plain ASCII digits, e.g. "total": 16, never "total": ١٦, or the guide will not parse.
-- KINESTHETIC (teacher request from the Yemen A/B review — "the students would love to be kinesthetic in the lessons they learn"): every stage body must contain something the pupils physically DO — touch, hold, point, stand, raise a hand, fold, cut, count on fingers, act out, walk to the board. Name the real object from the source (the string, the apple, the cards). If the source's stage is passive, convert it into the nearest physical version of the SAME activity rather than inventing new content.
+- HOMEWORK/CORNER (section 12): the source's homework items numbered and VERBATIM, then its re-teach trigger, then its reflection question(s) as written.
+- NUMERALS: in Arabic lessons write every DIGIT as an Eastern Arabic numeral (٣٢، ٤٥ دقيقة، صفحة ٨٠) — including times, pages and marks. NEVER mix Latin digits (1,2,3) into Arabic text: Yemeni teachers flagged mixed numerals in a review as confusing for pupils. But NEVER convert a number the source wrote as a WORD into a digit: «أربعة أضلاع» stays «أربعة أضلاع», it does not become «٤ أضلاع». Changing how a number is written changes the teacher's sentence, and the verbatim rule wins. This applies ONLY to reader-visible Arabic strings — every JSON NUMBER (parts, shaded, total, len, and any value outside quotes) MUST be written with plain ASCII digits, e.g. "total": 16, never "total": ١٦, or the guide will not parse.
+- KINESTHETIC: where the source already has pupils physically DOING something (touch, hold, point, stand, fold, cut, count on fingers, act out, walk to the board), keep that wording — it is what the Yemen A/B reviewers asked for. Do NOT rewrite a passive stage into an active one: that would change the teacher's text, which is not yours to change.
 - ANSWERS ARE NEVER OMITTED: the solutions section must always carry the lesson's actual answers (a review found missing answer keys to be a hard failure). Never leave it empty or generic.
 - STAGE MINUTES: sum to the source's period length when known.
 
 __IMAGES_BLOCK__
 
 HARD RULES:
-- Everything condensed FROM THE SOURCE ONLY — never invent facts, names, numbers or answers.
+- VERBATIM, NOT REWRITTEN: every reader-visible string must be text that appears in the source. You may select, order and place; you may join two adjacent source sentences with a space. You may NOT shorten, summarise, paraphrase, reword, translate or invent. A rendering pipeline checks this after you: strings that do not appear in the source are reported as deviations.
 - Keep the lesson's language for ALL reader-visible text. No English scaffolding labels inside a non-English lesson.
-- The total body text must fit 2 A4 pages: respect every word budget; prefer dropping detail over exceeding budgets.`;
+- THERE ARE NO WORD BUDGETS AND NO PAGE TARGET. The guide is exactly as long as the lesson is. Length is never a reason to drop, trim or compress anything.`;
 
 // Figure policy is part of a REGION'S DESIGN SET, not global editorial policy.
 // Regions whose approved design is figure-rich (every card teaches inside the
@@ -99,7 +106,7 @@ const IMAGES_RICH_HYBRID = `IMAGES — HYBRID FIGURES: the image model draws TEX
 
 WHAT EACH SECTION CARRIES:
 - stage-tamhid, stage-arad, stage-tatbiq, stage-taqwim: each carries EITHER an authored textless image ("image": "<id>") OR a CODE-DRAWN figure ("codeFigure"). *** PREFER codeFigure whenever the teaching point is a direction, a comparison, a count, a part-of-a-whole, a fraction, or a key expression — the renderer draws those exactly and legibly. Use a generated image only for real-world scenes, people and objects (supporting artwork). ***
-  AT LEAST ONE PICTURE, AT MOST ONE WIDE DIAGRAM: give at least ONE stage a textless illustration ("image") so the page has a real picture on it — a scene of children or objects, no words in it. And use at most ONE wide code visual per lesson (a "process", a "labeled-parts" diagram, or a "steps" set of 4+ cards): those span the whole card, and two of them will not fit two pages. A "steps" set of 2 or 3 cards is NOT wide — prefer that shape, and use it as often as it helps.
+  AT LEAST ONE PICTURE, AT MOST ONE WIDE DIAGRAM: give at least ONE stage a textless illustration ("image") so the page has a real picture on it — a scene of children or objects, no words in it. Wide code visuals (a "process", a "labeled-parts" diagram, or a "steps" set of 4+ cards) span the whole card: use them where the concept genuinely needs the width, and prefer a "steps" set of 2 or 3 cards otherwise because it reads well in the figure column. Length is not a constraint — do not drop a visual to save space.
   VISUAL DENSITY — READ THIS TWICE. A stage that is only a paragraph of instructions is a failure: teachers reported the pages as text-heavy. EVERY stage section must carry a figure — a textless illustration where the point is a real scene, a codeFigure everywhere else — and when a stage is mostly instructions, give it a "steps" card set built from the stage's own words. Keep each stage's prose SHORT (one or two sentences) and let the visual carry the rest. The "solutions" and "homework" sections may each carry a codeFigure too (e.g. "steps" for what to do at home). Never invent content for a figure: every label must be a word the lesson already uses.
   BALANCE: use a codeFigure wherever exactness matters and never the same figure twice; the other stages carry textless illustrations as supporting artwork. There is no fixed figure count — give a stage a figure when it earns one, and leave prose alone when a figure would only decorate. The errors board does not count towards the three.
   codeFigure kinds — pick the one that fits, all take optional "label" (big caption under the drawing, Eastern numerals) and "caption" (short Arabic line):
@@ -119,17 +126,20 @@ const IMAGES_REUSE = `IMAGES — critical:
 - Choose up to 4 images FROM THE SOURCE's "images" array. COPY each chosen entry EXACTLY — id, concept, label and PROMPT BYTE-FOR-BYTE VERBATIM (any change breaks the image cache). Never write new prompts unless the source has NO images at all (then use an empty array).
 - Selection taste: التمهيد may take a "scene"; العرض and التطبيق prefer labelled "diagram" concepts (they teach); التقويم takes whatever depicts the exit task. Attach via "image": "<id>" on the stage sections (one per stage, best content fit). Do NOT emit any "images"-type section. Labels stay the source's own.`;
 
-// Figure-rich design sets EXPLAIN THROUGH THE PICTURES — the text is a terse
-// sidebar. Their word budgets override the template's (appended after the
-// images block so the shared template stays byte-identical for other regions).
+// Figure-rich design sets explain through pictures AS WELL AS the text — the visuals
+// are added on top of the lesson, never in place of it. This block used to carry word
+// budgets ("STAGE BODIES ≤ 18 words … NO narration") which were a temporary measure to
+// squeeze the Yemen set into a two-page review format. Cutting the teacher's words to
+// make a design fit is not this workstream's job, so the budgets are gone and only the
+// visual instruction remains.
 const RICH_BUDGETS = `
 
-VISUAL-FIRST RULE (applies to every section): if a point is carried by the section's figure — a direction, a count, a fraction, a comparison, a marked mistake — do NOT restate it in the prose. Write the teacher's ACTION only, and let the visual carry the concept. Never describe in words what the code-drawn visual already shows. Aim for a light page with generous whitespace; a section whose figure explains the idea needs only ONE short line of text.
+VISUALS ARE ADDITIVE (applies to every section): give every section the strongest visual its content allows — a direction, a count, a fraction, a comparison, a sequence, a marked mistake, a labelled part, a set of steps. The figure makes the same content easier to grasp; it does NOT replace the words. Keep the source's full text AND add the figure.
 
-FIGURE-RICH TEXT BUDGETS (this design set explains through IMAGES; text is a terse sidebar — these budgets OVERRIDE the ones above):
-- goal body ≤ 20 words. errors ✗/✓ sides ≤ 16 words each. errors-caption ≤ 12 words.
-- STAGE BODIES ≤ 18 words when the section has a figure (≤ 24 only if it has none): short imperative sentences — the hook BY NAME and the essential move. NO narration, no restating the visual.
-- تحقق lines ≤ 10 words. solutions items ≤ 18 words each. glossary values ≤ 7 words. multigrade lines ≤ 12 words. homework ≤ 30 words — numbered tasks only, no explanations (the figure shows the task).`;
+NEVER TRADE TEXT FOR DESIGN:
+- Do not shorten a stage because it has a figure. Do not drop a sentence because the visual "already shows it". Do not compress a list into a summary line.
+- There are no word budgets in this design set. A long stage produces a tall card and, if needed, another page — that is correct and expected.
+- The only length limits anywhere are on drawn LABELS inside a figure (a chip holds a few words, not a paragraph). Those are layout facts, not editorial licence: shorten the LABEL, never the lesson text it came from.`;
 
 // ZERO-COST MODE (LP_NO_IMAGES=1): no image is generated at all — every figure
 // must be a code-drawn visual, so an LP costs nothing but the text condensation.
@@ -144,6 +154,11 @@ const buildSystem = (richFigures) => SYSTEM.replace('__IMAGES_BLOCK__',
 async function callOnce(content, { apiKey, fetchImpl, extra, system }) {
   const body = JSON.stringify({
     temperature: 0.2, // consistency: repeated runs of the same lesson stay close
+    // Verbatim placement returns far more text than the old condensed guide did — a
+    // whole lesson's sentences rather than 18-word summaries — so the completion needs
+    // real room. Left unset, the provider default truncated the JSON and the guide came
+    // back with too few sections.
+    max_tokens: 16000,
     messages: [
       { role: 'system', content: system },
       { role: 'user', content: `${extra ? extra + '\n\n' : ''}Full lesson JSON to condense:\n\n${JSON.stringify(content)}` },
@@ -151,9 +166,25 @@ async function callOnce(content, { apiKey, fetchImpl, extra, system }) {
   });
   const res = await fetchImpl(CHAT_URL, { method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, body });
   const json = JSON.parse(typeof res.body === 'string' ? res.body : res.body.toString('utf8'));
+  // The provider answers an error with {code, msg} and no choices. Reported as "no
+  // parseable JSON" this looked like a model failure and sent a reviewer chasing prompt
+  // edits, when the real message was "Credits insufficient". Say what the API said.
+  if (!json.choices && (json.code || json.msg)) {
+    const err = new Error(`condense: provider error ${json.code || '?'} — ${json.msg || 'no message'}`);
+    err.providerCode = json.code;
+    throw err;
+  }
   const text = json.choices && json.choices[0] && json.choices[0].message && json.choices[0].message.content;
   const m = String(text || '').match(/\{[\s\S]*\}/);
-  if (!m) throw new Error('condense: model returned no JSON');
+  if (!m) {
+    // A TRUNCATED completion has no closing brace, so it looks identical to "no JSON"
+    // from here. Report finish_reason and the size: that is the difference between
+    // "the model refused" and "the answer did not fit".
+    const fin = (json.choices && json.choices[0] && json.choices[0].finish_reason) || '?';
+    const t = String(text || '');
+    throw new Error(`condense: model returned no parseable JSON (finish_reason=${fin}, ${t.length} chars`
+      + `${t.length ? `, ends: …${t.slice(-60).replace(/\s+/g, ' ')}` : ''})`);
+  }
   // Models sometimes write Eastern Arabic numerals as JSON VALUES (total: ١٦),
   // which is not valid JSON. Convert digits only where a number is expected —
   // after ':' or ',' or '[' and before ',' '}' ']' — never inside strings.
@@ -369,21 +400,19 @@ async function addFiguresToGuide(guide, { apiKey, fetchImpl = defaultFetch, log 
   return { guide: applyFigureBalance(guide), added };
 }
 
-// The figure-balance rules, applied to any guide: identical visuals are duplicates,
-// a stage may carry a code visual and up to two supporting sections may too, and only
-// one card-spanning visual fits two pages. Callable so the figure pass obeys them too.
+// The figure-balance rules, applied to any guide: identical visuals are duplicates, a
+// stage may carry a code visual and up to two supporting sections may too. There is no
+// longer a cap on card-spanning visuals — that cap existed to protect a two-page
+// contract, and deleting a teaching figure to save page height is exactly what the
+// raw lesson is not supposed to pay for. Callable so the figure pass obeys them too.
 function applyFigureBalance(out) {
 
   const sig = (cf) => JSON.stringify([cf.kind, cf.shape, cf.parts, cf.shaded, cf.total, cf.north, cf.east, cf.text,
     (cf.items || []).map((i) => i.label), (cf.stages || []).map((i) => i.label), (cf.parts || []).map ? (cf.parts || []).map((p) => p && p.label) : cf.parts]);
-  const seen = new Set(); let stageCount = 0, sideCount = 0, wideCount = 0;
+  const seen = new Set(); let stageCount = 0, sideCount = 0;
   const STAGES = new Set(['stage-tamhid', 'stage-arad', 'stage-tatbiq', 'stage-taqwim']);
-  // A figure that must span the card costs real page height, and two pages will
-  // not hold more than one of them.
-  // Only these always need the card's width. Whether a STEP SET spans is a layout
-  // call the renderer makes — it can see how many are on the page — and the condenser
-  // must never delete a teaching step to influence layout.
-  const spansCard = (cf) => cf.kind === 'process' || cf.kind === 'labeled-parts';
+  // Whether a STEP SET spans the card is a layout call the renderer makes, and the
+  // condenser must never delete a teaching step to influence layout.
   for (const s of out.sections) {
     if (!s || !s.codeFigure || s.codeFigure.kind === 'error-board') continue;
     const k = sig(s.codeFigure);
@@ -391,11 +420,6 @@ function applyFigureBalance(out) {
     // Duplicates never survive. Beyond that: every stage may carry a code visual,
     // and up to two supporting sections (solutions, homework, goal …) may too.
     if (seen.has(k) || (isStage ? stageCount >= 4 : sideCount >= 2)) { delete s.codeFigure; continue; }
-    // Two card-spanning visuals fit; a third costs a page, so it goes.
-    if (spansCard(s.codeFigure)) {
-      if (wideCount >= 2) { delete s.codeFigure; continue; }
-      wideCount++;
-    }
     seen.add(k); if (isStage) stageCount++; else sideCount++;
   }
   // The model's job is supporting pictures; the teaching visuals are code. Two
@@ -444,7 +468,14 @@ async function condenseToGuide(content, { apiKey, fetchImpl = defaultFetch, log 
     }
   }
   if (!out) throw lastErr;
-  if (!Array.isArray(out.sections) || out.sections.length < 8) throw new Error('condense: bad guide shape');
+  if (!Array.isArray(out.sections) || out.sections.length < 8) {
+    // Say WHAT came back: "bad guide shape" alone sent me hunting through prompt edits
+    // when the real cause was a truncated completion.
+    const got = Array.isArray(out.sections)
+      ? `${out.sections.length} section(s): ${out.sections.map((x) => (x && x.id) || '?').join(', ')}`
+      : `sections was ${typeof out.sections}`;
+    throw new Error(`condense: bad guide shape — ${got}`);
+  }
   const ids = new Set(out.sections.map((s) => s && s.id));
   for (const need of ['goal', 'stage-tamhid', 'stage-arad', 'stage-tatbiq', 'stage-taqwim']) {
     if (!ids.has(need)) throw new Error(`condense: missing required section "${need}"`);
@@ -581,7 +612,7 @@ async function condenseToGuide(content, { apiKey, fetchImpl = defaultFetch, log 
     out.images = [];
   }
   if (out.meta) delete out.meta.banner;
-  log(`Condensed to the 2-page guide: ${out.sections.length} sections, ${out.images.length} reused image(s).`);
+  log(`Condensed to the guide template: ${out.sections.length} sections, ${out.images.length} reused image(s).`);
   return out;
 }
 

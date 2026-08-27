@@ -82,18 +82,29 @@ function mdInline(escaped) {
 // operator or an equals sign is maths.
 const MATH_RUN = /[٠-٩0-9]+(?:\s*[+\-×÷*/]\s*[٠-٩0-9]+)*\s*=\s*[٠-٩0-9]+|[٠-٩0-9]+\s*[+\-×÷*/]\s*[٠-٩0-9]+/g;
 
-function isolateMath(html) {
-  // Runs on ESCAPED html, so it must not break entities or tags: the pattern only
-  // matches digits, operators and spaces, none of which appear inside a tag name.
-  return html.replace(MATH_RUN, (m) => `<span class="ltr-math" dir="ltr">${m}</span>`);
-}
+// Arithmetic inside Arabic prose is NOT forced left-to-right. Arabic writes a
+// horizontal expression with the first operand on the RIGHT: reading «١٦ ÷ ٤ = ٤»
+// right-to-left, the eye meets ١٦, then ÷, then ٤, then =, then ٤. That is exactly
+// what the default bidi algorithm produces — the digits of each number stay
+// left-to-right (they are AN), while the neutral operators take the paragraph's
+// right-to-left direction, so the TOKENS flow right-to-left.
+//
+// This code used to wrap every run in `<bdi class="ltr-math" dir="ltr">` with
+// `unicode-bidi:isolate-override`, which forces the token order the other way and
+// therefore renders «٤ = ٤ ÷ ١٦» to an Arabic reader. A reviewer reported that as
+// reversed three times running; each "fix" was a variation on the thing causing it.
+// The approved Yemen design set settles the convention — its own caption reads
+// «١٠ ورقات فئة ١٠٠ ريال = ١٠٠٠ ريال», left-hand side on the right, result on the
+// left. So: leave maths alone and let bidi do its job. Do not reintroduce an LTR
+// container, a `dir="ltr"` attribute, or U+2066/U+2069 isolates around an
+// expression in right-to-left text.
 
 function richText(raw, { engine = 'katex' } = {}) {
   const s = String(raw == null ? '' : raw);
   return s.split(/(\$\$[^$]+\$\$|\$[^$]+\$)/g).map((p) => {
     if (/^\$\$[^$]+\$\$$/.test(p)) return renderMath(p.slice(2, -2), { display: true, engine });
     if (/^\$[^$]+\$$/.test(p)) return renderMath(p.slice(1, -1), { display: false, engine });
-    return isolateMath(mdInline(esc(p)));
+    return mdInline(esc(p));
   }).join('');
 }
 
@@ -102,4 +113,4 @@ function cleanHeading(raw) {
   return String(raw == null ? '' : raw).replace(/[*_`#]+/g, '').replace(/\s+/g, ' ').trim();
 }
 
-module.exports = { renderMath, renderKatex, renderMathjaxSvg, katexCss, richText, cleanHeading, isolateMath, MATH_RUN };
+module.exports = { renderMath, renderKatex, renderMathjaxSvg, katexCss, richText, cleanHeading, MATH_RUN };

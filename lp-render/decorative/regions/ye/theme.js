@@ -642,18 +642,12 @@ body{background:#fcfcfc;font-family:'Noto Naskh Arabic','IBM Plex Sans Arabic','
 .section.sec-errors .d-inline-img img{height:calc(204px * var(--figscale))}
 
 
-/* MATHS IS NOT PROSE. An arithmetic run inside RTL Arabic is laid out mirrored — the
-   digits are strong Arabic-Number characters but the operators between them are
-   neutral and take the paragraph direction, so «١٥ ÷ ٥ = ٣» renders as «٣ = ٥ ÷ ١٥».
-   Every arithmetic run is wrapped in .ltr-math and forced left-to-right. */
-/* isolate is NOT enough: Arabic-Indic digits carry an intrinsic Arabic-Number class,
-   so even inside an LTR isolate the number sequence still resolves right-to-left.
-   isolate-override forces every character to the container's direction, which is the
-   only thing that actually puts «١٥ ÷ ٥ = ٣» in the order the lesson means. */
-.ltr-math{direction:ltr !important;unicode-bidi:isolate-override !important;display:inline-block}
-/* NB: no blanket rule on .cf-expr — an expression figure often holds an Arabic
-   phrase, and forcing LTR on that renders the words backwards. The renderer adds
-   .ltr-math only when the content is digits and operators. */
+/* MATHS DIRECTION: deliberately nothing here. Arabic writes «١٥ ÷ ٥ = ٣» with the
+   first operand on the right, which is what default bidi produces — the digits of a
+   number stay left-to-right, the neutral operators take the paragraph direction, so
+   the tokens flow right-to-left. An earlier version of this pack forced every run
+   left-to-right with unicode-bidi:isolate-override; that is what made expressions
+   read backwards to an Arabic reader. Do not add a direction rule for maths. */
 
 /* A process/cycle diagram is the MAIN visual of its stage, so it gets real size rather
    than sitting small inside a wide card — roughly 1.6x what it had. Density still
@@ -662,12 +656,68 @@ body{background:#fcfcfc;font-family:'Noto Naskh Arabic','IBM Plex Sans Arabic','
 .section.sec-stage-taqwim .d-code-fig.cf-k-process .cf-svg{max-height:calc(210px * var(--figscale))}
 .panel.has-inline-img .d-code-fig.cf-k-process{width:100%}
 
+
+/* RAW-TEXT MODE. A stage whose body is ROW CARDS (.d-bullets) is not the pilot's
+   three-column anatomy. That grid exists for body | figure | تحقق and relies on
+   .d-steps using display:contents to fill columns 1 and 3; with row cards there is no
+   .d-steps, so columns 2 and 3 sit empty while the cards squeeze into ~40% of the card
+   and the figure falls off the page. One column, cards full width, figure below.
+   Scoped by :has() so the approved step-shaped anatomy is untouched. */
+.panel.has-inline-img:has(.d-bullets){display:block}
+.panel.has-inline-img:has(.d-bullets) .ii-body{display:block;width:100%}
+.panel.has-inline-img:has(.d-bullets) .d-inline-img,
+.panel.has-inline-img:has(.d-bullets) .d-code-fig{width:100%;max-width:none;margin:10px auto 0;position:static}
+.panel.has-inline-img:has(.d-bullets) .d-code-fig .cf-svg{max-height:none;width:100%}
+
+
+/* A design-shaped card carrying ONE labelled part: prose beside its figure. The pilot
+   anatomy is three columns (body | figure | تحقق) and relies on .d-steps to fill the
+   flanking columns; a part card has a plain .d-text and no تحقق, so the third column
+   would sit empty and the text would be squeezed. Two columns in the pilot's own
+   proportion, figure beside the text where it belongs. */
+.panel.has-inline-img:has(.d-text):not(:has(.d-steps)):not(:has(.d-bullets)){
+  grid-template-columns:minmax(0,1fr) minmax(0,52%);align-items:center}
+.panel.has-inline-img:has(.d-text):not(:has(.d-steps)):not(:has(.d-bullets)) .ii-body{display:block}
+.panel.has-inline-img:has(.d-text):not(:has(.d-steps)):not(:has(.d-bullets)) .d-code-fig{
+  grid-column:2;grid-row:1;margin:0;position:static}
+
+
+/* ── RAW-TEXT LP: prominence and rhythm ─────────────────────────────────────────
+   The caps above were tuned for the two-page format, where every pixel was
+   contested: figures live at 112–168px so four stages plus the whole back page
+   could fit. A raw-text LP has no page contract, so that thrift buys nothing and
+   costs the design its visuals. Where a stage card carries one labelled part, the
+   figure gets the size the pilot gives it. */
+.section[class*="sec-stage-"] .panel.has-inline-img:has(.d-text) .d-code-fig .cf-svg{
+  max-height:250px !important;width:100% !important}
+.section[class*="sec-stage-"] .panel.has-inline-img:has(.d-text) .d-code-fig{padding:2px}
+.section[class*="sec-stage-"] .panel.has-inline-img:has(.d-text) .d-code-fig.cf-wide .cf-svg{
+  max-height:200px !important}
+
+/* A card of pure prose is the thing that reads as a wall. It cannot be shortened —
+   the lesson's words are the deliverable — but it can be set in two columns like a
+   textbook, which halves the line count and the apparent density. Only cards with no
+   figure: a card that already has a visual has its own rhythm. */
+.section[class*="sec-stage-"] .panel:not(:has(.d-code-fig)):not(:has(.d-inline-img)) .d-text{
+  column-count:2;column-gap:24px;column-rule:1px solid #e8ebf2;text-align:justify}
+.section[class*="sec-stage-"] .panel:not(:has(.d-code-fig)) .d-text{line-height:1.62}
+
+/* Breathing room between cards, and a lighter card edge so a page of many cards
+   reads as a sequence rather than a grid of boxes. */
+.section[class*="sec-stage-"]{margin:0 0 7px}
+.section[class*="sec-stage-"] .panel{padding:34px 16px 9px}
+
 `;
 
-// MAX_PAGES is the pack's page contract: this design set is a two-page daily guide,
-// so a render that overruns is a fault to fix (by drawing the figures smaller), not a
-// longer document to accept. Packs without it are unconstrained.
+// NO MAX_PAGES. This pack used to declare a two-page contract, and the Studio then
+// re-condensed the lesson tighter and shrank the figures until the render fitted it.
+// That made the page count the thing being satisfied and the teacher's words the thing
+// being sacrificed. The raw lesson is the source of truth: pagination now follows the
+// content, and a lesson that needs three pages gets three pages. The composer numbers
+// «الصفحة ن من م» from the real page count, so nothing downstream assumes two.
+// A pack MAY still declare MAX_PAGES if its design genuinely requires one — the
+// mechanism in pipeline.js is intact, this design just no longer uses it.
 // CHARACTER_CAST: false — this design set has no slot for decorative characters. The
 // legacy fallback (add a cast when a lesson has no content images) was injecting one
-// into the homework card and pushing zero-artwork lessons onto a third page.
-module.exports = { THEME_OVERRIDE_CSS, REGION_NAME: 'Yemen', PAGE_NUMBER_STYLE: 'ar-bottom', MAX_PAGES: 2, CHARACTER_CAST: false };
+// into the homework card.
+module.exports = { THEME_OVERRIDE_CSS, REGION_NAME: 'Yemen', PAGE_NUMBER_STYLE: 'ar-bottom', CHARACTER_CAST: false };

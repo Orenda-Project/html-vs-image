@@ -24,8 +24,18 @@ function compactPrompt(prompt, max) {
     let longest = 1;
     for (let i = 1; i < parts.length - 1; i++) if (parts[i].length > parts[longest].length) longest = i;
     const over = parts.join('. ').length - max;
-    if (parts[longest].length - over > 40) parts[longest] = parts[longest].slice(0, parts[longest].length - over - 2);
-    else parts.splice(longest, 1);
+    if (parts[longest].length - over > 40) {
+      // TRIM AT A WORD BOUNDARY. A raw slice cut mid-word and shipped the result to the
+      // model: the Kenya art direction went out as "any adult is Kenyan — dark brown
+      // skin and Afr." — worse than saying nothing, because the sentence no longer
+      // states the requirement the culture gate then checks for. Measured on a Kiswahili
+      // Grade 1 render, where that clause was the longest middle sentence and so always
+      // the one chosen for trimming.
+      const keep = parts[longest].length - over - 2;
+      const cut = parts[longest].slice(0, keep);
+      const sp = cut.lastIndexOf(' ');
+      parts[longest] = (sp > keep * 0.6 ? cut.slice(0, sp) : cut).replace(/[\s,;:—–-]+$/, '');
+    } else parts.splice(longest, 1);
   }
   let out = parts.join('. ');
   if (!/\.$/.test(out)) out += '.';

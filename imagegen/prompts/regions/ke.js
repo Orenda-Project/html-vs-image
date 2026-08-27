@@ -18,11 +18,22 @@ module.exports = {
   },
   // Bump when the art direction changes: the asset-store key includes it, so cached
   // artwork drawn under the old direction is not silently reused.
-  version: 2,
+  version: 3,
   id: 'ke',
-  dress: 'Kenyan school clothing — children with dark brown skin in green or maroon school uniforms (sweaters, shorts or pinafores)',
-  teacher: 'any adult wears smart everyday Kenyan clothing — a plain shirt or blouse, or a dress in a bright printed fabric',
-  setting: 'a Kenyan classroom or countryside setting (simple buildings, acacia trees, a small school)',
+  // The scaffold prefixes this with "children dressed as ", so it must read as a
+  // clothing phrase — the first shortening produced "children dressed as children
+  // with dark brown skin…".
+  dress: 'green or maroon Kenyan school uniforms, worn by children with dark brown skin',
+  // ASK FOR WHAT THE GATE CHECKS. The forbid list above rejects European, Arab or East
+  // Asian facial features on the adults — but this line only ever described the adult's
+  // CLOTHING, so the appearance the gate enforces was never actually requested. Measured
+  // on a Kiswahili Grade 1 render: the first roll came back with a teacher drawn with
+  // clearly East Asian features, the gate rejected it (correctly), and the re-rolls then
+  // failed on transient generation errors, so the lesson shipped with no artwork at all.
+  // A check that forbids what the prompt never asks for spends credits to discover it.
+  teacher: 'any adult is Kenyan — dark brown skin and African features — and wears smart '
+    + 'everyday Kenyan clothing: a plain shirt or blouse, or a dress in a bright printed fabric',
+  setting: 'a simple Kenyan classroom or schoolyard',
   names: 'Kenyan names (Amani, Baraka, Zawadi, Neema)',
   palette: 'warm, bright, friendly colours',
   avoid: 'no non-African landmarks, no clothing or architecture from outside East Africa',

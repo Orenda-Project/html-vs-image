@@ -30,6 +30,18 @@ const ROOT = path.resolve(__dirname, '..');
 const RULES_PATH = path.join(__dirname, 'decorative', 'RULES.md');
 const CONCEPT_TO_BLOCK = { diagram: 'DIAGRAM', scene: 'HOOK_STORY', photo: 'HOOK_STORY' };
 
+// Cache identity = the brief + the region + that region's art-direction version.
+// Keyed on the brief alone, changing how Yemeni teachers are dressed changed
+// nothing: every lesson just restored the old picture. Bumping a pack's `version`
+// is therefore how a region re-buys its art — and why old entries stay orphaned.
+// Exported so tests seed the same key the pipeline will look up, instead of
+// re-deriving the formula and drifting from it.
+function artCacheKey(prompt, { region, locale } = {}) {
+  const artRegion = String(region || ({ sw: 'ke', ar: 'ye' })[locale] || 'pk').toLowerCase();
+  const artVersion = (resolveRegion(artRegion) || {}).version || 1;
+  return store.keyFor(`${prompt}|region:${artRegion}|art:v${artVersion}`);
+}
+
 function chromePath() {
   for (const c of ['/usr/bin/chromium', '/usr/bin/chromium-browser', '/usr/bin/google-chrome']) if (fs.existsSync(c)) return c;
   try { return require('../node_modules/puppeteer').executablePath(); } catch (_) { return undefined; }
@@ -82,12 +94,7 @@ async function renderLessonImage(content, opts = {}) {
 
   const imagesMap = {};
   const toGen = [];
-  // Cache identity = the brief + the region + that region's art-direction version.
-  // Keyed on the brief alone, changing how Yemeni teachers are dressed changed
-  // nothing: every lesson just restored the old picture.
-  const artRegion = String(meta.region || ({ sw: 'ke', ar: 'ye' })[locale] || 'pk').toLowerCase();
-  const artVersion = (resolveRegion(artRegion) || {}).version || 1;
-  const cacheKey = (prompt) => store.keyFor(`${prompt}|region:${artRegion}|art:v${artVersion}`);
+  const cacheKey = (prompt) => artCacheKey(prompt, { region: meta.region, locale });
   for (const im of wanted) {
     const key = cacheKey(im.prompt);
     if (GAVE_UP.has(key)) { statsOut.dropped++; log(`  ⊘ image "${im.id}" skipped — already rejected earlier in this run`); continue; }
@@ -241,4 +248,4 @@ async function renderLessonImage(content, opts = {}) {
   return { png, pdf, html, contentId, locale, stats: statsOut, maxPages: regionMaxPages, stripHeight, pageBudget, overflow: overflowFindings };
 }
 
-module.exports = { renderLessonImage, ROOT };
+module.exports = { renderLessonImage, artCacheKey, ROOT };

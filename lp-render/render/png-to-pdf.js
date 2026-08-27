@@ -84,23 +84,56 @@ async function htmlToPixelPdf(html, opts = {}) {
           }
         });
       });
-      // MATH DIRECTION: an arithmetic run must read left-to-right on the page. Measure
-      // the first and last character of each run: if the first sits to the RIGHT of the
-      // last, the equation is mirrored and disagrees with the lesson.
+      // MATH DIRECTION. In Arabic an expression is written with its first operand on
+      // the RIGHT \u2014 \u00ab\u0661\u0666 \u00f7 \u0664 = \u0664\u00bb reads \u0661\u0666, \u00f7, \u0664, =, \u0664 moving leftwards \u2014 so the tokens
+      // must step right-to-left while the digits inside one number stay left-to-right.
+      // An earlier version of this check asserted the opposite and therefore passed a
+      // set the reviewer could see was mirrored. If a run steps the wrong way,
+      // something is forcing its direction (see lp-render/math/math.js).
       const MATH_RE = /[\u0660-\u06690-9]+(?:\s*[+\-\u00d7\u00f7*/]\s*[\u0660-\u06690-9]+)*\s*=\s*[\u0660-\u06690-9]+/;
-      {
+      if ((document.documentElement.getAttribute('dir') || '') === 'rtl') {
+        const box = (node, from, len) => {
+          const rg = document.createRange();
+          rg.setStart(node, from); rg.setEnd(node, from + len);
+          const b = rg.getBoundingClientRect();
+          return b.width ? { x: (b.left + b.right) / 2, line: Math.round(b.top / 4) } : null;
+        };
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
         let node;
         while ((node = walker.nextNode())) {
           const s = node.nodeValue || '';
           const m = s.match(MATH_RE);
           if (!m) continue;
-          const i = s.indexOf(m[0]);
-          const r1 = document.createRange(); r1.setStart(node, i); r1.setEnd(node, i + 1);
-          const r2 = document.createRange(); r2.setStart(node, i + m[0].length - 1); r2.setEnd(node, i + m[0].length);
-          const a = r1.getBoundingClientRect(); const z = r2.getBoundingClientRect();
-          if (!a.width || !z.width) continue;
-          if (a.left > z.left) overflow.push({ kind: 'math_reversed', text: m[0] });
+          const tokens = m[0].match(/[\u0660-\u06690-9]+|[+\-\u00d7\u00f7*/=]/g) || [];
+          // A slash-joined pair like \u00ab\u0662/\u0664\u00bb is a fraction, not a division: the bidi
+          // algorithm treats a common separator between two numbers as one numeric
+          // unit and lays it out left-to-right. That is correct, and lesson content
+          // relies on it (a misconception board deliberately shows \u00ab\u0664/\u0662\u00bb beside
+          // \u00ab\u0662/\u0664\u00bb), so it is not this rule's business.
+          if (tokens.length < 3 || !/[+\-\u00d7\u00f7=]/.test(m[0])) continue;
+          const spans = []; let cursor = s.indexOf(m[0]); let ok = true;
+          for (const t of tokens) {
+            const i = s.indexOf(t, cursor);
+            const b = i < 0 ? null : box(node, i, t.length);
+            if (!b) { ok = false; break; }
+            spans.push({ t, ...b }); cursor = i + t.length;
+          }
+          if (!ok) continue;
+          // Compare positions only WITHIN a line. A run that wraps mid-expression
+          // restarts at the right edge, and comparing across that break reads as a
+          // reversal when nothing is wrong.
+          let reversed = false;
+          for (let k = 1; k < spans.length; k++) {
+            if (spans[k].line !== spans[k - 1].line) continue;
+            if (spans[k].x > spans[k - 1].x) reversed = true;
+          }
+          if (reversed) { overflow.push({ kind: 'math_reversed', text: m[0] }); continue; }
+          const multi = tokens.find((t) => t.length > 1);
+          if (multi) {
+            const i = s.indexOf(multi, s.indexOf(m[0]));
+            const d1 = box(node, i, 1); const d2 = box(node, i + 1, 1);
+            if (d1 && d2 && d1.line === d2.line && d1.x > d2.x) overflow.push({ kind: 'number_mirrored', text: multi });
+          }
         }
       }
       // and HTML text spilling out of its panel
