@@ -1236,9 +1236,20 @@ function ylStage(section, accent, images, idCls) {
   if (!lead && !anyBlock && !checks && !diff) {
     return '<section class="section yl-stage yl-empty' + idCls + '">' + head + '</section>';
   }
+  // THE ILLUSTRATION AS A GRID CELL. A stage whose activities are drawn does not want a
+  // photograph in its visual column — that put a 228px picture beside a 25px instruction
+  // line. In the grid's spare slot it costs no height and fills what would be blank.
+  const artIm = section.artCell && images[section.artCell];
+  const artCell = (gridFrom >= 0 && artIm && artIm.dataUri)
+    ? '<div class="yl-act yl-artcell"><figure class="yl-illus"><img src="' + artIm.dataUri
+      + '" alt="' + esc(cleanHeading(artIm.label || '')) + '">'
+      + (artIm.label ? '<figcaption>' + esc(cleanHeading(artIm.label)) + '</figcaption>' : '')
+      + '</figure></div>'
+    : '';
   const inner = gridFrom >= 0
     ? blocks.slice(0, gridFrom).join('')
-      + '<div class="yl-actgrid yl-cols-' + cols + '">' + blocks.slice(gridFrom).join('') + '</div>'
+      + '<div class="yl-actgrid yl-cols-' + cols + '">' + blocks.slice(gridFrom).join('')
+      + artCell + '</div>'
     : blocks.join('');
   // The approved stage is TWO cards: an outer one carrying the stage's own tint, which
   // holds the header row, the asides and the checkpoint strip; and a white inner card
@@ -1268,6 +1279,11 @@ function renderDecorativeLesson(content, images = {}, cast = {}) {
   if (meta.banner) referenced.add(meta.banner); // shown in the hero, not as a card
   for (const s of (content.sections || [])) if (s && s.type === 'images' && Array.isArray(s.imageIds)) s.imageIds.forEach((id) => referenced.add(id));
   for (const s of (content.sections || [])) if (s && s.image) referenced.add(s.image); // in-panel figures (see below)
+  // …and an illustration placed in an exercise grid's spare slot is referenced too. Without
+  // this it counted as leftover, so the same picture was drawn twice: once in the grid cell
+  // and again as a full-width card of unreferenced images at the end — which also added
+  // 216px to the document.
+  for (const s of (content.sections || [])) if (s && s.artCell) referenced.add(s.artCell);
   for (const s of (content.sections || [])) { if (s && s.imageWrong) referenced.add(s.imageWrong); if (s && s.imageCorrect) referenced.add(s.imageCorrect); } // code-composed twin boards
 
   // Characters are a FALLBACK only (R23): if this lesson already shows real content

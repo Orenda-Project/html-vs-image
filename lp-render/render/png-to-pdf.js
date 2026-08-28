@@ -41,24 +41,30 @@ async function htmlToPixelPdf(html, opts = {}) {
       if (header) cuts.push(y(header, 'bottom'));
       document.querySelectorAll('.body > .section').forEach((sec) => {
         cuts.push(y(sec, 'bottom'));
-        // THE COMPONENT LAYER'S OWN BOUNDARIES. This list named only the old class names,
-        // so a stage card — which is entirely .yl-* — offered no inner boundary at all and
-        // was atomic. A geometry lesson with four stage cards then paginated at 62% fill
-        // per page: 657px used of 1059, then 525, then 811, because the next card never
-        // fitted in what was left. A stage may continue onto the next page.
-        sec.querySelectorAll('.yl-scard > .yl-act, .yl-sbody, .yl-srows, .yl-check,'
-          + ' .yl-ttext.yl-lead, .yl-mrow, .yl-mfix, .yl-bbody')
-          .forEach((el) => cuts.push(y(el, 'bottom')));
-        // A GRID ROW IS CUT AS A ROW, NEVER THROUGH ONE. Cells that share a row share a
-        // top edge; the row's boundary is the lowest of their bottoms.
+        // A ROW OF EXERCISES MAY BREAK; NOTHING ELSE INSIDE A CARD MAY. The gap between two
+        // grid rows is the one place a cut cannot cross anything: cells that share a row
+        // share a top edge, so the boundary is the lowest of their bottoms and the cut lands
+        // in the gutter. Every OTHER inner boundary is gone — with .yl-act, .yl-sbody and
+        // .yl-check as candidates, a page ended in the middle of the cube-and-cone figure.
         sec.querySelectorAll('.yl-actgrid').forEach((grid) => {
+          const cells = [...grid.querySelectorAll(':scope > .yl-act')];
+          if (cells.length < 3) return;            // a 2-up row has no row to break between
           const byRow = new Map();
-          grid.querySelectorAll(':scope > .yl-act').forEach((a) => {
+          cells.forEach((a) => {
             const top = Math.round(a.getBoundingClientRect().top);
             byRow.set(top, Math.max(byRow.get(top) || 0, y(a, 'bottom')));
           });
-          byRow.forEach((b) => cuts.push(b));
+          const rows = [...byRow.entries()].sort((x, z) => x[0] - z[0]);
+          // not the LAST row: that boundary is inside the card, above its asides and its
+          // checkpoint strip, and cutting there orphans them from their own activities.
+          rows.slice(0, -1).forEach(([, b]) => cuts.push(b));
         });
+        // A CARD IS NEVER CUT ANYWHERE ELSE. Component boundaries used to be candidates here,
+        // so a stage could continue onto the next page — it lifted page fill from 62% to
+        // ~95%. But it also let a page end in the MIDDLE of an activity: the cube-and-cone
+        // figure and its ✓/✗ boxes were sliced by the footer rule. The reviewer's rule is
+        // explicit and it wins: if a row or section does not fit, the whole thing moves to
+        // the next page. Only a section's own bottom is a legal boundary.
         // A card that carries a figure (in-panel illustration or character) must never
         // be cut THROUGH the figure: inner boundaries are legal only BELOW the
         // figure's bottom edge. Cards without figures offer all inner boundaries.

@@ -401,7 +401,12 @@ function breakOutInlineLabels(text, profile) {
   // «* صورة البنت ← إيمان ٢) أَصِلُ…» put the next exercise's heading at the end of the
   // previous line, where nothing could see it. A digit followed by ')' after whitespace
   // starts a new line; «٥ تلاميذ» and «صفحة ٣٢» are untouched because they have no bracket.
-  out = out.replace(/([^\n])[ \t]+([٠-٩0-9]{1,2}\s*\)\s*)/g, (mm, p1, p2) => `${p1}\n${p2}`);
+  // …with a BRACKET OR A FULL STOP after the number: «١) أَصِلُ…» and «١. ضع إشارة…» are the
+  // same thing written two ways, and only the bracket form was handled — so a paste that
+  // numbered its exercises with dots ran all seven together as one blob of prose. A LETTER
+  // must follow the marker, which is what keeps «٤ أضلاع» and «صفحة ٣٢» out of it.
+  out = out.replace(/([^\n])[ \t]+([٠-٩0-9]{1,2}\s*[).]\s*)(?=[\p{L}])/gu,
+    (mm, p1, p2) => `${p1}\n${p2}`);
   return out;
 }
 
@@ -1092,6 +1097,9 @@ function buildGuideFromMarkdown(md, opts = {}) {
         const label = longLabel ? '' : rawLabel;
         const sep = isExercise ? ' — ' : ' · ';
         const title = [T[id], label].filter(Boolean).join(sep);
+        // the stage's name as the source wrote it, minus its minutes and its mode
+        const ownName = String(b.title || '').split(/\s*[—–]\s*/)[0]
+          .replace(tailMin, '').replace(/[(（][^)）]*[)）]/g, '').trim();
         // THE LABEL IS THE EXERCISE. «١. ضع إشارة (✓) على القطعة المستقيمة.» carries all of
         // its meaning in the label and has no body at all, so a detector fed only the body
         // saw an empty string and drew nothing for seven exercises in a row.
@@ -1146,6 +1154,15 @@ function buildGuideFromMarkdown(md, opts = {}) {
         const sec = { id, heading: title, type: 'stage',
           body: sp.longCheck ? sp.body : (sp.check ? sp.body : partBody) };
         if (part.lead) sec.lead = part.lead;
+        // …AND ONLY IF IT IS IN THE SAME SCRIPT AS THE DESIGN'S OWN NAME. The Yemen
+        // artifact lessons head their stages «Engage (الإحماء والتشويق) — 8-10 دقائق»: the
+        // part before the dash is an English structurer label, display-only, which this
+        // pack has always dropped. Taking it would have printed «Engage» on the tab of all
+        // fifteen shipped lessons.
+        const arabicOwn = /[؀-ۿ]/.test(ownName);
+        const arabicTpl = /[؀-ۿ]/.test(String(T[id] || ''));
+        if (ownName && ownName.length <= 24 && !/[A-Za-z]/.test(ownName)
+            && arabicOwn === arabicTpl) sec.sourceName = ownName;
         if (partAnswer) sec.answer = partAnswer;
         if (sp.check) sec.check = sp.check;
         if (first) {
@@ -1289,7 +1306,12 @@ function buildGuideFromMarkdown(md, opts = {}) {
   // only the drawing — which is how the generated artwork went missing from page 1 while
   // the log said it had been generated.
   const isStage = (x) => profile.stages.includes(x.id);
-  const artCard = sections.find((x) => isStage(x) && !x.codeFigure);
+  // A STAGE, NOT A SECTION. At this point a stage is still several part-sections, and the
+  // one carrying the stage's instruction line has no figure of its own — so this picked
+  // التطبيق, a stage whose other parts draw seven exercises, and put a photograph beside a
+  // 25px line of text. Availability is a property of the whole stage.
+  const stageDraws = (id) => sections.some((x) => x.id === id && x.codeFigure);
+  const artCard = sections.find((x) => isStage(x) && !stageDraws(x.id));
   const vocabRole = byRole.get('glossary') ? 'glossary' : (byRole.get('resources') ? 'resources' : '');
   if (vocabRole) {
     const wc = wordCardsFigure(tableRows(rawOf(vocabRole)));
@@ -1348,7 +1370,19 @@ function buildGuideFromMarkdown(md, opts = {}) {
   // art-direction pack — imagegen/prompts/regions/<region>.js — so the same brief is
   // grounded in a Yemeni classroom or a Kenyan one without being written differently.
   const images = [];
-  const warmup = artCard || sections.find((x) => x.id === profile.stages[0]);
+  // THE ILLUSTRATION GOES WHERE THERE IS ROOM FOR IT. It was landing in whichever stage
+  // came first, which put a 228px picture beside a 25px instruction line in a card that
+  // already held seven drawn exercises: 200px of empty space on one side, a 723px card,
+  // and a page break that left the previous page 58% full. A stage that already draws its
+  // own activities does not need a photograph as well — its exercises ARE the visuals — so
+  // the brief goes to the first stage that has no drawn figure, and to none if every stage
+  // has one.
+  const stageCards = (profile.stages || []).map((id) => sections.find((x) => x.id === id))
+    .filter(Boolean);
+  const hasFigure = (sec) => !!(sec.codeFigure
+    || (sec.activities || []).some((a) => a.codeFigure));
+  const warmup = artCard || stageCards.find((x) => !hasFigure(x) && (x.body
+    || (x.activities || []).some((a) => a.body)));
   // A lesson with no title line has no topic to brief an illustration from — this one had
   // none, so no artwork was authored at all. Its GOAL states what the lesson is about
   // («أستطيع التعرف على كلمات أفراد الأسرة وقراءتها والمطابقة بينها»), which is the
@@ -1432,8 +1466,13 @@ function buildGuideFromMarkdown(md, opts = {}) {
     if (m && m[1].trim().length > 1) {
       host.body = body.slice(0, m.index).trim();
       const at = sections.indexOf(host);
+      // TAGGED AS A BLOCK COMPONENT AT BIRTH. The block tagging pass runs earlier in this
+      // function, so a section created here never went through it — الإجابات fell to the
+      // generic panel while بطاقة الخروج beside it was a block component. That is why the
+      // pair looked mismatched no matter how carefully the pair CSS was written: half of it
+      // was styling a card that did not exist.
       sections.splice(at + 1, 0, { id: asp.to, heading: T[asp.to] || asp.to,
-        type: 'text', body: m[1].trim() });
+        type: 'text', body: m[1].trim(), component: 'block' });
     }
   }
 
@@ -1465,7 +1504,12 @@ function buildGuideFromMarkdown(md, opts = {}) {
         continue;
       }
       if (isStage) {
-        const base = { ...sec, heading: T[sec.id] || sec.heading,
+        // THE TAB SAYS WHAT THE SOURCE CALLED THE STAGE. The template's own name for the
+        // assessment role is «التقويم والختام» while this lesson calls it «التقويم» — so the
+        // tab printed 124px of text where its neighbours printed 72px, and the row read as
+        // an inconsistent heading. The source's own word is both shorter and more faithful.
+        const own = String(sec.sourceName || '').trim();
+        const base = { ...sec, heading: own || T[sec.id] || sec.heading,
           activities: [asActivity(sec)], checks: sec.check ? [sec.check] : [] };
         delete base.body; delete base.codeFigure; delete base.check;
         merged.push(base);
@@ -1475,6 +1519,32 @@ function buildGuideFromMarkdown(md, opts = {}) {
     }
     sections.length = 0;
     sections.push(...merged);
+  }
+  // ENFORCED AFTER THE MERGE, whatever chose the card earlier: a stage that draws its own
+  // activities does not also carry a photograph. It was putting a 228px picture beside a
+  // 25px instruction line in a card that already held seven drawn exercises — 200px of dead
+  // space on one side, a 723px card, and a page break that left the page before it 58%
+  // full. If no stage is free, the lesson simply has no photograph: its own drawn
+  // activities are the visuals.
+  for (const sec of sections) {
+    if (!sec.image) continue;
+    const draws = (sec.activities || []).some((a) => a.codeFigure) || sec.codeFigure;
+    if (!draws) continue;
+    // …AND IF ITS ACTIVITIES ARE A GRID, THE PICTURE BECOMES ONE OF THE CELLS. Dropping the
+    // artwork entirely was too blunt — a lesson whose every stage draws its own exercises
+    // ended up with no illustration at all. An exercise grid's last row is usually not full
+    // (seven exercises, four to a row, leaves one empty slot), and a picture in that slot
+    // costs no extra height, sits inside the section it belongs to, and fills the gap that
+    // would otherwise be blank.
+    const gridded = (sec.activities || []).filter((a) => a.codeFigure).length >= 3;
+    const free = sections.find((x) => x.type === 'stage' && x !== sec && !x.codeFigure
+      && !(x.activities || []).some((a) => a.codeFigure)
+      && ((x.activities || []).some((a) => a.body) || x.body));
+    const id = sec.image;
+    delete sec.image;
+    if (free) free.image = id;
+    else if (gridded) sec.artCell = id;   // into the grid's spare slot
+    else images.length = 0;               // nowhere to put it; drop the brief
   }
   return { meta, images, sections, sourceProfile: { id: profile.id, name: profile.name, mode: doc.mode } };
 }

@@ -168,8 +168,10 @@ const YE = {
   // reviewer noticed exactly that difference between two pastes of one lesson. The answer
   // is split out into its own card, which is also what the approved layout pairs with the
   // exit ticket.
+  // The brackets belong to the answer, not to the question. «…يطابقه. (الإجابة: …).» left
+  // an orphaned «(» at the end of بطاقة الخروج and a stray «).» on the الإجابات card.
   answerSplit: { from: 'exit-ticket', to: 'solutions',
-    re: /\s*(?:الإجابة|الحل)\s*[:：]\s*([\s\S]+)$/ },
+    re: /\s*[(（]?\s*(?:الإجابة|الحل)\s*[:：]\s*([\s\S]+?)\s*[)）]?\s*[.،]?\s*$/ },
   // SUB-ELEMENTS OF A STAGE, NOT CARDS OF THEIR OWN. «دعم» and «تحد» are the
   // differentiation notes for the activity above them. Rendered as full-width cards they
   // tripled the length of the LP and made every stage look like three identical boxes —
