@@ -26,14 +26,32 @@ const YE = {
   id: 'ye',
   name: 'Yemen — دليل الدرس اليومي',
   locale: 'ar',
+  // These patterns were built from the artifact lessons, whose headings are English 5E
+  // names with an Arabic parenthetical («#### Engage (الإحماء والتشويق) — 8-10 دقائق»).
+  // A lesson written with plain Arabic headings missed five of them, because Arabic
+  // inflects and the patterns were exact:
+  //   «الهدف» ≠ «الأهداف»            (singular against plural)
+  //   «الأخطاء الشائعة» ≠ «أخطاء شائعة»  (the definite article on both words)
+  //   «التقويم» ≠ «التقييم»            (a different word for assessment, and the one
+  //                                     this pack has always PRINTED on the card)
+  //   «المواد» and «بطاقة الخروج»       (no role existed for either)
+  // Measured: 5 of 13 headings recognised, and التقويم's whole 279-character block was
+  // being absorbed into التطبيق.
   roles: [
-    ['goal', /الأهداف|معايير النجاح|objectives?|goals?/i],
+    // NOT \b AFTER AN ARABIC LETTER. JavaScript's \b is defined on ASCII word
+    // characters, and Arabic letters are not among them, so /الهدف\b/ can never match:
+    // at the end of «الهدف» both sides of the position are non-word. Measured — it
+    // silently matched nothing at all. A negative lookahead for another Arabic letter
+    // is the boundary that works, and it still refuses «الهدفان».
+    ['goal', /الأهداف|الهدف(?![؀-ۿ])|معايير النجاح|objectives?|goals?/i],
     ['glossary', /المفردات|glossary|vocabulary/i],
-    ['errors', /أخطاء شائعة|خطأ شائع|سوء فهم|misconception|common error/i],
+    ['materials', /^\s*(?:ال)?مواد(?![؀-ۿ])|^\s*الوسائل|^\s*الأدوات|teaching aids|materials/i],
+    ['errors', /أخطاء\s+(?:ال)?شائعة|(?:ال)?أخطاء\s+(?:ال)?شائعة|خطأ شائع|سوء فهم|misconception|common error/i],
     ['stage-tamhid', /\bengage\b|الإحماء|التشويق|التمهيد|warm[- ]?up/i],
     ['stage-arad', /\bexplore\b|الاستكشاف|\bexplain\b|الشرح|العرض|presentation/i],
     ['stage-tatbiq', /\bpractice\b|التطبيق|guided practice/i],
-    ['stage-taqwim', /\bassess\b|التقييم|الختام|closing|wrap[- ]?up/i],
+    ['stage-taqwim', /\bassess\b|التقييم|التقويم|الختام|closing|wrap[- ]?up/i],
+    ['exit-ticket', /بطاقة الخروج|تذكرة الخروج|exit ticket/i],
     ['solutions', /answer key|الإجابة|الإجابات|الحل|نموذج الإجابة/i],
     ['multigrade', /متعدد الصفوف|multigrade|تكييف|differentiat/i],
     ['homework', /الواجب|واجب منزلي|homework|ركن المعلم/i],
@@ -57,7 +75,12 @@ const YE = {
     glossary: 'مصطلحات',
     multigrade: 'تكييف متعدد الصفوف',
     homework: 'الواجب المنزلي · ركن المعلم',
+    materials: 'المواد والوسائل',
+    'exit-ticket': 'بطاقة الخروج',
   },
+  // the two roles with no hand-written treatment: a materials list is a row of chips,
+  // an exit ticket is a single question on a note card
+  types: { materials: 'chips', 'exit-ticket': 'note' },
   // the gradual-release pill the pack expects on a stage
   grr: {
     'stage-tamhid': 'أنا أفعل',
@@ -66,8 +89,50 @@ const YE = {
     'stage-taqwim': 'أنت تفعل',
   },
   stages: ['stage-tamhid', 'stage-arad', 'stage-tatbiq', 'stage-taqwim'],
-  order: ['lesson-line', 'goal', 'errors', 'errors-caption', 'stage-tamhid', 'stage-arad',
-    'stage-tatbiq', 'stage-taqwim', 'solutions', 'glossary', 'multigrade', 'homework'],
+  // A stage heading the source leaves empty still appears, as a slim card carrying its own
+  // title and pills. The four-stage rhythm is what a teacher reads by, and fabricating
+  // content to fill a gap is not an option.
+  emitEmptyStages: true,
+  leadIntoFirstPart: true,
+  oneCardPerStage: true,
+  tabbedBlocks: ['homework'],
+  badgeBlocks: { goal: 'target' },
+  // GEOMETRY VOCABULARY. A maths lesson names its own shapes; the renderer draws whatever
+  // the source asks for. Kept here so another region or language supplies its own words
+  // without a line of renderer code changing.
+  geoTerms: {
+    straight: /مستقيم/, curved: /منحن|غير\s*مستقيم/,
+    quad: /رباعي|أربعة\s*أضلاع|٤\s*أضلاع/, notQuad: /ثلاثة\s*أضلاع|غير\s*رباعي/,
+    congruent: /متطابق|يطابق|مطابق|متماثل/, notCongruent: /غير\s*متطابق|غير\s*متماثل/,
+    dots: /نقطتين|النقاط|نقاط/, grid: /الشبكة|شبكة/, colour: /لوّن|لون/,
+    cube: /مكعب/, cone: /مخروط/, ruler: /المسطرة|مسطرة/,
+    // A geometry figure needs an actual SHAPE to be about. Without this, «أصل بين كل
+    // كلمتين متماثلتين» — a WORD-matching exercise — matched «متماثل» and would have been
+    // drawn as congruent shapes.
+    shapeNoun: /شكل|أشكال|قطعة|قطع|خط|خطاً|مجسم|مربع/,
+  },
+  // «١. ضع إشارة (✓) على القطعة المستقيمة. (الإجابة: وضع الإشارة على الخط المستقيم فقط).»
+  // states the exercise and its model answer in one line. They are two different things to
+  // a teacher — the instruction is read out, the answer is not — so the answer comes out of
+  // the label and prints under the exercise. Not a character is dropped.
+  answerParenRe: /\s*[(（]\s*((?:الإجابة|الحل)\s*[:：][\s\S]*?)[)）]\s*[.،]?\s*$/,
+  answerLabel: 'الإجابة',
+  geoLabels: { yes: 'صواب', no: 'خطأ', model: 'النموذج', same: 'مطابق', diff: 'غير مطابق' },
+  notes: { after: 'stage-taqwim', label: 'ملاحظات المعلّم بعد الدرس', tab: 'ملاحظات', lines: 2 },
+  // The assessment activity must not be a second copy of the practice widget — the
+  // reviewer asked for it to read differently inside the same design family.
+  assessmentStage: 'stage-taqwim',
+  // Roles that render as a titled BLOCK component — their own header row inside their
+  // own border. They were the last sections still using the generic panel, whose header
+  // is pulled 32px into the card; on those five it drew the title ON the border and
+  // clipped «أبي، أمي، أحمد، إيمان» outside the card.
+  // '*' = every section that is not a stage, a misconception panel or the notes card gets
+  // the block component. Naming roles individually only covers the roles of the lesson you
+  // tested with; glossary, multigrade and the lesson line were missed that way.
+  blockComponents: ['*'],
+  order: ['lesson-line', 'goal', 'materials', 'errors', 'errors-caption', 'stage-tamhid',
+    'stage-arad', 'stage-tatbiq', 'stage-taqwim', 'exit-ticket', 'solutions', 'glossary',
+    'multigrade', 'homework'],
   // small labels the mapper writes around the source's own words
   goalLead: 'هدف اليوم:',
   labelWrong: 'خطأ',
@@ -86,7 +151,43 @@ const YE = {
   chipEllipsis: false,
   gradeRe: /الصف\s+\S+/,
   titleStrip: /^خطة الدرس:\s*/,
-  checkMarks: /(?=(?:\*{0,2})\s*(?:MODEL ANSWER|الحل الصحيح|الحل:|الإجابة الصحيحة|الإجابة:))/i,
+  checkMarks: /(?=(?:\*{0,2})\s*(?:MODEL ANSWER|الحل الصحيح|الحل:|الإجابة الصحيحة|الإجابة:|نقطة التحقق))/i,
+  // A label the mapper must NOT split a card at, because it belongs in the card's own
+  // تحقق sidebar — the signature of this design set. «نقطة التحقق: ٤ من كل ٥ تلاميذ…» is
+  // the criterion the teacher checks against, so it fills the amber strip beside the
+  // activity rather than becoming a separate card after it.
+  checkLabelRe: /^\s*نقطة التحقق\s*$/,
+  // The exact phrases that open a slot when they appear INLINE in a paragraph, written as
+  // the sources actually write them. Explicit, because inferring them from the short labels
+  // meant guessing about the definite article — «تحقق» vs «نقطة التحقق» — and a guess that
+  // fixed one paste broke three others.
+  inlineLabels: ['نقطة التحقق', 'دعم', 'تحد'],
+  // THE SAME LESSON MUST RENDER THE SAME WHETHER ITS ANSWER IS ON ITS OWN LINE OR INSIDE
+  // THE SENTENCE. «بطاقة الخروج: أي كلمة…؟ الإجابة: أبي، أمي…» carries both in one line, so
+  // the answer stayed inside the exit-ticket card and the الإجابات card disappeared — the
+  // reviewer noticed exactly that difference between two pastes of one lesson. The answer
+  // is split out into its own card, which is also what the approved layout pairs with the
+  // exit ticket.
+  answerSplit: { from: 'exit-ticket', to: 'solutions',
+    re: /\s*(?:الإجابة|الحل)\s*[:：]\s*([\s\S]+)$/ },
+  // SUB-ELEMENTS OF A STAGE, NOT CARDS OF THEIR OWN. «دعم» and «تحد» are the
+  // differentiation notes for the activity above them. Rendered as full-width cards they
+  // tripled the length of the LP and made every stage look like three identical boxes —
+  // the reviewer's first complaint about the render. They attach to the stage card they
+  // belong to and draw as a compact two-up callout row underneath it.
+  subElements: [
+    ['support', /^\s*دعم\s*$/, 'دعم'],
+    ['challenge', /^\s*تحد\s*$/, 'تحد'],
+  ],
+  // A numbered exercise «١) أصل بين الصورة والكلمة الدالة عليها» is the heading of a
+  // teaching ACTIVITY, so it opens its own card and gets its own visual. The bare-label
+  // splitter only fires on «label:» lines, so these ran together inside one card and the
+  // matching exercises ended up as one small merged widget.
+  // 70 characters was the أسرتي exercise's length. A geometry lesson writes «١. ضع إشارة
+  // (✓) على القطعة المستقيمة. (الإجابة: وضع الإشارة على الخط المستقيم فقط).» — 85
+  // characters — so not one of its seven exercises was recognised and all seven ran
+  // together as prose. The line still has to BE a whole line and start with a digit.
+  exerciseRe: /^[ \t]*([٠-٩0-9]{1,2}\s*[).\u061F]?\s*[^\n]{4,170})$/gm,
   // the lesson's own «Watch out» wording, for the drawn ✗/✓ board
   warnRe: /watch out|تنبيه|احذر/i,
   fixRe: /(?:التصحيح|الصواب|الصحيح)\s*[:،]?\s*([^.!؟\n]{6,60})/,
@@ -95,6 +196,11 @@ const YE = {
   errLongRe: /((?:بعض الطلاب|كثير من الطلاب)[^.!؟]{6,140})/,
   errLeadRe: /^(?:بعض|كثير من) الطلاب\s*/,
   confusionPairRe: /يخلطون\s+بين\s+("?[^"،.]{1,12}"?)\s*و\s*("?[^"،.]{1,12}"?)/,
+  // «الخلط بين كلمتي "أبي" و"أمي"» — the two words a pupil confuses, for the ✗/✓ board.
+  // The clause that says what the TEACHER does about the confusion. Arabic writes it
+  // after a semicolon («؛»); the panel gives it its own strip beneath the two halves.
+  correctionSplitRe: /\s*[؛;]\s*/,
+  confusedPairRe: /الخلط\s+بين\s+(?:كلمتي|كلمتين)?\s*("[^"]{1,14}"|[^\s"،.]{1,14})\s*و\s*("[^"]{1,14}"|[^\s"،.]{1,14})/,
   chrome: {
     when: (locale, region) => String(locale).startsWith('ar') && region === 'ye',
     title: 'دليل الدرس اليومي',

@@ -105,16 +105,19 @@ const THEME_OVERRIDE_CSS = `
 .section.sec-extended .panel{background:#eaf6f5;border-color:#a9cfcb !important}
 .section.sec-extended .d-note{background:#fff !important;border-inline-start-color:#1c7a72 !important}
 
-/* Reflection is written by hand on the printed page after the lesson, so the card IS
-   ruled space. The note wrapper carries an inline gradient and an inline start-border,
+/* Reflection is written by hand on the printed page AFTER the lesson, so the card IS the
+   space — deep enough to be usable (six ruled lines). It is also what makes a short last
+   page read as deliberate rather than as a page that ran out of content: a Kiswahili
+   lesson ended with Tafakari alone on page 4, and a 190px writing block is the honest way
+   to fill it — the teacher needs the room. The note wrapper carries an inline gradient and an inline start-border,
    both of which have to be overridden or an empty note draws a stray coloured bar — it
    did, on the first pass. */
 .section.sec-reflection .s-tab{background:#4a6480 !important}
 .section.sec-reflection .panel{background:#fff;border:1.5px dashed #b8c4d2 !important;
-  min-height:86px;padding:6px 14px;
+  min-height:190px;padding:6px 14px;
   background-image:repeating-linear-gradient(to bottom,transparent 0 29px,#e3e9f0 29px 30px)}
 .section.sec-reflection .d-note,.section.sec-reflection .d-text{
-  background:none !important;border:0 !important;padding:0;min-height:74px}
+  background:none !important;border:0 !important;padding:0;min-height:178px}
 
 /* ── the assessment rubric ───────────────────────────────────────────────────────── */
 /* The rubric is the part of a CBC plan that carries a decision, so it is a real table:
@@ -177,7 +180,13 @@ const THEME_OVERRIDE_CSS = `
 module.exports = {
   THEME_OVERRIDE_CSS,
   REGION_NAME: 'Kenya',
-  // The East African character cast is Kenyan imagery, so it is allowed here (the Yemen
-  // pack opts out because the cast does not depict a Yemeni classroom).
-  CHARACTER_CAST: true,
+  // NO DECORATIVE CAST. The cast is Kenyan imagery, so it was allowed here at first — but
+  // it only appears when a lesson has no artwork, which makes it inconsistent by
+  // construction: the same plan looks different depending on whether the image provider
+  // happened to answer. Measured on a Kiswahili render with the provider slow, it put a
+  // clip-art child in the figure column of the Key Inquiry Question, both Utangulizi
+  // cards and a Lesson Development card — padding, on a form a head of department signs.
+  // Yemen opted out for the same reason. Illustrations come from the lesson's own brief
+  // or the card is text-only.
+  CHARACTER_CAST: false,
 };

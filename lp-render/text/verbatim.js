@@ -43,7 +43,10 @@ function norm(s) {
     .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 0x06F0))
     .replace(/\*\*|__|[«»"'`]/g, '')
     .replace(/[‎‏‪-‮⁦-⁩]/g, '')
-    .replace(/[.,;:!?،؛؟…—–-]/g, ' ')
+    // '•▪●◦' join the markdown '-' already in this class: a list glyph is punctuation,
+    // and plain() strips it from the card while the source keeps it. Without them a
+    // bulleted matching exercise («• أبي ← صورة الأب») was reported as reworded text.
+    .replace(/[.,;:!?،؛؟…—–•▪●◦-]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
     .toLowerCase();

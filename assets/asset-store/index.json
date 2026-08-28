@@ -1825,5 +1825,107 @@
     "model": "gpt-image-2-text-to-image",
     "concept": "diagram",
     "prompt": "Flat vector educational illustration, clean textbook style. A simple notebook page showing a child writing a family member name with a pencil. Labelled in Arabic exactly as follows: «اسم», «قلم». No other text, no decoration."
+  },
+  "95295007e069dc00": {
+    "file": "95295007e069dc00.png",
+    "mime": "image/png",
+    "test": true
+  },
+  "f4da1a23bed19337": {
+    "file": "f4da1a23bed19337.png",
+    "mime": "image/png",
+    "test": true
+  },
+  "8d1285a267fb09e7": {
+    "file": "8d1285a267fb09e7.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Flat vector educational illustration, clean children's textbook style, soft colours. Children in a classroom touching and examining simple learning tools with a teacher nearby. The image contains ABSOLUTELY NO text, no letters, no numbers, no symbols, no equation signs, no boxes, frames, placeholders, blank cards, answer slots, tick marks or arrows on any surface; boards, pages, cards and walls are completely EMPTY surfaces with nothing drawn on them."
+  },
+  "9bce1512f5627f13": {
+    "file": "9bce1512f5627f13.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Flat vector educational illustration, clean children's textbook style, soft colours. Young Yemeni children in a classroom looking at a family picture book with simple family illustrations, teacher nearby. The image contains ABSOLUTELY NO text, no letters, no numbers, no symbols, no equation signs, no boxes, frames, placeholders, blank cards, answer slots, tick marks or arrows on any surface; boards, pages, cards and walls are completely EMPTY surfaces with nothing drawn on them."
+  },
+  "de742cea34f4e4ad": {
+    "rejected": true,
+    "reason": "culture_reject after 2 re-roll(s): Letters are clearly visible on the cards in the picture.",
+    "at": "2026-08-24T10:51:36.996Z"
+  },
+  "205629e4b92457ca": {
+    "file": "205629e4b92457ca.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Flat vector educational illustration, clean children's textbook style, soft colours. A primary-school classroom scene for a lesson about أسرتي (صفحة 32). The image contains ABSOLUTELY NO text, no letters, no numbers, no symbols, and no blank cards, frames or placeholders; boards, pages and walls are completely empty surfaces with nothing drawn on them."
+  },
+  "aae2e96bc8e5b5ff": {
+    "file": "aae2e96bc8e5b5ff.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Flat vector educational illustration, clean children's textbook style, soft colours, warm daylight. Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أسرتي (صفحة 32). Show faces, gestures and posture; fill the frame with the people and a few simple objects. Absolutely no writing of any kind anywhere in the picture: no letters, numerals, signs or labels. No empty boards, blank cards, picture frames or vacant panels."
+  },
+  "ebd11303f32be09c": {
+    "file": "ebd11303f32be09c.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Textless illustration of two young Tanzanian children greeting each other in a classroom setting, one child saying hello with a friendly gesture and the other responding, children interacting naturally, educational scene, no text, no letters, no symbols."
+  },
+  "510f6f72c41418c2": {
+    "file": "510f6f72c41418c2.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Flat vector educational illustration, clean children's textbook style, soft colours, warm daylight. Young primary-school children and their teacher together in a simple classroom, engaged in an activity about The Breathing System. Show faces, gestures and posture; fill the frame with the people and a few simple objects. Absolutely no writing of any kind anywhere in the picture: no letters, numerals, signs or labels. No empty boards, blank cards, picture frames or vacant panels."
+  },
+  "da972a46d6ba30e8": {
+    "file": "da972a46d6ba30e8.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Flat vector educational illustration, clean children's textbook style, soft colours, warm daylight. Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أسرتي. Show faces, gestures and posture; fill the frame with the people and a few simple objects. Absolutely no writing of any kind anywhere in the picture: no letters, numerals, signs or labels. No empty boards, blank cards, picture frames or vacant panels."
+  },
+  "cf3aa54294b93149": {
+    "file": "cf3aa54294b93149.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Flat vector educational illustration, clean children's textbook style, soft colours, warm daylight. Young primary-school children and their teacher together in a simple classroom, engaged in an activity about الهدف: أستطيع التعرف على كلمات أفراد الأسرة وقراءتها والمطابقة بينها.. Show faces, gestures and posture; fill the frame with the people and a few simple objects. Absolutely no writing of any kind anywhere in the picture: no letters, numerals, signs or labels. No empty boards, blank cards, picture frames or vacant panels."
+  },
+  "d80bc52876b1305e": {
+    "rejected": true,
+    "reason": "culture_reject after 1 re-roll(s): The picture contains written characters in the title at the top.",
+    "at": "2026-08-27T10:06:07.913Z"
+  },
+  "2a13ae19cb56a5ed": {
+    "rejected": true,
+    "reason": "culture_reject after 2 re-roll(s): A cross is clearly visible on top of the building in the picture.",
+    "at": "2026-08-27T10:30:55.080Z"
+  },
+  "9be1952b1e644511": {
+    "file": "9be1952b1e644511.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about . Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "c2470e4bb48882a9": {
+    "file": "c2470e4bb48882a9.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "happy schoolchildren in a classroom learning together, friendly"
+  },
+  "c8c33192a7a26b58": {
+    "file": "c8c33192a7a26b58.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع التعرف على كلمات أفراد الأسرة وقراءتها والمطابقة بينها. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
   }
 }

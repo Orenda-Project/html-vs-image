@@ -41,6 +41,24 @@ async function htmlToPixelPdf(html, opts = {}) {
       if (header) cuts.push(y(header, 'bottom'));
       document.querySelectorAll('.body > .section').forEach((sec) => {
         cuts.push(y(sec, 'bottom'));
+        // THE COMPONENT LAYER'S OWN BOUNDARIES. This list named only the old class names,
+        // so a stage card — which is entirely .yl-* — offered no inner boundary at all and
+        // was atomic. A geometry lesson with four stage cards then paginated at 62% fill
+        // per page: 657px used of 1059, then 525, then 811, because the next card never
+        // fitted in what was left. A stage may continue onto the next page.
+        sec.querySelectorAll('.yl-scard > .yl-act, .yl-sbody, .yl-srows, .yl-check,'
+          + ' .yl-ttext.yl-lead, .yl-mrow, .yl-mfix, .yl-bbody')
+          .forEach((el) => cuts.push(y(el, 'bottom')));
+        // A GRID ROW IS CUT AS A ROW, NEVER THROUGH ONE. Cells that share a row share a
+        // top edge; the row's boundary is the lowest of their bottoms.
+        sec.querySelectorAll('.yl-actgrid').forEach((grid) => {
+          const byRow = new Map();
+          grid.querySelectorAll(':scope > .yl-act').forEach((a) => {
+            const top = Math.round(a.getBoundingClientRect().top);
+            byRow.set(top, Math.max(byRow.get(top) || 0, y(a, 'bottom')));
+          });
+          byRow.forEach((b) => cuts.push(b));
+        });
         // A card that carries a figure (in-panel illustration or character) must never
         // be cut THROUGH the figure: inner boundaries are legal only BELOW the
         // figure's bottom edge. Cards without figures offer all inner boundaries.

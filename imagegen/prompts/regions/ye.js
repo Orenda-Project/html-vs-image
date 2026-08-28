@@ -30,9 +30,23 @@ module.exports = {
   id: 'ye',
   dress: 'Yemeni school clothing — girls in small white headscarves and modest uniforms, boys in simple light shirts',
   teacher: 'any adult woman wears a long loose dark abaya with a plain headscarf fully covering her hair; any adult man wears a plain ankle-length white thobe',
-  setting: 'a Yemeni classroom or town setting (traditional tower houses in mud brick and stone, a small school)',
+  setting: 'a Yemeni classroom or town setting (traditional Yemeni tower houses in mud brick and stone with plain flat façades and small square windows, a simple village school)',
   names: 'Yemeni names (Salma, Yusuf, Huda, Faisal)',
   palette: 'warm, bright, friendly colours',
-  avoid: 'no Western dress, no sleeveless or tight clothing, no uncovered adult women, no crosses or church architecture, no non-Yemeni landmarks or flags',
+  // DO NOT NAME WHAT MUST NOT BE DRAWN. This repo's own notes say it: "NEVER put banned
+  // words in negative form in prompts — quoted words leak into the generation." This line
+  // said "no crosses or church architecture", and a Grade 1 lesson's illustration was
+  // dropped after two re-rolls with the gate reporting "a cross symbol is clearly visible
+  // on the building in the background" — the words were in the prompt. The gate still
+  // forbids crosses (see check.forbid above); a CHECKER may name them, a PROMPT may not.
+  // The building is described positively instead, in `setting`.
+  //
+  // Cache note, checked rather than assumed: the asset-store key is built from the
+  // LESSON'S brief plus the region id and this pack's `version` (see artCacheKey in
+  // lp-render/pipeline.js) — NOT from the composed prompt. So editing the wording here
+  // changes what new generations are asked for while approved artwork already in the store
+  // keeps being reused, which is what we want: those images passed the gate and the
+  // reviewer signed them off. `version` is deliberately NOT bumped.
+  avoid: 'no Western dress, no sleeveless or tight clothing, no uncovered adult women, no non-Yemeni landmarks or flags',
   note: 'culturally grounded in Yemen and respectful; classroom-appropriate for young children',
 };

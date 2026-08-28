@@ -250,10 +250,24 @@ function cfSvg(inner, w = 240, h = 200, cls = 'cf-svg') {
 // expression is written with its first operand on the right, so rtl is correct for
 // both prose and arithmetic; forcing ltr on digit-and-operator strings is what made
 // «١٦ ÷ ٤ = ٤» read backwards in figures. See lp-render/math/math.js.
-function cfText(x, y, s, size = 13, weight = 700, fill = CF.ink, anchor = 'middle') {
+// THE DOCUMENT'S OWN DIRECTION, not a fixed one. Removing the forced-LTR override that
+// mirrored Arabic arithmetic was right, but hard-coding 'rtl' in its place was only right
+// for Arabic: a Kiswahili label «Hujambo?» drew as «?Hujambo», because the question mark
+// is a neutral character and takes the paragraph direction. Measured on a Kenyan Kiswahili
+// render — the lesson's whole point is the greeting, and every greeting card showed its
+// question mark on the wrong side.
+//
+// Set once per render from meta.locale (see renderDecorativeLesson). The default stays
+// 'rtl' so the Arabic maths-direction tests, which call cfText directly, keep testing what
+// they were written to test.
+let CF_DIR = 'rtl';
+const RTL_LOCALES = /^(ar|he|fa|ur|ps|sd|ku|yi|dv)\b/i;
+function cfDirFor(locale) { return RTL_LOCALES.test(String(locale || '')) ? 'rtl' : 'ltr'; }
+
+function cfText(x, y, s, size = 13, weight = 700, fill = CF.ink, anchor = 'middle', dir = CF_DIR) {
   const txt = String(s || '');
   return '<text x="' + x + '" y="' + y + '" text-anchor="' + anchor + '" font-size="' + size
-    + '" font-weight="' + weight + '" fill="' + fill + '" direction="rtl">' + esc(txt) + '</text>';
+    + '" font-weight="' + weight + '" fill="' + fill + '" direction="' + dir + '">' + esc(txt) + '</text>';
 }
 
 // N parts of one shape, K shaded (square grid or circle pie) — exact fractions.
@@ -419,8 +433,15 @@ function cfProcess({ layout = 'cycle', stages = [] }) {
 
 
 const CF_TINT = ['#fcd8d8', '#e7eef8', '#e9f2e5', '#fcf0d8', '#f1e7f5', '#dcf2f2'];
+// THE DOCUMENT'S OWN NUMERALS. A step badge was always drawn in Arabic-Indic digits, so
+// a Kiswahili lesson's matching exercise came out numbered «١ ٢ ٣» — measured on a Kenyan
+// Grade 1 render. Same root cause as the hard-coded text direction above: a choice that is
+// right for Arabic, made once, in a component every region shares. Follows CF_DIR, which
+// renderDecorativeLesson sets from meta.locale.
 const CF_AR_DIGITS = '٠١٢٣٤٥٦٧٨٩';
-const cfArNum = (n) => String(n).replace(/\d/g, (d) => CF_AR_DIGITS[+d]);
+const cfArNum = (n) => (CF_DIR === 'rtl'
+  ? String(n).replace(/\d/g, (d) => CF_AR_DIGITS[+d])
+  : String(n));
 
 // SVG text does not wrap, so break an Arabic label into at most two or three lines on
 // word boundaries. Arabic glyphs run ~0.52em, so chars-per-line is derived from the
@@ -634,16 +655,225 @@ function cfLabeledParts({ object = 'plant', parts = [] }) {
   return cfSvg(out, W, H);
 }
 
-const CF_WIDE = new Set(['process', 'labeled-parts']);
-const CF_KINDS = new Set(['fraction-grid', 'count-set', 'compass', 'compare', 'expression', 'process', 'steps', 'labeled-parts', 'error-board']);
+// ── MATCHING ACTIVITY ────────────────────────────────────────────────────────────────
+// «أصل بين الصورة والكلمة الدالة عليها» — join each word to the thing it names. This is
+// the CENTRAL teaching activity of a matching lesson, and rendering it as a row of small
+// chips (which is what a generic `steps` figure did) made it read as a widget embedded in
+// a paragraph. It is a full-width two-column activity: the prompt on the reading side, its
+// match on the other, joined by a dotted connector, at a size a class can see.
+//
+// RTL: the SOURCE's left-hand term is the prompt, so in an Arabic document it is drawn on
+// the RIGHT — the reading start — and its match on the left.
+//
+// A person figure is drawn instead of a word when the match NAMES a picture («صورة الأب»,
+// «صورة البنت»): code-drawn, wordless, modestly dressed. The exact label always comes from
+// the source and is always drawn as text by code, never generated.
+// NO \b AFTER AN ARABIC LETTER — the same trap as in the region profiles. JavaScript's \b
+// is defined on ASCII word characters, so /\bالأب\b/ matched nothing at all: «صورة الأب»
+// and «صورة الأم» drew no figure while «صورة الولد» and «صورة البنت» did, because those two
+// patterns happened to have no \b in them. Ordered longest-first so «الأب» is tested before
+// «أب» can match inside another word.
+const CF_PEOPLE = [
+  [/الولد|الابن|boy/i, 'boy'],
+  [/البنت|الابنة|girl/i, 'girl'],
+  [/الأب(?![\u0600-\u06FF])|father/i, 'man'],
+  [/الأم(?![\u0600-\u06FF])|mother/i, 'woman'],
+];
+function cfPerson(kind, cx, cy, sc) {
+  const S = (n) => n * sc;
+  const skin = '#e8b98f', dark = '#2f3e63';
+  const head = '<circle cx="' + cx + '" cy="' + (cy - S(15)) + '" r="' + S(7.5) + '" fill="' + skin + '"/>';
+  if (kind === 'woman' || kind === 'girl') {
+    // headscarf and a long modest dress — the region pack's own dress code, drawn
+    const robe = kind === 'woman' ? '#3b4a72' : '#7f9cc4';
+    return head
+      + '<path d="M' + (cx - S(9)) + ' ' + (cy - S(15)) + ' a' + S(9) + ' ' + S(9) + ' 0 0 1 ' + S(18) + ' 0'
+      + ' l0 ' + S(9) + ' l-' + S(4) + ' 0 l0 -' + S(5) + ' l-' + S(10) + ' 0 l0 ' + S(5) + ' z" fill="' + robe + '"/>'
+      + '<path d="M' + (cx - S(10)) + ' ' + (cy + S(22)) + ' l' + S(3) + ' -' + S(24) + ' l' + S(14) + ' 0 l' + S(3) + ' ' + S(24) + ' z" fill="' + robe + '"/>';
+  }
+  const thobe = kind === 'man' ? '#f2f4f8' : '#cfe0ef';
+  return head
+    + '<path d="M' + (cx - S(9)) + ' ' + (cy + S(22)) + ' l' + S(2) + ' -' + S(24) + ' l' + S(14) + ' 0 l' + S(2) + ' ' + S(24) + ' z" fill="' + thobe + '" stroke="' + dark + '" stroke-width="' + S(0.9) + '"/>'
+    + (kind === 'man'
+      ? '<path d="M' + (cx - S(8)) + ' ' + (cy - S(21)) + ' q' + S(8) + ' -' + S(6) + ' ' + S(16) + ' 0" stroke="' + dark + '" stroke-width="' + S(1.6) + '" fill="none"/>'
+      : '');
+}
+
+function cfMatchPairs({ items = [], wide = false } = {}) {
+  const P = items.slice(0, 6)
+    .map((it) => ({ a: String(it.label || '').trim(), b: String(it.caption || '').trim() }))
+    .filter((x) => x.a && x.b);
+  if (P.length < 2) return '';
+
+  // TWO PAIRS PER ROW when the activity is wide and has four or more of them. One pair per
+  // row made a five-pair exercise ~200px tall before scaling; three of those, each inside
+  // an atomic card, left page 2 of the LP a third empty because no card could fit in what
+  // was left. Two-up halves the height, makes each card WIDER, and gives the compact
+  // block-of-cards composition the approved pilot uses for its number grid.
+  const twoUp = wide && P.length >= 4;
+  const cols = twoUp ? 2 : 1;
+  const rows = Math.ceil(P.length / cols);
+  const pad = 8;
+  const gapX = twoUp ? 22 : 0;
+  const W = wide ? 660 : 250;
+  const rowH = wide ? 46 : 38;
+  const H = pad * 2 + rows * rowH;
+  const colW = (W - pad * 2 - gapX * (cols - 1)) / cols;
+  const cw = Math.min(twoUp ? 132 : 250, colW * 0.42);   // one word card
+  const fs = wide ? (twoUp ? 17 : 21) : 13;
+  let out = '';
+  P.forEach((pr, i) => {
+    const c = twoUp ? i % cols : 0;
+    const r = twoUp ? Math.floor(i / cols) : i;
+    // RTL: the first column of pairs sits on the RIGHT of the figure
+    const colX = pad + (cols - 1 - c) * (colW + gapX);
+    const y = pad + r * rowH;
+    const cy = y + rowH / 2;
+    const rightX = colX + colW - cw;     // the prompt, at the reading start of its column
+    const leftX = colX;
+    const person = CF_PEOPLE.find(([re]) => re.test(pr.b));
+    out += '<line x1="' + (rightX - 3) + '" y1="' + cy + '" x2="' + (leftX + cw + 3) + '" y2="' + cy
+      + '" stroke="' + CF.stroke + '" stroke-width="1.5" stroke-dasharray="3 3" opacity=".5"/>'
+      + '<circle cx="' + (rightX - 3) + '" cy="' + cy + '" r="2.4" fill="' + CF.stroke + '"/>'
+      + '<circle cx="' + (leftX + cw + 3) + '" cy="' + cy + '" r="2.4" fill="' + CF.stroke + '"/>';
+    out += '<rect x="' + rightX + '" y="' + (y + 4) + '" width="' + cw + '" height="' + (rowH - 9)
+      + '" rx="8" fill="#fff" stroke="' + CF.stroke + '" stroke-width="1.7"/>'
+      + cfText(rightX + cw / 2, cy + fs * 0.36, pr.a, fs, 800, CF.ink);
+    out += '<rect x="' + leftX + '" y="' + (y + 4) + '" width="' + cw + '" height="' + (rowH - 9)
+      + '" rx="8" fill="#f7f9fc" stroke="' + CF.accent + '" stroke-width="1.5"/>';
+    if (person) {
+      const sc = (rowH - 14) / 46;
+      out += cfPerson(person[1], leftX + 16, cy + 5, sc)
+        + cfText(leftX + cw / 2 + 11, cy + fs * 0.36, pr.b, fs - 2, 700, CF.ink);
+    } else {
+      out += cfText(leftX + cw / 2, cy + fs * 0.36, pr.b, fs - 1, 700, CF.ink);
+    }
+  });
+  return cfSvg(out, W, H);
+}
+
+const CF_WIDE = new Set(['process', 'labeled-parts', 'match-pairs']);
+// ── GEOMETRY FIGURES ────────────────────────────────────────────────────────────────
+// Drawn from a spec, never from a lesson: the shapes, how many, and which one is correct
+// all come from the spec the converter built out of the source's own words. A geometry
+// exercise printed as a sentence is unusable to a six-year-old; drawn, it is the exercise.
+const GEO_INK = '#2f3e63';
+const GEO_OK = '#2f7d4a';
+const GEO_NO = '#c0392b';
+
+// one drawn shape, on its own 100x74 canvas
+function geoShape(kind) {
+  const S = (inner) => '<svg viewBox="0 0 100 74" class="geo-s" aria-hidden="true">' + inner + '</svg>';
+  const st = `fill="none" stroke="${GEO_INK}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"`;
+  switch (kind) {
+    case 'line':   return S(`<path d="M12 37 H88" ${st}/><circle cx="12" cy="37" r="3.5" fill="${GEO_INK}"/><circle cx="88" cy="37" r="3.5" fill="${GEO_INK}"/>`);
+    case 'curve':  return S(`<path d="M12 52 Q50 6 88 52" ${st}/><circle cx="12" cy="52" r="3.5" fill="${GEO_INK}"/><circle cx="88" cy="52" r="3.5" fill="${GEO_INK}"/>`);
+    case 'quad-sm': return S(`<rect x="34" y="24" width="32" height="26" rx="2" ${st} fill="#f2f4f8"/>`);
+    case 'quad':   return S(`<rect x="20" y="14" width="60" height="46" rx="2" ${st} fill="#e7eef8"/>`);
+    case 'quad2':  return S(`<path d="M22 58 L34 16 L82 20 L74 60 Z" ${st} fill="#e7eef8"/>`);
+    case 'tri':    return S(`<path d="M50 14 L84 60 L16 60 Z" ${st} fill="#fdeaea"/>`);
+    case 'cube':   return S(`<path d="M26 26 H68 V62 H26 Z" ${st} fill="#e7eef8"/><path d="M26 26 L40 14 H82 L68 26" ${st} fill="#d6e2f2"/><path d="M68 26 L82 14 V50 L68 62" ${st} fill="#c9d9ee"/>`);
+    case 'cone':   return S(`<path d="M50 12 L76 58 H24 Z" ${st} fill="#fdf1e0"/><ellipse cx="50" cy="58" rx="26" ry="7" ${st} fill="#f5e2c4"/>`);
+    default:       return S('');
+  }
+}
+
+// «ضع إشارة (✓) على …» — candidates in a row, each with its own answer box
+function cfGeoPick(spec) {
+  const items = (spec.items || []).map((it) => {
+    const mark = it.ok
+      ? `<span class="geo-box geo-yes">✓</span>`
+      : `<span class="geo-box geo-no">✗</span>`;
+    return `<div class="geo-cell">${geoShape(it.shape)}${mark}</div>`;
+  }).join('');
+  return `<div class="geo-fig geo-pick">${items}</div>`;
+}
+
+// «ارسم قطعاً مستقيمة بين كل نقطتين» — pairs of points, the ruler line shown faintly
+function cfGeoDots(spec) {
+  const n = Math.max(2, Math.min(4, Number(spec.pairs) || 3));
+  const rows = [];
+  for (let i = 0; i < n; i++) {
+    const y = 22 + i * 30;
+    rows.push(`<circle cx="18" cy="${y}" r="4.5" fill="${GEO_INK}"/>`
+      + `<circle cx="${170 - i * 16}" cy="${y}" r="4.5" fill="${GEO_INK}"/>`
+      + `<path d="M18 ${y} H${170 - i * 16}" stroke="${GEO_OK}" stroke-width="2.4"`
+      + ` stroke-dasharray="6 6" opacity=".55"/>`);
+  }
+  const h = 22 + n * 30;
+  return `<div class="geo-fig"><svg viewBox="0 0 188 ${h}" class="geo-w" aria-hidden="true">`
+    + rows.join('') + '</svg></div>';
+}
+
+// «ارسم على الشبكة شكلاً يطابق» — the model on squared paper, empty squares beside it
+function cfGeoGrid(spec) {
+  const cols = Math.max(4, Math.min(8, Number(spec.cols) || 6));
+  const rows = Math.max(3, Math.min(7, Number(spec.rows) || 5));
+  const u = 15;
+  const grid = (filled) => {
+    let g = '';
+    for (let x = 0; x <= cols; x++) g += `<path d="M${x * u} 0 V${rows * u}" stroke="#c9d4e6" stroke-width="1"/>`;
+    for (let y = 0; y <= rows; y++) g += `<path d="M0 ${y * u} H${cols * u}" stroke="#c9d4e6" stroke-width="1"/>`;
+    if (filled) {
+      g += `<path d="M${u} ${u} H${u * 4} V${u * 2} H${u * 2} V${u * 4} H${u} Z"`
+        + ` fill="#cfe0f2" stroke="${GEO_INK}" stroke-width="2.6" stroke-linejoin="round"/>`;
+    }
+    return `<svg viewBox="0 0 ${cols * u} ${rows * u}" class="geo-g" aria-hidden="true">${g}</svg>`;
+  };
+  return `<div class="geo-fig geo-two">${grid(true)}${grid(false)}</div>`;
+}
+
+// «الشكل المطابق» — a model, then candidates, one of them congruent
+function cfGeoMatch(spec) {
+  const L = spec.labels || {};
+  const fill = spec.colour ? '#f6c445' : '#e7eef8';
+  const box = (w, h, f, cls) => `<svg viewBox="0 0 100 74" class="geo-s ${cls || ''}" aria-hidden="true">`
+    + `<rect x="${50 - w / 2}" y="${37 - h / 2}" width="${w}" height="${h}" rx="2" fill="${f}"`
+    + ` stroke="${GEO_INK}" stroke-width="3"/></svg>`;
+  const cap = (t, cls) => (t ? `<span class="geo-cap ${cls || ''}">${esc(t)}</span>` : '');
+  return '<div class="geo-fig geo-match">'
+    + `<div class="geo-cell geo-model">${box(52, 40, '#dfe9f5')}${cap(L.model, 'geo-mcap')}</div>`
+    + '<div class="geo-vs">=</div>'
+    + `<div class="geo-cell">${box(52, 40, fill)}${cap(L.same, 'geo-ok')}</div>`
+    + `<div class="geo-cell">${box(34, 26, '#f2f4f8')}${cap(L.diff, 'geo-bad')}</div>`
+    + '</div>';
+}
+
+// the demonstration board: every contrast the stage names, with ✓ and ✗
+function cfGeoBoard(spec) {
+  // The ✗ half of a congruence row must be VISIBLY different, or the row teaches the
+  // opposite of what it says: two identical squares under «صواب» and «خطأ» is a picture of
+  // two congruent shapes labelled as not congruent.
+  const pair = { line: ['line', 'curve'], quad: ['quad', 'tri'], congruent: ['quad', 'quad-sm'] };
+  const rows = (spec.rows || []).map((r) => {
+    const [a, b] = pair[r.pair] || ['quad', 'tri'];
+    const small = r.pair === 'congruent';
+    return '<div class="geo-brow">'
+      + `<div class="geo-cell">${geoShape(a)}<span class="geo-box geo-yes">✓</span>`
+      + (spec.yes ? `<span class="geo-cap geo-ok">${esc(spec.yes)}</span>` : '') + '</div>'
+      + `<div class="geo-cell${small ? ' geo-small' : ''}">${geoShape(b)}`
+      + `<span class="geo-box geo-no">✗</span>`
+      + (spec.no ? `<span class="geo-cap geo-bad">${esc(spec.no)}</span>` : '') + '</div>'
+      + '</div>';
+  }).join('');
+  return `<div class="geo-fig geo-board">${rows}</div>`;
+}
+
+const CF_KINDS = new Set(['geo-pick', 'geo-dots', 'geo-grid', 'geo-match', 'geo-board', 'fraction-grid', 'count-set', 'compass', 'compare', 'expression', 'process', 'steps', 'labeled-parts', 'error-board', 'match-pairs']);
 function cfMini(spec) {
   if (!spec) return '';
   switch (spec.kind) {
+    case 'geo-pick': return cfGeoPick(spec);
+    case 'geo-dots': return cfGeoDots(spec);
+    case 'geo-grid': return cfGeoGrid(spec);
+    case 'geo-match': return cfGeoMatch(spec);
+    case 'geo-board': return cfGeoBoard(spec);
     case 'fraction-grid': return cfFractionGrid(spec);
     case 'count-set': return cfCountSet(spec);
     case 'compass': return cfCompass(spec);
     case 'compare': return cfCompare(spec);
     case 'process': return cfProcess(spec);
+    case 'match-pairs': return cfMatchPairs({ ...spec, wide: true });
     case 'steps': return cfSteps(spec);
     case 'labeled-parts': return cfLabeledParts(spec);
     case 'expression': return cfExpression(spec);
@@ -684,8 +914,343 @@ function fractionGridSvg({ shape, parts, shaded }) {
   return `<svg class="cf-svg" viewBox="0 0 ${W} ${H}">${rects}</svg>`;
 }
 
+// ══ APPROVED-DESIGN COMPONENTS ═══════════════════════════════════════════════════════
+// Explicit components with known slots, laid out by CSS Grid. The renderer used to hand a
+// section to a generic panel and let each figure decide its own size inside it: an SVG with
+// a fixed viewBox in a flexible card is exactly how a small widget ends up centred in a
+// large empty box, and how a stage stopped reading as one designed unit.
+//
+// So Arabic text is HTML and geometry is SVG or CSS. HTML text reflows, which means a
+// component FILLS the slot it is given instead of preserving an aspect ratio — that is the
+// structural fix for the empty space, not a padding change. It also gives the Arabic proper
+// font and RTL handling, which text drawn inside an SVG never had.
+//
+// Component names match the design vocabulary: yl-stage (StageCard), yl-stage-head
+// (StageHeader), yl-dur (DurationPill), yl-mode (TeachingModePill), yl-text, yl-visual
+// (IllustrationPanel), yl-check (CheckpointStrip), yl-support / yl-challenge
+// (SupportStrip / ChallengeStrip), yl-match (MatchingActivity), yl-wordmatch
+// (WordMatchingActivity), yl-assess (AssessmentActivity), yl-misc (MisconceptionPanel).
+
+// Wordless person figures, drawn in code — never generated, never labelled by the model.
+const YL_PEOPLE = {
+  man: '<svg viewBox="0 0 40 44" class="yl-fig"><circle cx="20" cy="11" r="7.5" fill="#e8b98f"/>'
+    + '<path d="M12 10.5q8-6 16 0" fill="none" stroke="#2f3e63" stroke-width="2"/>'
+    + '<path d="M11 43l2-22h14l2 22z" fill="#f2f4f8" stroke="#2f3e63" stroke-width="1.4"/></svg>',
+  woman: '<svg viewBox="0 0 40 44" class="yl-fig"><circle cx="20" cy="11" r="7.5" fill="#e8b98f"/>'
+    + '<path d="M11 11a9 9 0 0118 0v9h-4v-5H15v5h-4z" fill="#3b4a72"/>'
+    + '<path d="M10 43l3-24h14l3 24z" fill="#3b4a72"/></svg>',
+  boy: '<svg viewBox="0 0 40 44" class="yl-fig"><circle cx="20" cy="11" r="7.5" fill="#e8b98f"/>'
+    + '<path d="M12.5 6.5q7.5-5 15 0" fill="#3a2b1c"/>'
+    + '<path d="M12 43l2-22h12l2 22z" fill="#cfe0ef" stroke="#2f3e63" stroke-width="1.3"/></svg>',
+  girl: '<svg viewBox="0 0 40 44" class="yl-fig"><circle cx="20" cy="11" r="7.5" fill="#e8b98f"/>'
+    + '<path d="M11 11a9 9 0 0118 0v8h-3.5v-4.5H14.5V19H11z" fill="#7f9cc4"/>'
+    + '<path d="M11 43l3-24h12l3 24z" fill="#7f9cc4"/></svg>',
+};
+const YL_PERSON_FOR = [
+  [/الولد|الابن|boy/i, 'boy'],
+  [/البنت|الابنة|girl/i, 'girl'],
+  [/الأب(?![\u0600-\u06FF])|father/i, 'man'],
+  [/الأم(?![\u0600-\u06FF])|mother/i, 'woman'],
+];
+const ylPerson = (t) => {
+  const hit = YL_PERSON_FOR.find(([re]) => re.test(String(t)));
+  return hit ? YL_PEOPLE[hit[1]] : '';
+};
+
+// A dotted connector with a dot at each end — SVG geometry, stretched by the grid.
+const YL_LINK = '<svg class="yl-link" viewBox="0 0 100 10" preserveAspectRatio="none">'
+  + '<line x1="4" y1="5" x2="96" y2="5" stroke="#2f3e63" stroke-width="1.4" stroke-dasharray="4 4" opacity=".55"/>'
+  + '</svg><span class="yl-dot yl-dot-a"></span><span class="yl-dot yl-dot-b"></span>';
+
+// MatchingActivity — «أصل بين الصورة والكلمة الدالة عليها». Word card, connector, then the
+// thing it names: a code-drawn figure plus its exact label from the source.
+function ylMatching(items) {
+  const rows = (items || []).map((it) => {
+    const word = esc(cleanHeading(it.label || ''));
+    const target = String(it.caption || '').trim();
+    const fig = ylPerson(target);
+    return '<div class="yl-row">'
+      + '<div class="yl-card yl-word">' + word + '</div>'
+      + '<div class="yl-conn">' + YL_LINK + '</div>'
+      + '<div class="yl-card yl-target">' + (fig ? '<span class="yl-figwrap">' + fig + '</span>' : '')
+      + '<span class="yl-tlabel">' + esc(cleanHeading(target)) + '</span></div>'
+      + '</div>';
+  }).join('');
+  return '<div class="yl-match">' + rows + '</div>';
+}
+
+// WordMatchingActivity — «أصل بين كل كلمتين متماثلتين». Two balanced columns of word cards.
+function ylWordMatch(items) {
+  const rows = (items || []).map((it) =>
+    '<div class="yl-row">'
+    + '<div class="yl-card yl-word">' + esc(cleanHeading(it.label || '')) + '</div>'
+    + '<div class="yl-conn">' + YL_LINK + '</div>'
+    + '<div class="yl-card yl-word yl-word-b">' + esc(cleanHeading(it.caption || '')) + '</div>'
+    + '</div>').join('');
+  return '<div class="yl-match yl-wordmatch">' + rows + '</div>';
+}
+
+// AssessmentActivity — «ألاحظ الكلمة التي في الشكل، ثم أضع خطاً تحت الكلمة المماثلة لها في
+// السطر». Deliberately a DIFFERENT shape from the practice activity: the word in a shape on
+// the reading side, then the row it is looked for in, with the match underlined.
+function ylAssessment(items) {
+  const rows = (items || []).map((it) =>
+    '<div class="yl-arow">'
+    + '<div class="yl-shape">' + esc(cleanHeading(it.label || '')) + '</div>'
+    + '<div class="yl-optrow"><span class="yl-opt yl-opt-pick">'
+    + esc(cleanHeading(it.caption || '')) + '</span></div>'
+    + '</div>').join('');
+  return '<div class="yl-assess">' + rows + '</div>';
+}
+
+const TARGET_SVG = '<svg class="yl-tg" viewBox="0 0 64 64" aria-hidden="true">'
+  + '<circle cx="30" cy="34" r="23" fill="none" stroke="currentColor" stroke-width="5"/>'
+  + '<circle cx="30" cy="34" r="11" fill="none" stroke="currentColor" stroke-width="5"/>'
+  + '<circle cx="30" cy="34" r="3.5" fill="currentColor"/>'
+  + '<path d="M30 34 L55 11" stroke="#ffd98a" stroke-width="5" stroke-linecap="round"/>'
+  + '<path d="M55 11 l-2 10 M55 11 l-10 2" stroke="#ffd98a" stroke-width="4.4"'
+  + ' stroke-linecap="round"/></svg>';
+
+const BUBBLE_SVG = '<svg class="yl-bubble" viewBox="0 0 24 24" aria-hidden="true">'
+  + '<path d="M4 5.5h16v10.5H12.5L8 19.5V16H4z" fill="none" stroke="currentColor"'
+  + ' stroke-width="1.9" stroke-linejoin="round"/>'
+  + '<path d="M8 9.5h8M8 12.5h5" stroke="currentColor" stroke-width="1.7"'
+  + ' stroke-linecap="round"/></svg>';
+
+const CLOCK_SVG = '<svg class="yl-clock" viewBox="0 0 24 24" aria-hidden="true">'
+  + '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>'
+  + '<path d="M12 7v5.5l3.5 2" fill="none" stroke="currentColor" stroke-width="2"'
+  + ' stroke-linecap="round"/></svg>';
+
+// MisconceptionPanel, composed the way the approved pages compose it: ONE component, not
+// three columns of unrelated text. The ✕ خطأ half at the RTL start states the confusion,
+// the ✓ صواب half beside it shows the two words with the letter that separates them marked,
+// and the teacher's correction runs as one quiet strip beneath both — which is where the
+// approved design puts the supporting line. Previously the explanation sat as a third
+// column wedged next to the boxes.
+//
+// Every character comes from the source: the pair is the pair the lesson names, and the
+// marked letter is found by comparing the two words, not chosen.
+function ylLetterPair(a, b) {
+  const A = [...String(a)]; const B = [...String(b)];
+  let at = -1;
+  if (A.length === B.length) {
+    const diff = A.reduce((acc, ch, i) => (ch === B[i] ? acc : acc.concat(i)), []);
+    if (diff.length === 1) at = diff[0];
+  }
+  // NEVER PUT MARKUP INSIDE AN ARABIC WORD. Wrapping the single differing letter in a
+  // <b> was the obvious way to mark it and it is wrong: shaping does not cross element
+  // boundaries, so «أبي» would lose the ب–ي join and print in disjointed letter forms.
+  // Nothing in the verbatim check would notice — the characters are all still there.
+  // The letters are shown as their own chips beneath the two words instead, which is how
+  // a letter contrast is taught anyway, and a letter standing alone is correctly isolated.
+  const word = (t) => '<span class="yl-pword">' + esc(t) + '</span>';
+  const chips = at >= 0
+    ? '<div class="yl-dchips"><span class="yl-dchip">' + esc(A[at]) + '</span>'
+      + '<span class="yl-dvs">/</span><span class="yl-dchip">' + esc(B[at]) + '</span></div>'
+    : '';
+  return '<div class="yl-pair">' + word(a) + '<span class="yl-vs"></span>' + word(b)
+    + '</div>' + chips;
+}
+
+function ylMisconception(section, engine) {
+  const cf = section.codeFigure || {};
+  const wrong = (cf.wrong && cf.wrong.text) || '';
+  const correct = (cf.correct && cf.correct.text) || '';
+  // THE LABELS ARE THE DESIGN'S, NOT THE FIGURE'S. They were read off the codeFigure, which
+  // only exists when the source names a confused PAIR — «الخلط بين كلمتي "أبي" و"أمي"». A
+  // lesson whose misconception is not a pair («خلط التلميذ بين الشكل الرباعي وأي شكل آخر»)
+  // built no figure, so the panel printed a ✓ with no «صواب» beside it and an empty green
+  // half. The labels come from the profile now, and they are always there.
+  const lw = cf.labelWrong || section.labelWrong || '';
+  const lc = cf.labelCorrect || section.labelCorrect || '';
+  const half = (cls, mark, lbl, inner) =>
+    '<div class="yl-half ' + cls + '">'
+    + '<div class="yl-mhead"><span class="yl-mark">' + mark + '</span>'
+    + '<span class="yl-mlbl">' + esc(cleanHeading(lbl)) + '</span></div>'
+    + (inner ? '<div class="yl-mbody">' + inner + '</div>' : '') + '</div>';
+  const said = section.body ? richText(section.body, { engine }) : '';
+  const pair = (wrong && correct) ? ylLetterPair(wrong, correct) : '';
+  // AND THE ✓ HALF MUST SAY SOMETHING. With a pair, it shows the two words and the letter
+  // that separates them, and the teacher's correction runs beneath both. With no pair, the
+  // correction IS the right-hand side — which is what the source put there.
+  const fixText = section.fix ? richText(section.fix, { engine }) : '';
+  const row = '<div class="yl-mrow">'
+    + half('yl-wrong', '✕', lw, said)
+    + half('yl-correct', '✓', lc, pair || fixText)
+    + '</div>';
+  const strip = (pair && fixText) ? '<div class="yl-mfix">' + fixText + '</div>' : '';
+  return '<div class="yl-misc">' + row + strip + '</div>';
+}
+
+// The visual slot of a stage: the model illustration, or a code activity, or nothing.
+function ylVisual(section, images, engine) {
+  const cf = section.codeFigure;
+  if (cf) {
+    if (cf.kind === 'match-pairs') {
+      const named = (cf.items || []).some((it) => /صورة|picture|image/i.test(String(it.caption || '')));
+      return named ? ylMatching(cf.items) : ylWordMatch(cf.items);
+    }
+    if (cf.kind === 'assessment') return ylAssessment(cf.items);
+    if (CF_KINDS.has(cf.kind)) return '<div class="yl-cf">' + cfMini(cf) + '</div>';
+  }
+  const im = section.image && images[section.image];
+  if (im && im.dataUri) {
+    return '<figure class="yl-illus"><img src="' + im.dataUri + '" alt="'
+      + esc(cleanHeading(im.label || '')) + '">'
+      + (im.label ? '<figcaption>' + esc(cleanHeading(im.label)) + '</figcaption>' : '')
+      + '</figure>';
+  }
+  return '';
+}
+
+// A titled BLOCK: header row, then its content, inside one border. The generic panel this
+// replaces relies on a header pulled 32px into it — fine while every card was a panel with
+// 33px of top padding, wrong the moment a rule changed that padding, and it put «الإجابات»
+// on the card's border with its answer text clipped outside the card.
+function ylBlock(section, accent, images, idCls, body) {
+  const title = cleanHeading(section.heading);
+  const ic = section.icon && hasIcon(section.icon) ? icon(section.icon, 19) : '';
+  const head = title
+    ? '<div class="yl-bhead"><span class="yl-ic">' + ic + '</span>'
+      + '<span class="yl-title">' + esc(title) + '</span></div>'
+    : '';
+  // TeacherCorner — a labelled tab down the card's inline end, as the approved page has it.
+  // REAL MARKUP, not a pseudo-element: two generations of ::before rules for this card were
+  // fighting each other (an old messenger icon with its own transform against a new tab),
+  // and the result was a 15px amber stub floating above the card with no label on it. A
+  // pseudo-element cannot be measured by the geometry test either.
+  const tab = section.tab
+    ? '<div class="yl-btab">' + BUBBLE_SVG
+      + '<span class="yl-btl">' + esc(cleanHeading(section.tab)) + '</span></div>'
+    : '';
+  // A BADGE IS REAL MARKUP, NOT A PSEUDO-ELEMENT. The objective band's dart was an
+  // absolutely-positioned ::before with a padding gutter reserved for it, and a later
+  // generic `.yl-block .yl-bbody{padding:…}` rule of equal specificity kept resetting that
+  // gutter — the icon drifted back onto the text every time the block padding was touched.
+  // As a flex child it cannot overlap anything, and the geometry test can measure it.
+  const badge = section.badge === 'target'
+    ? '<span class="yl-badge">' + TARGET_SVG + '</span>' : '';
+  return '<section class="section yl-block' + (tab ? ' yl-tabbed' : '') + idCls + '">'
+    + head + tab + '<div class="yl-bbody">' + badge + body + '</div></section>';
+}
+
+// StageCard — one designed teaching unit with fixed slots:
+//   head:   title · duration pill · teaching-mode pill
+//   body:   teaching text | visual            (explicit grid, 1fr / 1.3fr)
+//   check:  checkpoint strip, full width
+//   diff:   دعم | تحد, two equal columns, full width
+// TeacherNotes — a real section, not chrome hanging off another card.
+//
+// This was a ::after box with a ::before tab, both positioned against the ASSESSMENT
+// STAGE's box. That worked while the stage was one flat panel. Once the stage became an
+// outer tinted card with its own padding, the tab was being positioned against the wrong
+// rectangle and printed outside the notes box — and because a pseudo-element is not an
+// element, the geometry test could not see it. As its own component it cannot drift, and
+// it is measured like everything else.
+function ylNotes(section) {
+  const lines = Math.max(2, Math.min(6, Number(section.lines) || 2));
+  const rules = new Array(lines).fill('<i></i>').join('');
+  return '<section class="section yl-notes' + (section.id ? ' sec-' + section.id : '') + '">'
+    + '<div class="yl-nbody">'
+    + '<div class="yl-nlabel">' + esc(cleanHeading(section.label || '')) + '</div>'
+    + '<div class="yl-nrules">' + rules + '</div></div>'
+    + (section.tab ? '<div class="yl-ntab">' + BUBBLE_SVG
+      + '<span class="yl-ntl">' + esc(cleanHeading(section.tab)) + '</span></div>' : '')
+    + '</section>';
+}
+
+// StageCard — ONE stage, ONE card, with named slots, the way the approved pages compose it:
+//
+//   StageHeader        tab · duration pill ......................... mode pill   (above the card)
+//   ┌─ card ────────────────────────────────────────────────────────────────────┐
+//   │ TeachingTextColumn (lead)                                                 │
+//   │ ActivityLabel                                                             │
+//   │ TeachingTextColumn | TeachingVisualColumn      (or the visual full width)  │
+//   │ ActivityLabel                                                             │
+//   │ … one block per activity the stage contains …                             │
+//   │ SupportChallengeRow                                                       │
+//   │ CheckpointStrip                                                           │
+//   └───────────────────────────────────────────────────────────────────────────┘
+function ylStage(section, accent, images, idCls) {
+  const engine = section.engine;
+  const title = cleanHeading(section.heading);
+  const head = '<div class="yl-shead">'
+    + '<span class="yl-tab">' + esc(title) + '</span>'
+    + (section.time ? '<span class="yl-pill yl-dur">' + CLOCK_SVG
+      + esc(cleanHeading(section.time)) + '</span>' : '')
+    + (section.mode ? '<span class="yl-pill yl-mode"><i class="yl-dot"></i>'
+      + esc(cleanHeading(section.mode)) + '</span>' : '')
+    + '</div>';
+  const para = (t) => '<p>' + richText(t, { engine }) + '</p>';
+  const lead = section.lead ? '<div class="yl-ttext yl-lead">' + para(section.lead) + '</div>' : '';
+  // Each activity is its own block inside the same card. WIDE ACTIVITIES STACK, COMPACT
+  // VISUALS SIT BESIDE THE TEXT — the rule the approved pages follow. A five-row matching
+  // grid squeezed into half a card is unreadable; an illustration beside two lines of
+  // teacher text is exactly the composition of the approved intro card.
+  const acts = Array.isArray(section.activities) && section.activities.length
+    ? section.activities
+    : [{ label: '', body: section.body || '', codeFigure: section.codeFigure || null }];
+  const blocks = acts.map((a) => {
+    const visual = ylVisual({ ...a, image: a.image || section.image }, images, engine);
+    const text = a.body ? '<div class="yl-ttext">' + para(a.body) + '</div>' : '';
+    const label = a.label
+      ? '<div class="yl-alabel">' + esc(cleanHeading(a.label)) + '</div>' : '';
+    const answer = a.answer
+      ? '<div class="yl-answer">' + richText(a.answer, { engine }) + '</div>' : '';
+    const wide = !!(a.codeFigure
+      && (a.codeFigure.kind === 'match-pairs' || a.codeFigure.kind === 'assessment'));
+    const vis = visual ? '<div class="yl-tvis">' + visual + '</div>' : '';
+    const layout = !text || !visual ? ' yl-solo' : (wide ? ' yl-stacked' : ' yl-split');
+    const body = (text || vis)
+      ? '<div class="yl-sbody' + layout + '">' + text + vis + '</div>' : '';
+    return (label || body || answer)
+      ? '<div class="yl-act">' + label + body + answer + '</div>' : '';
+  });
+  // EXERCISES OF THE SAME KIND SHARE A ROW, as the approved card does with the two halves
+  // of its exercise. Stacked, two five-row matching grids made one card 500px tall; a
+  // geometry lesson with seven drawn exercises stacked ran to five pages. The grid is
+  // built from the activities that CARRY A FIGURE — an instruction line with no figure
+  // stays full width above them, where it belongs — and it widens to three columns once
+  // there are enough of them for two columns to waste the page.
+  const figIdx = acts.map((a, i) => (a.codeFigure ? i : -1)).filter((i) => i >= 0);
+  const gridFrom = figIdx.length > 1 && figIdx[figIdx.length - 1] === acts.length - 1
+    ? figIdx[0] : -1;
+  const cols = figIdx.length >= 6 ? 4 : (figIdx.length >= 5 ? 3 : 2);
+  const diff = (Array.isArray(section.callouts) && section.callouts.length)
+    ? '<div class="yl-srows">' + section.callouts.map((c, k) =>
+      '<div class="yl-srow ' + (k === 0 ? 'yl-support' : 'yl-challenge') + '">'
+      + '<span class="yl-cl">' + esc(cleanHeading(c.label || '')) + '</span>'
+      + '<span class="yl-cb">' + richText(c.body || '', { engine }) + '</span></div>').join('')
+      + '</div>' : '';
+  const checks = (Array.isArray(section.checks) && section.checks.length ? section.checks
+    : (section.check ? [section.check] : []))
+    .map((c) => '<div class="yl-check"><span class="yl-cmark">✓</span>'
+      + '<span class="yl-ctext">' + richText(c, { engine }) + '</span></div>').join('');
+  // A HEADING THE SOURCE LEFT EMPTY COLLAPSES to its label. «العرض — أنا أفعل (١٠ دقائق)»
+  // carries no text in this lesson: inventing content is not an option, and neither is a
+  // large blank card. The stage keeps its tab and its pills, and nothing else.
+  // `blocks` is an ARRAY now — and an empty array is truthy, so this test silently stopped
+  // firing and «العرض», the stage the source leaves empty, went back to rendering a card.
+  const anyBlock = blocks.some((x) => x);
+  if (!lead && !anyBlock && !checks && !diff) {
+    return '<section class="section yl-stage yl-empty' + idCls + '">' + head + '</section>';
+  }
+  const inner = gridFrom >= 0
+    ? blocks.slice(0, gridFrom).join('')
+      + '<div class="yl-actgrid yl-cols-' + cols + '">' + blocks.slice(gridFrom).join('') + '</div>'
+    : blocks.join('');
+  // The approved stage is TWO cards: an outer one carrying the stage's own tint, which
+  // holds the header row, the asides and the checkpoint strip; and a white inner card
+  // holding the teaching content. That outer block of colour is what makes a stage read
+  // as one designed unit instead of a header floating above a white box.
+  return '<section class="section yl-stage' + idCls + '">' + head
+    + '<div class="yl-scard">' + lead + inner + '</div>' + diff + checks + '</section>';
+}
+
 function renderDecorativeLesson(content, images = {}, cast = {}) {
   const meta = content.meta || {};
+  CF_DIR = cfDirFor(meta.locale);   // drawn labels read the way this document reads
   const chips = (meta.chips || []).map((c) => `<span><b>${esc(cleanHeading(c.label))}</b>${esc(cleanHeading(c.value))}</span>`).join('');
   const htext =
     `<h1>${esc(cleanHeading(meta.title))}</h1>` +
@@ -728,6 +1293,16 @@ function renderDecorativeLesson(content, images = {}, cast = {}) {
     // template roles order-independently. Additive: nothing targets these by default.
     const idCls = section.id ? ` sec-${String(section.id).toLowerCase().replace(/[^a-z0-9_-]/g, '')}` : '';
     let body = renderBody(section, accent, images);
+    // SUB-ELEMENTS OF THIS CARD, not cards of their own. «دعم» and «تحد» are the
+    // differentiation notes for the activity above them; as full-width cards they tripled
+    // the length of the LP and made every stage read as three identical boxes. A compact
+    // two-up row keeps them visually attached to the stage they belong to.
+    if (Array.isArray(section.callouts) && section.callouts.length) {
+      body += '<div class="d-callouts">' + section.callouts.map((c) =>
+        '<div class="d-callout"><span class="co-l">' + esc(cleanHeading(c.label || '')) + '</span>'
+        + '<span class="co-b">' + richText(c.body || '', { engine: section.engine }) + '</span></div>'
+      ).join('') + '</div>';
+    }
     // Inline image (R32, upstream): in MULTIGRADE guides an explanatory picture sits
     // under the point it explains. In all other lessons section.image renders as the
     // in-panel side figure (design packs like Yemen's — see below); the mg gate keeps
@@ -735,6 +1310,24 @@ function renderDecorativeLesson(content, images = {}, cast = {}) {
     if (mg && section.image && images[section.image] && images[section.image].dataUri) {
       referenced.add(section.image);
       body += inlineImage(section.image, images);
+    }
+    // AN EXPLICIT COMPONENT, NOT A GENERIC PANEL. A stage carries known slots and is laid
+    // out by grid; nothing inside it chooses its own position.
+    if (section.type === 'notes') return ylNotes(section);
+    if (section.type === 'stage') return ylStage(section, accent, images, idCls);
+    if (section.component === 'block' && body !== '') {
+      return ylBlock(section, accent, images, idCls, body);
+    }
+    if (section.type === 'misconception') {
+      // Its OWN header row, not the generic one: this pack pulls a section head 32px into
+      // the card it labels, which works against a .panel and only against a .panel. On a
+      // component with no panel the header landed on top of the ✕ box.
+      const t = cleanHeading(section.heading);
+      const mic = section.icon && hasIcon(section.icon) ? icon(section.icon, 19) : '';
+      return '<section class="section' + idCls + ' yl-miscsec">'
+        + '<div class="yl-stage-head"><span class="yl-ic">' + mic + '</span>'
+        + '<span class="yl-title">' + esc(t) + '</span><span></span><span></span></div>'
+        + ylMisconception(section, section.engine) + '</section>';
     }
     if (body === '') return '';
     // A heading that repeats the previous one (e.g. a phase split across structuring
@@ -840,4 +1433,4 @@ function renderDecorativeLesson(content, images = {}, cast = {}) {
 
 // cfText is exported for lp-render/test/math-direction.test.js: the direction of a
 // figure label is a rule worth asserting directly, not only through a full render.
-module.exports = { renderDecorativeLesson, cfText };
+module.exports = { renderDecorativeLesson, cfText, cfDirFor };

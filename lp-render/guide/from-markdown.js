@@ -28,9 +28,32 @@ const num = (profile, s) => (profile.digits === 'arabic' ? toArabicDigits(s) : S
 
 const asProfile = (p) => (typeof p === 'string' || !p ? profileFor(p) : p);
 
+// Truncate to whole words. Used wherever a shortened string becomes reader-visible.
+function cutWords(s, max) {
+  const t = String(s || '').trim();
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max);
+  const sp = cut.lastIndexOf(' ');
+  return (sp > max * 0.5 ? cut.slice(0, sp) : cut).replace(/[\s،,;:—–-]+$/, '');
+}
+
+// ARABIC DIACRITICS ARE NOT PART OF A NAME. A source may vocalise its own headings and
+// labels — «ركن المعلّم» with a shadda, «تحدٍّ» with tanwin and shadda, «أَصِلُ» fully
+// vocalised — and every pattern in every profile is written unvocalised. The consequences
+// are silent and severe: «ركن المعلّم» matched no role, so that card VANISHED from the LP,
+// and «تحدٍّ» matched no sub-element, so the challenge line was swallowed into the text
+// above it. This repo has been bitten by the same thing twice before while SEARCHING
+// Arabic; the rule is the same when matching it.
+//
+// Only the string being TESTED is stripped. Everything stored and printed keeps every
+// diacritic the teacher wrote.
+const HARAKAT_RE = /[\u064B-\u0652\u0670\u0640\u06D6-\u06ED]/g;
+function unvocalised(t) { return String(t).replace(HARAKAT_RE, ''); }
+
 function roleOf(title, profile) {
   const p = asProfile(profile);
-  for (const [role, re] of p.roles) if (re.test(title)) return role;
+  const t = unvocalised(title);
+  for (const [role, re] of p.roles) if (re.test(t)) return role;
   return null;
 }
 
@@ -64,7 +87,7 @@ function roleOf(title, profile) {
 const ROLE_START_MAX = 12;
 function roleAtStart(title, profile) {
   for (const [role, re] of profile.roles) {
-    const m = String(title).match(re);
+    const m = unvocalised(title).match(re);
     if (m && m.index <= ROLE_START_MAX) return role;
   }
   return null;
@@ -72,10 +95,18 @@ function roleAtStart(title, profile) {
 
 function bareHeading(line, profile) {
   const raw = String(line).trim();
-  if (!raw || raw.length > 120) return null;
-  const m = raw.match(/^#{0,6}\s*\*{0,2}_{0,2}([^:*_\n]{2,80}?)_{0,2}\*{0,2}\s*:\s*(.*)$/)
-    || raw.match(/^#{0,6}\s*\*{0,2}_{0,2}([^:*_\n]{2,80}?)_{0,2}\*{0,2}\s*$/);
+  if (!raw) return null;
+  const withColon = raw.match(/^#{0,6}\s*\*{0,2}_{0,2}([^:*_\n]{2,80}?)_{0,2}\*{0,2}\s*:\s*(.*)$/);
+  // A LINE'S LENGTH IS NOT WHAT MAKES IT PROSE. The 120-character cap was there to stop a
+  // sentence being read as a heading, but it also rejected «بطاقة الخروج: ارسم شكلاً
+  // رباعياً في دفترك، ثم ارسم بجانبه شكلاً يطابقه. (الإجابة: …)» — a role heading whose
+  // content simply runs long on the same line, which cost that lesson its exit-ticket
+  // card. The real guard is the part BEFORE the colon: it has to name a role, lead with
+  // that name, and be short. Once it does, whatever follows the colon is content.
+  const m = withColon
+    || (raw.length <= 120 && raw.match(/^#{0,6}\s*\*{0,2}_{0,2}([^:*_\n]{2,80}?)_{0,2}\*{0,2}\s*$/));
   if (!m) return null;
+  if (withColon && m[1].trim().length > 40) return null;
   // The source's own bullet is list punctuation, never part of a heading's name, so it
   // comes off before the role is looked up and before the title is used.
   const title = m[1].replace(/^[•▪●◦*\-–—]\s*/, '').trim();
@@ -130,19 +161,40 @@ function blocks(md, profile) {
 // reading «Hatua za Somo (Dakika 20)» matched nothing while the pattern only allowed
 // number-then-unit, and the stage lost its time pill. No language in play writes
 // "min 20", so trying both orders cannot fire spuriously.
+// A DIGIT MAY BE ARABIC-INDIC. «التمهيد (٥ دقائق)» matched nothing while the pattern was
+// ASCII-only \d, so every stage of a lesson written with ٥ ١٠ ١٥ lost its time pill — the
+// artifact lessons happened to write their minutes in ASCII digits, which is why this went
+// unnoticed. Matched in either script and normalised to ASCII before being re-rendered in
+// the profile's own numerals.
+const D = '[\\d\u0660-\u0669\u06F0-\u06F9]';
+const toAscii = (s) => String(s)
+  .replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x0660))
+  .replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x06F0));
+
 function minutesOf(title, profile) {
   const unit = (profile.minutesWords || ['min']).join('|');
   const pats = [
-    new RegExp(`(\\d+)\\s*[-–]\\s*(\\d+)\\s*(?:${unit})`, 'i'),
-    new RegExp(`(\\d+)\\s*(?:${unit})`, 'i'),
-    new RegExp(`(?:${unit})\\s*(\\d+)\\s*[-–]\\s*(\\d+)`, 'i'),
-    new RegExp(`(?:${unit})\\s*(\\d+)`, 'i'),
+    new RegExp(`(${D}+)\\s*[-–]\\s*(${D}+)\\s*(?:${unit})`, 'i'),
+    new RegExp(`(${D}+)\\s*(?:${unit})`, 'i'),
+    new RegExp(`(?:${unit})\\s*(${D}+)\\s*[-–]\\s*(${D}+)`, 'i'),
+    new RegExp(`(?:${unit})\\s*(${D}+)`, 'i'),
   ];
   for (const re of pats) {
     const m = title.match(re);
     if (!m) continue;
-    const n = num(profile, m[2] || m[1]);
-    const label = profile.minutesLabel || 'min';
+    const n = num(profile, toAscii(m[2] || m[1]));
+    // KEEP THE SOURCE'S OWN UNIT WORD. Arabic inflects it — «٥ دقائق» for five, «١٥ دقيقة»
+    // for fifteen — and printing the profile's single form turned «٥ دقائق» into «٥ دقيقة»
+    // on the pill. It was the last thing in these lessons that the page said differently
+    // from the source, and it is the teacher's own word, not the template's.
+    // …BUT CASE IS THE DESIGN'S, NOT THE SOURCE'S. Arabic inflects the word itself, so the
+    // source's «دقائق» must survive. Kiswahili writes «dakika 4» mid-sentence and the pack
+    // prints «Dakika 4» — the same word, capitalised because it starts a label. So the
+    // source's word wins only when it differs by more than case.
+    const own = (title.match(new RegExp(`(?:${unit})`, 'i')) || [])[0];
+    const pack = profile.minutesLabel || 'min';
+    const sameWord = own && own.toLowerCase() === String(pack).toLowerCase();
+    const label = (!own || sameWord) ? pack : own;
     return profile.minutesUnitFirst ? `${label} ${n}` : `${n} ${label}`;
   }
   return '';
@@ -315,8 +367,46 @@ function stepsFigure(items, profile) {
 // into one giant card — so a source that does use bold marks splits exactly as before.
 const BOLD_MARK = /\*\*([^*\n]{2,80}?):\*\*/g;
 const BARE_MARK = /^[ \t]*([^\n:.!?؟*|]{2,60}):[ \t]*/gm;
-function labelledParts(body) {
-  const src = stripTables(String(body));   // fences kept: figureFor reads them
+// «نقطة التحقق», «دعم» and «تحد» do not always start a line. This lesson writes a whole
+// stage as ONE paragraph — «…هل هذا الخط مستقيم أم منحني؟ نقطة التحقق: ٤ من كل ٥ تلاميذ…
+// دعم: … تحد: …» — and every splitter here anchors on ^, so all three were left buried in
+// prose: no checkpoint strip, no support or challenge row, on three of the four stages.
+//
+// Only the labels the PROFILE already names are broken out, and only when they are
+// preceded by sentence-ending punctuation, so an ordinary colon inside prose is untouched.
+// Everything is put back on its own line and the existing line-based splitters do the rest.
+function breakOutInlineLabels(text, profile) {
+  const names = (profile.inlineLabels || []).slice();
+  if (!names.length) return text;
+  const HK = '[\\u064B-\\u0652\\u0670\\u0640]*';
+  // The label may be VOCALISED in the source — «تحدٍّ:» for «تحد» — so diacritics are
+  // allowed between its letters. Stripping them from the text instead would change the
+  // teacher's words, which is not on the table.
+  const flexible = (n) => n.split('').map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join(HK) + HK;
+  let out = String(text);
+  for (const n of names) {
+    // THE COLON IS THE GUARD, NOT THE PRECEDING PUNCTUATION. Requiring a sentence to end
+    // first missed «* أبي ← أبي نقطة التحقق: ٤ من كل ٥ تلاميذ…», where the label is glued
+    // straight onto the last item of a list, so that stage rendered with no checkpoint at
+    // all. A known label followed by a colon is a label wherever it appears.
+    // The name may carry the definite article — the profile's label is «تحقق» and the
+    // source writes «نقطة التحقق:». Without the article this missed every checkpoint that
+    // was glued to the end of a list item, and because that item is a pair line, the strip
+    // that moves pairs into the matching visual then deleted the checkpoint WITH the line.
+    out = out.replace(new RegExp(`([^\\n])[ \\t]+(${flexible(n)}\\s*:)`, 'g'),
+      (mm, p1, p2) => `${p1}\n${p2}`);
+  }
+  // A NUMBERED EXERCISE MAY ALSO BE GLUED INLINE. «…جماعياً: ١) أَصِلُ بين الصورة…» and
+  // «* صورة البنت ← إيمان ٢) أَصِلُ…» put the next exercise's heading at the end of the
+  // previous line, where nothing could see it. A digit followed by ')' after whitespace
+  // starts a new line; «٥ تلاميذ» and «صفحة ٣٢» are untouched because they have no bracket.
+  out = out.replace(/([^\n])[ \t]+([٠-٩0-9]{1,2}\s*\)\s*)/g, (mm, p1, p2) => `${p1}\n${p2}`);
+  return out;
+}
+
+function labelledParts(body, profile = {}) {
+  const src = stripTables(breakOutInlineLabels(String(body), profile));   // fences kept: figureFor reads them
   const collect = (re) => {
     const marks = []; let m;
     re.lastIndex = 0;
@@ -336,10 +426,44 @@ function labelledParts(body) {
     const openS = (t) => (t.match(/‘/g) || []).length - (t.match(/’/g) || []).length;
     const bare = collect(BARE_MARK).filter((mk) => {
       if (/^[“”‘’"']/.test(mk.label)) return false;
+      // A check-point label belongs in the card's own تحقق sidebar, so the card must not
+      // be split at it — splitting turned «نقطة التحقق: ٤ من كل ٥ تلاميذ…» into a card of
+      // its own and left the pilot's amber strip empty on every stage.
+      if (profile.checkLabelRe && profile.checkLabelRe.test(unvocalised(mk.label))) return false;
       const before = src.slice(0, mk.at);
       return openQ(before) <= 0 && openS(before) <= 0;
     });
     if (bare.length >= 2) marks = bare;
+  }
+  // …AND THEN the numbered exercises, on top of whatever was collected. Adding these
+  // BEFORE the bare-label pass made `marks` non-empty, which skipped that pass entirely —
+  // so «دعم» and «تحد» after an exercise were swallowed into the exercise's own text.
+  // A NUMBERED EXERCISE OPENS AN ACTIVITY. «١) أصل بين الصورة والكلمة الدالة عليها» has no
+  // colon, so the bare-label splitter never saw it and both matching exercises ran together
+  // inside one card as prose with one small merged figure. Each numbered line now starts its
+  // own part, which is what lets each exercise get its own full-size visual.
+  if (profile.exerciseRe) {
+    const ex = [];
+    const re = new RegExp(profile.exerciseRe.source, profile.exerciseRe.flags);
+    let m;
+    while ((m = re.exec(src))) {
+      if (/^[٠-٩0-9]/.test(m[1].trim())) {
+        ex.push({ label: m[1].trim(), at: m.index, end: m.index + m[0].length });
+      }
+    }
+    if (ex.length >= 1) marks = marks.concat(ex).sort((x, y) => x.at - y.at);
+    // MARKS MUST NOT OVERLAP. «١) أصل بين الصورة والكلمة الدالة عليها:» ends with a colon,
+    // so it matches the numbered-exercise pattern AND the bare-label pattern — two marks a
+    // few characters apart on one line, which became two cards: one empty, one with the
+    // exercise. Where two marks collide, the one that starts first and consumes more of the
+    // line wins; the other was a second reading of the same heading.
+    marks = marks.filter((mk, i) => {
+      for (let j = 0; j < i; j++) {
+        const prev = marks[j];
+        if (mk.at < prev.end && mk.end > prev.at) return mk.end > prev.end && mk.at >= prev.end;
+      }
+      return true;
+    });
   }
   // A bare label often begins with the source's own bullet — «• Mazoezi ya pamoja:»,
   // «▪ Wanafunzi walio chini ya lengo:». The bullet is list punctuation, not part of the
@@ -356,8 +480,35 @@ function labelledParts(body) {
     const upto = i + 1 < marks.length ? marks[i + 1].at : src.length;
     const raw = src.slice(mk.end, upto);
     const text = plain(raw);
-    if (text) parts.push({ label: mk.label, body: text, raw });
+    // A LABELLED PART WITH NO BODY IS STILL A PART. This dropped any exercise written as a
+    // single self-contained line — «١. ضع إشارة (✓) على القطعة المستقيمة. (الإجابة: …)» —
+    // because everything it says is in the label and there is nothing underneath. Six of
+    // one lesson's seven exercises disappeared that way, silently. أسرتي's exercises each
+    // had bullet lines beneath them, so they had bodies, so this never showed.
+    if (text || mk.label) parts.push({ label: mk.label, body: text, raw });
   });
+  // AN INSTRUCTION LINE IS NOT AN ACTIVITY. «يفتح التلاميذ الكتاب صفحة ٣٢، ويحلون التمرين
+  // الأول والثاني جماعياً:» introduces the two exercises under it, and as a card of its own
+  // it became a thin text-only box — then the pagination put it on page 1 and its exercises
+  // on page 2, so the teacher read the instruction one page away from the work it describes.
+  // It rides on the first exercise as that card's lead line instead.
+  // …BUT ONLY INTO A PART THAT WILL BECOME AN ACTIVITY. A sub-element («دعم», «تحد») and a
+  // lifted role are absorbed elsewhere — the first is attached to the card above it as a
+  // callout, the second is moved to its own section — and folding the stage's teaching text
+  // into one of those took the text with it. A lesson written as a single paragraph
+  // («…أم منحني؟ نقطة التحقق: … دعم: … تحد: …») lost the whole of its التمهيد body that way.
+  const absorbed = (label) => {
+    const b = unvocalised(label);
+    for (const [, re] of (profile.subElements || [])) if (re.test(b)) return true;
+    for (const [, re] of (profile.lift || [])) if (re.test(b)) return true;
+    return false;
+  };
+  if (profile.leadIntoFirstPart && parts.length > 1 && !parts[0].label && parts[1].label
+      && !absorbed(parts[1].label)) {
+    const [head, ...rest] = parts;
+    rest[0] = { ...rest[0], lead: head.body };
+    return rest;
+  }
   return parts;
 }
 
@@ -387,7 +538,59 @@ function pairsFigure(body) {
     .map((m) => ({ label: m[1].trim(), caption: m[2].trim() }));
   const seen = new Set();
   const uniq = pairs.filter((p) => !seen.has(p.label) && seen.add(p.label));
+  if (uniq.length >= 2) return { kind: 'steps', items: uniq.slice(0, 6) };
+  // The SAME exercise without the brackets — «أبي ← صورة الأب», «سبأ ← سبأ» — which is how
+  // a hand-written lesson lists it. Read as a generic bulleted list it produced cards
+  // labelled «أبي ← صورة» (the first three words of each line, arrow included); read as
+  // pairs, each card carries the prompt and the answer it matches. The lesson's own
+  // instruction is «أصل بين الصورة والكلمة الدالة عليها» — matching is the content.
+  // EITHER SIDE MAY BE A PHRASE. The left capture used to forbid spaces, which was fine
+  // while the lesson wrote «أبي ← صورة الأب» — one word, then the picture. The same exercise
+  // written the other way round, «صورة الأب ← أبي», put the two-word side on the left and
+  // matched nothing, so the exercise fell through to a generic bulleted list and drew a row
+  // of small step chips instead of the full-width matching activity.
+  const bare = [...String(body).matchAll(/^[\s•▪●◦*-]*([^\n←→]{1,24}?)\s*[←→]\s*([^\n←→]{1,24})$/gm)]
+    .map((m) => ({ label: m[1].trim(), caption: m[2].trim() }))
+    .filter((x) => x.label && x.caption);
+  const seen2 = new Set();
+  const uniq2 = bare.filter((p) => !seen2.has(p.label + p.caption) && seen2.add(p.label + p.caption));
+  // A MATCHING EXERCISE IS A MATCHING VISUAL, not a row of chips. «أصل بين الصورة والكلمة
+  // الدالة عليها» is the central activity of the lesson; drawn as `steps` it was a small
+  // embedded widget, which is exactly what the reviewer rejected. `match-pairs` is a
+  // full-width two-column activity with a connector between each pair.
+  return uniq2.length >= 2 ? { kind: 'match-pairs', items: uniq2.slice(0, 6) } : null;
+}
+
+// «Hujambo?-Sijambo, Hamjambo?-Hatujambo, Habari?-Nzuri» — a greeting paired with its
+// answer. This IS the content of a Kiswahili greetings lesson: «kuoanisha maamkizi na
+// majibu yake sahihi» means matching greetings to their correct responses, and the source
+// writes the pairs as question–answer joined by a dash. Rendered as prose it is a run of
+// bracketed text; drawn, each pair is a card showing the prompt and the answer to check
+// against — which is what the lesson asks the class to practise.
+//
+// It exists because a real Kiswahili lesson produced ZERO code figures: every detector
+// here was written against Arabic and English sources and looked for «[x] ← y», Arabic
+// letter builds, «Teacher says:», markdown tables or fenced chants. None of those appear
+// in a Kiswahili plan.
+function askAnswerPairsFigure(body) {
+  const pairs = [...String(body).matchAll(/([\p{L}]{3,20}\s*\?)\s*[-–—]\s*([\p{L}]{2,20})/gu)]
+    .map((m) => ({ label: m[1].replace(/\s+/g, ''), caption: m[2].trim() }));
+  const seen = new Set();
+  const uniq = pairs.filter((x) => !seen.has(x.label) && seen.add(x.label));
   return uniq.length >= 2 ? { kind: 'steps', items: uniq.slice(0, 6) } : null;
+}
+
+// A run of questions the teacher asks aloud — «Tunasemaje tunaposalimu mwalimu?
+// Tunasemaje tunaposalimu mwenzetu?». Two or more in one part are the card's real
+// content, so they become chips a teacher can glance at rather than a paragraph.
+function questionsFigure(body) {
+  const qs = String(body).replace(/\s+/g, ' ').split(/(?<=\?)\s+/)
+    .map((x) => x.trim()).filter((x) => /\?$/.test(x) && x.length > 12 && x.length < 90);
+  const seen = new Set();
+  const uniq = qs.filter((q) => !seen.has(q) && seen.add(q));
+  return uniq.length >= 2
+    ? { kind: 'steps', items: uniq.slice(0, 4).map((q) => ({ label: q, caption: '' })) }
+    : null;
 }
 
 // «Teacher says: "…"» — the classroom voice. Drawn as a large centred card it reads as
@@ -445,7 +648,67 @@ function tableFigure(body) {
     items: rows.slice(0, 6).map((r) => ({ label: r.label, caption: r.value })) };
 }
 
+// GEOMETRY FIGURES. A geometry lesson's exercises — «ضع إشارة (✓) على القطعة المستقيمة»,
+// «ارسم قطعاً مستقيمة بين كل نقطتين باستخدام المسطرة», «ارسم على الشبكة شكلاً يطابق» — are
+// pictures, and printing them as prose is exactly the "dense text" the reviewer rejects.
+// The kind is chosen from the words the SOURCE uses, against vocabulary the profile owns,
+// so nothing here is specific to one lesson: another maths lesson naming other shapes gets
+// the same treatment, and a lesson with none of these words gets no geometry figure.
+function geoFigure(text, profile) {
+  const G = profile.geoTerms;
+  if (!G) return null;
+  const t = String(text || '');
+  const has = (k) => G[k] && G[k].test(t);
+  if (G.shapeNoun && !G.shapeNoun.test(t)) return null;   // it must be about a shape
+  const L = profile.geoLabels || {};
+  // solids: cube against cone
+  if (has('cube') && has('cone')) {
+    return { kind: 'geo-pick', items: [{ shape: 'cube', ok: true }, { shape: 'cone', ok: false }] };
+  }
+  // draw on a squared grid: the model on one side, empty squares on the other
+  if (has('grid')) return { kind: 'geo-grid', shape: 'L', cols: 6, rows: 5 };
+  // join the dots with a ruler
+  if (has('dots')) return { kind: 'geo-dots', pairs: 3, quad: has('quad') };
+  // colour or tick the congruent one: a model and three candidates
+  if (has('congruent')) {
+    return { kind: 'geo-match', colour: !!has('colour'),
+      labels: { model: L.model || '', same: L.same || '', diff: L.diff || '' } };
+  }
+  // tick the quadrilateral
+  if (has('quad')) {
+    return { kind: 'geo-pick',
+      items: [{ shape: 'quad', ok: true }, { shape: 'tri', ok: false }, { shape: 'quad2', ok: true }] };
+  }
+  // tick the straight segment
+  if (has('straight')) {
+    return { kind: 'geo-pick',
+      items: [{ shape: 'line', ok: true }, { shape: 'curve', ok: false }] };
+  }
+  return null;
+}
+
+// The teaching board a demonstration stage needs: every contrast the stage names, drawn
+// once, with ✓ and ✗ — «هذه قطعة مستقيمة، وهذه غير مستقيمة. هذا شكل رباعي… وهذا غير رباعي.
+// هذان شكلان متطابقان… وهذان غير متطابقين».
+function geoBoard(text, profile) {
+  const G = profile.geoTerms;
+  if (!G) return null;
+  const t = String(text || '');
+  const rows = [];
+  if (G.straight && G.straight.test(t) && G.curved && G.curved.test(t)) {
+    rows.push({ pair: 'line' });
+  }
+  if (G.quad && G.quad.test(t)) rows.push({ pair: 'quad' });
+  if (G.congruent && G.congruent.test(t)) rows.push({ pair: 'congruent' });
+  if (rows.length < 2) return null;
+  const L = profile.geoLabels || {};
+  return { kind: 'geo-board', rows, yes: L.yes || '', no: L.no || '' };
+}
+
 function figureFor(rawBody, profile) {
+  // A demonstration board that names several contrasts beats everything: it IS the stage.
+  const gb = geoBoard(rawBody, profile);
+  if (gb) return gb;
   // Order matters, most meaningful first: a matching exercise or a letter build IS the
   // example, so it beats a generic list; a classroom quote beats prose; a bulleted list
   // is the stage's real activity steps; a table's rows next. A fenced block is LAST
@@ -455,6 +718,14 @@ function figureFor(rawBody, profile) {
   if (eb) return eb;
   const pf = pairsFigure(rawBody);
   if (pf) return pf;
+  // a greeting-and-answer list is the lesson's own matching exercise
+  const ap = askAnswerPairsFigure(rawBody);
+  if (ap) return ap;
+  // GEOMETRY COMES AFTER THE PAIR DETECTORS, not before: «أصل بين كل كلمتين متماثلتين» is a
+  // word-matching exercise that happens to contain «متماثل», and its own matching component
+  // must win. A shape exercise reaches here because no pair detector claimed it.
+  const gf = geoFigure(rawBody, profile);
+  if (gf) return gf;
   const bf = buildFigure(rawBody);
   if (bf) return bf;
   const qf = quoteFigure(rawBody, profile);
@@ -467,6 +738,9 @@ function figureFor(rawBody, profile) {
   if (ff) return ff;
   const eq = String(rawBody).match(/[٠-٩0-9]+\s*[+\-×÷]\s*[٠-٩0-9]+\s*=\s*[٠-٩0-9]+/);
   if (eq) return { kind: 'expression', text: eq[0] };
+  // last: a part that is mostly questions the teacher reads out
+  const qsf = questionsFigure(rawBody);
+  if (qsf) return qsf;
   return null;
 }
 
@@ -504,14 +778,27 @@ function shapeSection(id, heading, raw, hint, opts = {}) {
     const rb = rubricItems(raw);
     if (rb.length >= 2) return { id, heading, type: 'rubric', items: rb };
   }
+  // A CHIP HOLDS A PHRASE, NOT A SENTENCE. Lesson 01's materials list runs to entries like
+  // «بطاقات كلمات مكتوبة بخط واضح وكبير (يمكن كتابتها يدوياً على ورق مقوى أو كراتين قديمة):
+  // أبي، أمي، أحمد، سبأ، إيمان.» — 120 characters, which as a pill is a paragraph with
+  // rounded corners. Long entries render as a list instead; short ones stay chips.
   if (want === 'chips' && items.length) {
-    return { id, heading, type: 'chips', items: items.map((t) => t.replace(/\*\*/g, '')) };
+    const clean = items.map((t) => t.replace(/\*\*/g, ''));
+    if (!clean.some((t) => t.length > 48)) return { id, heading, type: 'chips', items: clean };
   }
-  if (want === 'chips' && body) {
+  // …and only when there is no list to work from. Skipping the chips path because the
+  // items are long must fall through to BULLETS, not to this one — splitting the whole
+  // prose on Arabic commas turned lesson 01's materials into «كتاب الطالب صفحة 32. بطاقات
+  // كلمات مكتوبة…» followed by a chip reading «أمي».
+  if (want === 'chips' && !items.length && body) {
     // Split on the SEPARATOR THE SOURCE CHOSE. Splitting on commas as well as semicolons
     // broke a single resource — «Chart, Model of the breathing system» — into two.
     const sep = /;/.test(body) ? /\s*;\s*/ : /\s*[,،·]\s*/;
-    const parts = body.split(sep).map((x) => x.trim()).filter((x) => x.length > 1);
+    // The full stop that ends the SENTENCE is not part of the last item's name. «المواد:
+    // السبورة، الطباشير، … قلم.» produced a chip reading «قلم.» — the punctuation of the
+    // list, like its commas and the source's bullets, and not something a teacher reads.
+    const parts = body.split(sep).map((x) => x.trim().replace(/\s*[.،؛]\s*$/, ''))
+      .filter((x) => x.length > 1);
     if (parts.length >= 2) return { id, heading, type: 'chips', items: parts.slice(0, 14) };
   }
   if (rows.length) return { id, heading, type: 'fields', items: rows };
@@ -550,7 +837,25 @@ function shapeSection(id, heading, raw, hint, opts = {}) {
   return { id, heading, type: want === 'note' ? 'note' : 'text', body };
 }
 
+// A SOURCE MAY CARRY LaTeX MARKUP FOR ITS ARROWS. A paste out of a maths-aware editor
+// writes «صورة الأب $\leftarrow$ أبي» instead of «صورة الأب ← أبي». The arrow is the
+// connector a matching activity DRAWS, exactly like the source's bullet — so the macro is
+// normalised to the arrow character before anything is parsed. Left as-is, the pair
+// detector saw no pairs and the exercise fell through to a geometry figure, because
+// «متماثلتين» and «الصورة» were the only signals left.
+const LATEX_ARROWS = [
+  [/\$\s*\\(?:leftarrow|gets)\s*\$|\\(?:leftarrow|gets)\b/g, '←'],
+  [/\$\s*\\(?:rightarrow|to)\s*\$|\\(?:rightarrow|to)\b/g, '→'],
+  [/\$\s*\\(?:leftrightarrow)\s*\$|\\leftrightarrow\b/g, '↔'],
+];
+function normalizeMarkup(md) {
+  let out = String(md);
+  for (const [re, ch] of LATEX_ARROWS) out = out.replace(re, ch);
+  return out;
+}
+
 function buildGuideFromMarkdown(md, opts = {}) {
+  md = normalizeMarkup(md);
   const { subject = '', grade = '' } = opts;
   // Region resolution, in this order: what the caller declared (the Studio picker), what
   // the text looks like, then the region-neutral fallback. A declared region always
@@ -580,8 +885,8 @@ function buildGuideFromMarkdown(md, opts = {}) {
   const titleSrc = h1 ? h1.title : (doc.preamble.split('\n').map((l) => l.trim())
     .filter(Boolean).find((l) => l.length < 120) || '');
   const pageWords = (profile.pageWords || ['page']).join('|');
-  const pageRe = new RegExp(`\\(?\\s*(?:${pageWords})\\.?\\s*(\\d+)\\s*\\)?`, 'i');
-  const pageRef = (titleSrc.match(pageRe) || [])[1] || '';
+  const pageRe = new RegExp(`\\(?\\s*(?:${pageWords})\\.?\\s*(${D}+)\\s*\\)?`, 'i');
+  const pageRef = toAscii((titleSrc.match(pageRe) || [])[1] || '');
   const gradeText = (titleSrc.match(profile.gradeRe) || [])[0] || grade || '';
   const trimSep = (s) => s.replace(/^[\s·|,;:\-–—]+|[\s·|,;:\-–—]+$/g, '').trim();
   let topic = trimSep(titleSrc.replace(profile.titleStrip || /$^/, '').replace(/\s*—.*$/, '')
@@ -639,7 +944,7 @@ function buildGuideFromMarkdown(md, opts = {}) {
   // being buried mid-stage. A profile with no such convention declares no lifts.
   const lifted = new Map();
   const liftRole = (label) => {
-    for (const [role, re] of (profile.lift || [])) if (re.test(label)) return role;
+    for (const [role, re] of (profile.lift || [])) if (re.test(unvocalised(label))) return role;
     return null;
   };
 
@@ -650,7 +955,9 @@ function buildGuideFromMarkdown(md, opts = {}) {
   const lessonLine = [subj, grade_, topic,
     pageRef ? `${profile.pageLabel} ${num(profile, pageRef)}` : '']
     .filter(Boolean).join(' · ');
-  if (profile.lessonLineCard !== false) {
+  // …and only if there is something to say. A lesson with no title line above its first
+  // heading produced an empty «درس» card: a coloured tab over a blank panel.
+  if (profile.lessonLineCard !== false && lessonLine) {
     push({ id: 'lesson-line', heading: T['lesson-line'], type: 'text', body: lessonLine });
   }
 
@@ -660,13 +967,48 @@ function buildGuideFromMarkdown(md, opts = {}) {
     if (body) push({ id: 'goal', heading: T.goal, type: 'note', body: `**${profile.goalLead}** ${body}` });
   }
 
-  // Misconceptions only if the lesson has them. No invention.
+  // Misconceptions only if the lesson has them. No invention — but no LOSS either: the
+  // twin ✗/✓ card needs two list items, and a lesson that states its misconception as one
+  // sentence («الأخطاء الشائعة: الخلط بين كلمتي "أبي" و"أمي" … يصححه المعلم بالتركيز على
+  // نطق ومخرج حرفي "الباء" و"الميم"») used to produce NO card at all, which dropped the
+  // content from the page. Prose falls back to a note card, and the confusion the sentence
+  // names is drawn as the pilot's split board.
   if (T.errors && byRole.get('errors')) {
-    const items = listItems(rawOf('errors'));
+    const raw = rawOf('errors');
+    const items = listItems(raw);
     if (items.length >= 2) {
       push({ id: 'errors', heading: T.errors, type: 'qa',
         items: [{ q: `✗ ${profile.labelWrong}`, a: items[0] },
           { q: `✓ ${profile.labelCorrect}`, a: items[1] }] });
+    } else {
+      const body = plain(raw);
+      if (body) {
+        const sec = { id: 'errors', heading: T.errors, type: 'misconception', body,
+          labelWrong: profile.labelWrong, labelCorrect: profile.labelCorrect };
+        const pair = profile.confusedPairRe ? body.match(profile.confusedPairRe) : null;
+        // THE CORRECTION IS NOT THE MISCONCEPTION. The source states both in one
+        // sentence — «الخلط بين كلمتي "أبي" و"أمي" لتشابه الحروف؛ يصححه المعلم بالتركيز
+        // على نطق ومخرج حرفي "الباء" و"الميم".» — the confusion before the separator and
+        // what the teacher does about it after. The approved design gives the second one
+        // its own quiet strip beneath the panel, so they are split here rather than being
+        // printed as one paragraph wedged beside the boxes. Not a word is changed.
+        if (profile.correctionSplitRe) {
+          const cut = body.search(profile.correctionSplitRe);
+          if (cut > 20) {
+            const m = body.slice(cut).match(profile.correctionSplitRe);
+            sec.body = body.slice(0, cut).trim();
+            sec.fix = body.slice(cut + m[0].length).trim();
+          }
+        }
+        if (pair) {
+          // «✕ خطأ» / «✓ صواب» — the two words the design puts on this panel.
+          sec.codeFigure = { kind: 'error-board',
+            wrong: { kind: 'expression', text: pair[1].replace(/["»«]/g, '').trim() },
+            correct: { kind: 'expression', text: pair[2].replace(/["»«]/g, '').trim() },
+            labelWrong: profile.labelWrong, labelCorrect: profile.labelCorrect };
+        }
+        push(sec);
+      }
     }
   }
 
@@ -674,6 +1016,19 @@ function buildGuideFromMarkdown(md, opts = {}) {
   for (const id of profile.stages) {
     const found = byRole.get(id);
     if (!found) continue;
+    // A STAGE THE SOURCE LEAVES EMPTY. This lesson's «العرض — أنا أفعل (١٠ دقائق)» heading
+    // has no body under it. Dropping the stage silently breaks the four-stage rhythm a
+    // teacher reads by; inventing text to fill it would be worse. The heading, its time and
+    // its gradual-release pill are the source's own, so the card is emitted with no body and
+    // the pack draws it as a slim empty stage.
+    if (profile.emitEmptyStages && !found.some((b) => plain(b.body))) {
+      const mins = found.map((x) => minutesOf(x.title, profile)).find(Boolean) || '';
+      const sec = { id, heading: T[id], type: 'stage', body: '' };
+      if (mins) sec.time = mins;
+      if ((profile.grr || {})[id]) sec.mode = profile.grr[id];
+      push(sec);
+      continue;
+    }
     // ONE CARD PER LABELLED PART, not one card per stage. Putting a whole stage's text
     // into a single card and hanging one figure underneath is what made the full LP read
     // as a text document: the pack's card anatomy is text-beside-figure, and it cannot
@@ -681,6 +1036,11 @@ function buildGuideFromMarkdown(md, opts = {}) {
     // the size that anatomy was designed for — so each becomes its own card in the
     // stage's colour, carrying its own title, its own text and its own figure.
     let first = true;
+    let lastCard = null;      // sub-elements attach to the card they belong to
+    const subOf = (label) => {
+      for (const [, re, title] of (profile.subElements || [])) if (re.test(unvocalised(label))) return title;
+      return null;
+    };
     const unit = (profile.minutesWords || ['min']).join('|');
     const tailMin = new RegExp(`\\s*\\(?\\s*\\d+(?:\\s*[-–]\\s*\\d+)?\\s*(?:${unit})\\s*\\)?\\s*$`, 'i');
     const bare = (x) => String(x).toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
@@ -690,32 +1050,119 @@ function buildGuideFromMarkdown(md, opts = {}) {
       // pill, and a heading that only repeats the role name adds nothing.
       let blockHead = b.title.replace(/\s*—.*$/, '').replace(tailMin, '').trim();
       if (T[id] && bare(blockHead).startsWith(bare(T[id]))) blockHead = '';
-      for (const part of labelledParts(b.body)) {
+      for (const part of labelledParts(b.body, profile)) {
         const role = part.label ? liftRole(part.label) : null;
         if (role) {
           if (!lifted.has(role)) lifted.set(role, []);
           lifted.get(role).push({ label: part.label, body: part.body });
           continue;
         }
+        // A SUB-ELEMENT BELONGS TO THE ACTIVITY ABOVE IT, not to a card of its own.
+        // «دعم» and «تحد» as full-width cards tripled the length of the LP and made every
+        // stage read as three identical boxes. They ride on the stage card as compact
+        // callouts, which is how the approved design carries them.
+        const sub = part.label ? subOf(part.label) : null;
+        if (sub && lastCard) {
+          if (!lastCard.callouts) lastCard.callouts = [];
+          lastCard.callouts.push({ label: sub, body: part.body });
+          continue;
+        }
         // Every card says which stage it belongs to: a teacher on page 3 should not have
         // to scroll back to find out they are still in العرض / still in Development.
-        const title = [T[id], part.label || blockHead].filter(Boolean).join(' · ');
+        // KEEP THE SEPARATOR AWAY FROM A DIGIT. «التطبيق · ١) أصل بين…» displayed as
+        // «التطبيق ١٠ ) أصل بين…»: bidi puts the neutral middle dot to the LEFT of the
+        // Arabic-Indic digit run, right against «١», where it reads as «١٠». An isolate does
+        // not help — the characters are in the wrong visual order either way. An em dash
+        // cannot be mistaken for a zero, so a digit-initial label uses that instead.
+        // A SENTENCE IS NOT A CARD TITLE. The pack draws a stage title inside the card's top
+        // padding — .s-head is 32px tall with a -32px bottom margin — so a title that wraps
+        // to two lines overflows its box and collides with the card's own text, which is
+        // what «التقويم والختام · يحل التلاميذ التمرين الثالث بمفردهم في الكتاب» did. A long
+        // label is prepended to the BODY instead: the title stays as short as the pilot's,
+        // and not one word leaves the page. A numbered exercise heading always stays a
+        // title — that IS its role, and those are short.
+        let rawLabel = String(part.label || blockHead || '').trim();
+        let partAnswer = '';
+        if (profile.answerParenRe) {
+          const am = rawLabel.match(profile.answerParenRe);
+          if (am) { partAnswer = am[1].trim(); rawLabel = rawLabel.replace(profile.answerParenRe, '').trim(); }
+        }
+        const isExercise = /^[\d٠-٩]/.test(rawLabel);
+        const longLabel = !isExercise && rawLabel.length > 34;
+        const label = longLabel ? '' : rawLabel;
+        const sep = isExercise ? ' — ' : ' · ';
+        const title = [T[id], label].filter(Boolean).join(sep);
+        // THE LABEL IS THE EXERCISE. «١. ضع إشارة (✓) على القطعة المستقيمة.» carries all of
+        // its meaning in the label and has no body at all, so a detector fed only the body
+        // saw an empty string and drew nothing for seven exercises in a row.
+        // THE EXERCISE'S OWN INSTRUCTION FIRST, its surrounding text only as a fallback.
+        // «٢. لماذا يكون الشكلان غير متطابقين؟» sits above a check point that happens to
+        // mention مكعب and مخروط, and reading both together drew a cube-and-cone figure for
+        // a question about congruence.
+        const fig = (part.label ? figureFor(part.label, profile) : null)
+          || figureFor([part.label, part.raw].filter(Boolean).join('\n'), profile);
+        // THE ACTIVITY IS THE VISUAL, NOT A PARAGRAPH TOO. When a matching figure carries
+        // the pairs, printing «أبي ← صورة الأب أمي ← صورة الأم …» in the body as well is the
+        // "labels squeezed into running text" the reviewer rejected. Every one of those
+        // words still appears — drawn, in the activity — and the instruction line above them
+        // stays exactly as written.
+        //
+        // This has to happen BEFORE the card is built: a card carrying a check point is a
+        // `steps` card whose text lives in items[0].body, not in .body, so stripping
+        // afterwards wrote to a field the renderer ignores and silently dropped the
+        // instruction «٣) ألاحظ الكلمة التي في الشكل…» off the page.
+        let partBody = longLabel && part.body
+          ? `${rawLabel}: ${part.body}`
+          : (longLabel ? rawLabel : part.body);
+        if (fig && fig.kind === 'match-pairs') {
+          // Strip at LINE level, from part.raw — part.body has already been flattened by
+          // plain(), so a line filter applied to it matched nothing and the fallback regex
+          // chewed the joined text into «… في السطر ← أحمد ← إيمان : ٨٠٪ …». Removing whole
+          // source lines is exact: a pair line goes, everything else stays as written.
+          // THE STRIP MUST MATCH WHAT THE DETECTOR MATCHED. This pattern still required a
+          // single-word left side, so «صورة الأب ← أبي» was drawn in the activity AND left
+          // in the card's text — the pairs printed as running prose above their own visual,
+          // which is exactly the "labels squeezed into running text" the reviewer rejected.
+          const PAIR_LINE = /^[\s•▪●◦*-]*[^\n←→]{1,24}?\s*[←→]\s*[^\n←→]{1,24}$/;
+          const kept = plain(String(part.raw || '').split('\n')
+            .filter((l) => !PAIR_LINE.test(l.trim()))
+            .join('\n'));
+          partBody = longLabel ? [rawLabel, kept].filter(Boolean).join(': ') : kept;
+        }
         // Fill the pilot's two text slots from the part's own words when it carries a
         // model answer; otherwise a plain text card.
-        const sp = splitCheck(part.body, profile);
-        const sec = sp.check
-          ? { id, heading: title, type: 'steps',
-              items: [{ label: '', body: sp.body }, { label: profile.checkLabel, body: sp.check }] }
-          : { id, heading: title, type: 'text', body: sp.longCheck ? sp.body : part.body };
+        let sp = splitCheck(partBody, profile);
+        // A CARD WHOSE ONLY TEXT IS ITS CHECK POINT still puts that text in the تحقق strip.
+        // splitCheck needs something before the marker to split at, so once the pair lines
+        // moved into the matching visual the check was left as the card's body — losing the
+        // amber strip on exactly the card whose activity most needs it.
+        if (!sp.check && !sp.longCheck && partBody
+            && partBody.search(profile.checkMarks) === 0 && partBody.length <= 160) {
+          sp = { body: '', check: partBody.trim() };
+        }
+        // AN EXPLICIT STAGE COMPONENT WITH NAMED SLOTS — text, visual, checkpoint,
+        // support, challenge — rather than a generic card whose contents arrange
+        // themselves. The renderer lays these out on a fixed grid (see ylStage).
+        const sec = { id, heading: title, type: 'stage',
+          body: sp.longCheck ? sp.body : (sp.check ? sp.body : partBody) };
+        if (part.lead) sec.lead = part.lead;
+        if (partAnswer) sec.answer = partAnswer;
+        if (sp.check) sec.check = sp.check;
         if (first) {
-          const mins = found.map((x) => minutesOf(x.title, profile)).find(Boolean) || '';
-          const pill = [mins, (profile.grr || {})[id]].filter(Boolean).join(' · ');
-          if (pill) sec.time = pill;
+          sec.time = found.map((x) => minutesOf(x.title, profile)).find(Boolean) || '';
+          sec.mode = (profile.grr || {})[id] || '';
+          if (!sec.time) delete sec.time;
+          if (!sec.mode) delete sec.mode;
           first = false;
         }
-        const fig = figureFor(part.raw || '', profile);
-        if (fig) sec.codeFigure = fig;
+        if (fig) {
+          // the same pairs, a different component: «أضع خطاً تحت الكلمة المماثلة» is an
+          // exercise to complete, not a matching demonstration to read
+          sec.codeFigure = (fig.kind === 'match-pairs' && id === profile.assessmentStage)
+            ? { ...fig, kind: 'assessment' } : fig;
+        }
         push(sec);
+        lastCard = sec;
         // A long model answer is its own card — same stage colour — rather than being
         // squeezed into a sidebar built for one line.
         if (sp.longCheck) {
@@ -850,6 +1297,21 @@ function buildGuideFromMarkdown(md, opts = {}) {
     if (wc && target) target.codeFigure = wc;
   }
 
+  // every block-component role carries the flag, so the renderer never falls back to the
+  // generic panel for them
+  // '*' MEANS EVERY NON-STAGE SECTION, and it is there because an enumerated list only
+  // covers the roles the lesson you happened to test actually had. أسرتي has no lesson
+  // title line, no glossary and no multigrade block, so those three roles kept falling
+  // through to the generic panel — whose header tab overhangs its card by 4px — and
+  // nothing caught it until four other Yemen lessons were rendered through the same code.
+  // A design pack should not have to predict which roles a lesson will bring.
+  const blocks_ = new Set(profile.blockComponents || []);
+  const allBlocks = blocks_.has('*');
+  const notBlock = new Set(['stage', 'misconception', 'notes']);
+  for (const sec of sections) {
+    if (blocks_.has(sec.id) || (allBlocks && !notBlock.has(sec.type))) sec.component = 'block';
+  }
+
   const rank = (id) => {
     const i = profile.order.indexOf(id);
     return i < 0 ? profile.order.length : i;
@@ -887,11 +1349,25 @@ function buildGuideFromMarkdown(md, opts = {}) {
   // grounded in a Yemeni classroom or a Kenyan one without being written differently.
   const images = [];
   const warmup = artCard || sections.find((x) => x.id === profile.stages[0]);
-  if (warmup && topic && !warmup.codeFigure) {
+  // A lesson with no title line has no topic to brief an illustration from — this one had
+  // none, so no artwork was authored at all. Its GOAL states what the lesson is about
+  // («أستطيع التعرف على كلمات أفراد الأسرة وقراءتها والمطابقة بينها»), which is the
+  // lesson's own description of itself and the right thing to draw. The brief is a prompt
+  // to the image model, never reader-visible text.
+  const goalSec = sections.find((x) => x.id === 'goal');
+  const artTopic = topic || (goalSec
+    ? String(goalSec.body || '').replace(/\*\*[^*]*\*\*/g, '').replace(/[.؟!]+\s*$/, '')
+      .trim().slice(0, 90)
+    : '');
+  if (warmup && artTopic && !warmup.codeFigure) {
     images.push({
       id: 'lesson-scene',
       concept: 'scene',
-      label: topic.slice(0, 40),
+      // THE LABEL IS READER-VISIBLE — it prints as the figure's caption, so it must not be
+      // cut mid-word. A goal-derived topic sliced at 40 characters put «أستطيع التعرف على
+      // كلمات أفراد الأسرة وقر» under the picture, "وقر" being half of "وقراءتها". Cut back
+      // to the last whole word instead.
+      label: cutWords(topic || artTopic, 44),
       // Naming boards, pages and walls as "empty surfaces" is what produced a row of blank
       // framed panels: the model draws what the brief names, so a brief that names an empty
       // board gets an empty board. Describe the PEOPLE and the ACTION instead.
@@ -912,15 +1388,96 @@ function buildGuideFromMarkdown(md, opts = {}) {
       // "any adult is Kenyan — dark brown skin and African features" clause. The prompt
       // then no longer asked for the very thing the culture gate checks. Describe the
       // people and the action; let the scaffold and the pack do their own jobs.
+      // artTopic, NOT topic. The fallback above exists because some sources carry no
+      // title line at all — this lesson's very first line is a heading — and the caption
+      // already used it while the brief still used the raw variable. The composed brief
+      // read «engaged in an activity about .» and the model was left to guess the subject.
       prompt: 'Young primary-school children and their teacher together in a simple '
-        + 'classroom, engaged in an activity about ' + topic + '. Show faces, gestures '
+        + 'classroom, engaged in an activity about ' + artTopic + '. Show faces, gestures '
         + 'and posture; fill the frame with the people and a few simple objects they are '
         + 'handling.',
     });
     warmup.image = 'lesson-scene';
   }
+  // ONE STAGE, ONE CARD. The approved pages compose each stage as a single large teaching
+  // card: the stage's name on its tab, its teaching text, then every activity it contains
+  // one after another inside the same border, and the checkpoint last. Emitting a card per
+  // labelled part produced two cards both tabbed «التطبيق», and it pushed the numbered
+  // exercise label into the tab — where a 44-character heading shoved the duration and mode
+  // pills clean outside the card. The label belongs inside the card, above its activity.
+  // The teacher's after-lesson notes belong to the design, not to the lesson text: every
+  // plan gets them, in the same place. Declared by the profile so a region that does not
+  // want them omits the key.
+  //
+  // INSERTED AFTER THE STAGE MERGE, AND AFTER THE LAST CARD OF THAT STAGE. Splicing it in
+  // earlier, at the FIRST section with that id, dropped it between two التقويم sections —
+  // which broke the run of consecutive sections the merge needs, so that stage stayed as
+  // two cards with the notes card wedged between them.
+  if (profile.notes && profile.notes.after) {
+    let at = -1;
+    sections.forEach((x, i) => { if (x.id === profile.notes.after) at = i; });
+    if (at >= 0) {
+      sections.splice(at + 1, 0, { id: 'notes', type: 'notes', label: profile.notes.label,
+        tab: profile.notes.tab, lines: profile.notes.lines || 2 });
+    }
+  }
+
+  // Split an inline answer out of its host card into the design's own answers card, in the
+  // order the profile's `order` puts them.
+  const asp = profile.answerSplit;
+  if (asp && !sections.some((x) => x.id === asp.to)) {
+    const host = sections.find((x) => x.id === asp.from);
+    const body = host && String(host.body || '');
+    const m = body && body.match(asp.re);
+    if (m && m[1].trim().length > 1) {
+      host.body = body.slice(0, m.index).trim();
+      const at = sections.indexOf(host);
+      sections.splice(at + 1, 0, { id: asp.to, heading: T[asp.to] || asp.to,
+        type: 'text', body: m[1].trim() });
+    }
+  }
+
+  // A block the design gives a labelled tab to. The tab text is the last segment of the
+  // section's own heading — «الواجب المنزلي · ركن المعلم» tabs as «ركن المعلم» — so it is
+  // the source's own words, short enough for the tab, and no second label is invented.
+  for (const sec of sections) {
+    if ((profile.badgeBlocks || {})[sec.id]) sec.badge = profile.badgeBlocks[sec.id];
+    if ((profile.tabbedBlocks || []).includes(sec.id)) {
+      const parts = String(sec.heading || '').split(/\s*·\s*/).filter(Boolean);
+      if (parts.length) sec.tab = parts[parts.length - 1];
+    }
+  }
+  if (profile.oneCardPerStage) {
+    const stageIds = new Set(profile.stages || []);
+    const merged = [];
+    for (const sec of sections) {
+      const prev = merged[merged.length - 1];
+      const isStage = sec.type === 'stage' && stageIds.has(sec.id);
+      const asActivity = (x) => ({
+        label: String(x.heading || '').split(/\s+[—·]\s+/).slice(1).join(' — '),
+        body: x.body || '', codeFigure: x.codeFigure || null, answer: x.answer || '',
+      });
+      if (isStage && prev && prev.id === sec.id && prev.type === 'stage') {
+        prev.activities.push(asActivity(sec));
+        if (sec.check) prev.checks.push(sec.check);
+        if (sec.callouts) prev.callouts = (prev.callouts || []).concat(sec.callouts);
+        if (sec.lead && !prev.lead) prev.lead = sec.lead;
+        continue;
+      }
+      if (isStage) {
+        const base = { ...sec, heading: T[sec.id] || sec.heading,
+          activities: [asActivity(sec)], checks: sec.check ? [sec.check] : [] };
+        delete base.body; delete base.codeFigure; delete base.check;
+        merged.push(base);
+        continue;
+      }
+      merged.push(sec);
+    }
+    sections.length = 0;
+    sections.push(...merged);
+  }
   return { meta, images, sections, sourceProfile: { id: profile.id, name: profile.name, mode: doc.mode } };
 }
 
-module.exports = { buildGuideFromMarkdown, blocks, roleOf, plain, tableRows, listItems,
+module.exports = { buildGuideFromMarkdown, blocks, roleOf, plain, tableRows, listItems, labelledParts,
   rubricItems, parseDocument, GUIDE_SECTION_IDS };

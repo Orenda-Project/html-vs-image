@@ -48,8 +48,15 @@ const LESSON = `# خطة الدرس: أسرتي (صفحة 32) — الصف ال�
 test('a raw markdown lesson becomes a guide with no model call', () => {
   const g = buildGuideFromMarkdown(LESSON, { region: 'ye', locale: 'ar', subject: 'اللغة العربية' });
   const ids = g.sections.map((s) => s.id);
+  // 'notes' is supplied by the DESIGN, not by the lesson text: the pack declares that every
+  // plan carries the teacher's after-lesson notes, and where. It used to be drawn as
+  // pseudo-element chrome hanging off the assessment stage, which is why it was invisible
+  // to this contract — and why its badge ended up outside its own box.
   assert.deepStrictEqual(ids, ['lesson-line', 'goal', 'stage-tamhid', 'stage-arad',
-    'stage-tatbiq', 'stage-taqwim', 'solutions', 'glossary']);
+    'stage-tatbiq', 'stage-taqwim', 'notes', 'solutions', 'glossary']);
+  const notes = g.sections.find((x) => x.id === 'notes');
+  assert.strictEqual(notes.type, 'notes');
+  assert.ok(!notes.body, 'it carries no lesson text — it is writing space');
   assert.strictEqual(g.meta.region, 'ye');
   assert.match(g.meta.title, /دليل الدرس اليومي/);
 });
@@ -77,49 +84,67 @@ test('a role the lesson does not provide is left out, not invented', () => {
 test('stage times and gradual-release pills come from the source headings', () => {
   const g = buildGuideFromMarkdown(LESSON, { region: 'ye', locale: 'ar' });
   const tamhid = g.sections.find((s) => s.id === 'stage-tamhid');
-  assert.match(tamhid.time, /١٠ دقيقة/, 'minutes parsed from «8-10 دقائق» in Arabic-Indic digits');
-  assert.match(tamhid.time, /أنا أفعل/);
+  // duration and teaching mode are SEPARATE slots now: the stage component renders them as
+  // two pills (DurationPill, TeachingModePill), so they are no longer one joined string.
+  // THE SOURCE'S OWN UNIT WORD. Arabic inflects it — «٥ دقائق», «١٥ دقيقة» — and printing
+  // the profile's single form made the pill say «٥ دقيقة» where the lesson said «٥ دقائق».
+  assert.match(tamhid.time, /١٠ دقائق/, 'minutes parsed from «8-10 دقائق», in the source\'s own word');
+  assert.match(tamhid.mode, /أنا أفعل/);
 });
 
-test('Explore and Explain both reach العرض as their own cards', () => {
+test('Explore and Explain both reach العرض, as activities of the one stage card', () => {
+  // ONE STAGE, ONE CARD (profile flag oneCardPerStage) — the approved pages compose a stage
+  // as a single large teaching card holding its activities, not as a card per source block.
+  // What must never change is that no source block is dropped.
   const two = LESSON.replace('#### Practice', '#### Explain (الشرح) — 10 دقائق\nيشرح المعلم الفرق بين الكلمات.\n\n#### Practice');
   const g = buildGuideFromMarkdown(two, { region: 'ye', locale: 'ar' });
   const arad = g.sections.filter((s) => s.id === 'stage-arad');
-  assert.ok(arad.length >= 2, 'each source block gets at least one card');
-  const blob = arad.map((s) => `${s.heading} ${s.body}`).join(' ');
+  assert.strictEqual(arad.length, 1, 'one stage, one card');
+  assert.ok(arad[0].activities.length >= 2, 'each source block becomes an activity in it');
+  const blob = JSON.stringify(arad[0]);
   assert.match(blob, /Explore|الاستكشاف/);
   assert.match(blob, /Explain|الشرح/);
   assert.match(blob, /يشرح المعلم الفرق بين الكلمات/, 'the second block keeps its text');
 });
 
-test('each labelled part becomes its own design-shaped card', () => {
-  // One card per stage with all its text made the full LP read as a document. The pack's
-  // anatomy is text-beside-figure and only works at the size of a single part, so each
-  // part is its own card in the stage's colour, titled and self-identifying.
+test('each labelled part becomes an activity block inside its stage card', () => {
+  // A card per labelled part put the numbered exercise label in the stage TAB, where a
+  // 44-character heading pushed the duration and mode pills clean outside the card, and it
+  // produced two cards both tabbed «التطبيق». The label belongs inside the card, above its
+  // own activity; the tab carries the stage name only.
   const withParts = LESSON.replace(
     'يبدأ المعلم بالنظر إلى صفحة 32 من الكتاب مباشرة كنشاط تمهيدي.',
     '**نشاط الافتتاح:** يبدأ المعلم بالنظر إلى صفحة 32.\n\n**السؤال الجوهري:** من هم أفراد أسرتك؟');
   const g = buildGuideFromMarkdown(withParts, { region: 'ye', locale: 'ar' });
   const cards = g.sections.filter((s) => s.id === 'stage-tamhid');
-  assert.ok(cards.length >= 2, 'one card per labelled part');
-  assert.ok(cards.every((c) => c.type === 'text'), 'a part card is a text card');
-  assert.match(cards[0].heading, /التمهيد/, 'every card names its stage');
-  assert.match(cards[0].heading, /نشاط الافتتاح/);
-  assert.match(cards[1].heading, /السؤال الجوهري/);
-  assert.match(cards[0].time, /أنا أفعل/, 'the first card of a stage carries the time pill');
-  assert.ok(!cards[1].time, 'and later cards do not repeat it');
+  assert.strictEqual(cards.length, 1, 'one card for the stage');
+  const card = cards[0];
+  assert.strictEqual(card.type, 'stage');
+  assert.strictEqual(card.heading, 'التمهيد', 'the tab carries the stage name and nothing else');
+  assert.ok(card.activities.length >= 2, 'one activity per labelled part');
+  assert.match(card.activities[0].label, /نشاط الافتتاح/);
+  assert.match(card.activities[1].label, /السؤال الجوهري/);
+  assert.match(card.time, /١٠ دقائق/, 'the card carries the duration pill, in the source\'s word');
+  assert.match(card.mode, /أنا أفعل/, '…and the teaching-mode pill');
+  assert.ok(card.activities.every((a) => !a.time && !a.mode),
+    'the pills belong to the stage, not to each activity');
 });
 
 test('every stage that can carry a visual gets one', () => {
   // Text after text was the complaint. A stage with a chant, a list, a table or an
-  // arithmetic run must render a code figure built from those same words.
+  // arithmetic run must render a code figure built from those same words — now on the
+  // activity that owns it.
   const g = buildGuideFromMarkdown(LESSON, { region: 'ye', locale: 'ar' });
-  const tamhid = g.sections.find((s) => s.id === 'stage-tamhid');
-  assert.ok(tamhid.codeFigure, 'the fenced chant should become a figure');
-  assert.strictEqual(tamhid.codeFigure.kind, 'steps');
-  assert.match(JSON.stringify(tamhid.codeFigure), /أُسْرَتِي/, 'built from the chant lines');
-  const arad = g.sections.find((s) => s.id === 'stage-arad');
-  assert.ok(arad.codeFigure, 'a bulleted stage should become a figure');
+  const figOf = (id) => {
+    const sec = g.sections.find((s) => s.id === id);
+    return sec && (sec.codeFigure
+      || (sec.activities || []).map((a) => a.codeFigure).find(Boolean));
+  };
+  const chant = figOf('stage-tamhid');
+  assert.ok(chant, 'the fenced chant should become a figure');
+  assert.strictEqual(chant.kind, 'steps');
+  assert.match(JSON.stringify(chant), /أُسْرَتِي/, 'built from the chant lines');
+  assert.ok(figOf('stage-arad'), 'a bulleted stage should become a figure');
 });
 
 test('the vocabulary table becomes the glossary', () => {
