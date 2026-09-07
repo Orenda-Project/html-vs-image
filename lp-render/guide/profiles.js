@@ -116,6 +116,16 @@ const YE = {
   // a teacher — the instruction is read out, the answer is not — so the answer comes out of
   // the label and prints under the exercise. Not a character is dropped.
   answerParenRe: /\s*[(（]\s*((?:الإجابة|الحل)\s*[:：][\s\S]*?)[)）]\s*[.،]?\s*$/,
+  // …and it may follow the instruction with no brackets at all: «١. أين نمشي؟ الإجابة:
+  // أمشي على الرصيف.» The instruction is read to the class, the answer is not, so they are
+  // two different things on the card either way.
+  answerTailRe: /\s*(?:الإجابة|الحل)\s*[:：]\s*([\s\S]+?)\s*$/,
+  // A BEHAVIOUR CHECKLIST is «١. المشي على الرصيف. الإجابة: (✔)» against «٢. اللعب في
+  // الطريق العام. الإجابة: ( )» — the source states which behaviours are right by ticking
+  // them. Drawn as one list with a tick box per row it is an exercise a child can do; as
+  // four separate lines of prose it is unusable.
+  tickRe: /^[(（]\s*[✔✓√]\s*[)）]$/,
+  blankTickRe: /^[(（]\s*[)）]$/,
   answerLabel: 'الإجابة',
   geoLabels: { yes: 'صواب', no: 'خطأ', model: 'النموذج', same: 'مطابق', diff: 'غير مطابق' },
   notes: { after: 'stage-taqwim', label: 'ملاحظات المعلّم بعد الدرس', tab: 'ملاحظات', lines: 2 },
@@ -162,14 +172,54 @@ const YE = {
   // meant guessing about the definite article — «تحقق» vs «نقطة التحقق» — and a guess that
   // fixed one paste broke three others.
   inlineLabels: ['نقطة التحقق', 'دعم', 'تحد'],
+  // «س١:» / «س٢:» — this curriculum numbers its assessment questions with a س prefix as
+  // readily as with a bare digit, and writes the whole set on one line. Declared here
+  // rather than in the mapper so that «س» stays an ordinary letter everywhere else.
+  questionMarkRe: /س\s*[٠-٩0-9]{1,2}\s*[:：.)]/,
+  // A BULLETED QUESTION THAT CARRIES ITS OWN ANSWER IS AN EXERCISE, not a list item.
+  // «الكلب الوفي» writes nine of them under one heading — «* ما الذي كان لدى الرجل؟
+  // الإجابة: كلب ذكي وأمين.» — and read as a plain list they collapsed into one activity
+  // whose answer swallowed the following eight questions. A numbered lesson already gets
+  // one card per question; this gives a bulleted one the same treatment, with no numeral
+  // invented. Two or more, so a single such bullet stays part of its paragraph.
+  qaLineRe: /^[ \t]*[*•▪-]\s*([^\n]*[؟?][^\n]*(?:الإجابة|الحل)\s*[:：][^\n]+)$/m,
+  // FRACTION WORDS THIS CURRICULUM NAMES, as parts and shaded parts. «ظلل نصف الشكل» is a
+  // drawing instruction, and the fractions lesson stated nine of them with no figure at all
+  // — the one lesson in the set whose whole subject is a picture. Declared, so a word the
+  // renderer does not know draws nothing rather than guessing a denominator.
+  fractionWords: {
+    'نصف': [2, 1], 'النصف': [2, 1],
+    'ثلث': [3, 1], 'الثلث': [3, 1],
+    'ربع': [4, 1], 'الربع': [4, 1],
+    'ربعين': [4, 2], 'ربعان': [4, 2],
+  },
+  // «كم ٤ في العدد ١٢؟» → «٣ أربعات، ١٢ ÷ ٤ = ٣». The lesson's own words for the answer are
+  // a count of equal groups, which is exactly what division means and exactly what a
+  // teacher draws on the board. Read from the division sentence itself, never invented.
+  groupingRe: /([٠-٩]{1,3})\s*÷\s*([٠-٩]{1,2})\s*=\s*([٠-٩]{1,3})/,
+  // COLOURS THE DESIGN IS WILLING TO DRAW, keyed by the words the sources actually use.
+  // «ألوان علم بلادي: الأحمر، الأبيض، الأسود» and «ما هي ألوان إشارة المرور؟ … الأحمر،
+  // الأصفر، الأخضر» are the most drawable thing a Grade 1 lesson contains, and both were
+  // printing as running prose. Declared here, so a colour is never guessed from a word the
+  // renderer does not know, and a region that does not teach colour naming is unaffected.
+  colourNames: {
+    'الأحمر': '#d5262c', 'أحمر': '#d5262c', 'حمراء': '#d5262c',
+    'الأبيض': '#ffffff', 'أبيض': '#ffffff', 'بيضاء': '#ffffff',
+    'الأسود': '#1a1a1a', 'أسود': '#1a1a1a', 'سوداء': '#1a1a1a',
+    'الأصفر': '#f2c012', 'أصفر': '#f2c012', 'صفراء': '#f2c012',
+    'الأخضر': '#1e8b4d', 'أخضر': '#1e8b4d', 'خضراء': '#1e8b4d',
+    'الأزرق': '#1f5fa8', 'أزرق': '#1f5fa8', 'زرقاء': '#1f5fa8',
+  },
   // THE SAME LESSON MUST RENDER THE SAME WHETHER ITS ANSWER IS ON ITS OWN LINE OR INSIDE
   // THE SENTENCE. «بطاقة الخروج: أي كلمة…؟ الإجابة: أبي، أمي…» carries both in one line, so
   // the answer stayed inside the exit-ticket card and the الإجابات card disappeared — the
   // reviewer noticed exactly that difference between two pastes of one lesson. The answer
   // is split out into its own card, which is also what the approved layout pairs with the
   // exit ticket.
+  // The brackets belong to the answer, not to the question. «…يطابقه. (الإجابة: …).» left
+  // an orphaned «(» at the end of بطاقة الخروج and a stray «).» on the الإجابات card.
   answerSplit: { from: 'exit-ticket', to: 'solutions',
-    re: /\s*(?:الإجابة|الحل)\s*[:：]\s*([\s\S]+)$/ },
+    re: /\s*[(（]?\s*(?:الإجابة|الحل)\s*[:：]\s*([\s\S]+?)\s*[)）]?\s*[.،]?\s*$/ },
   // SUB-ELEMENTS OF A STAGE, NOT CARDS OF THEIR OWN. «دعم» and «تحد» are the
   // differentiation notes for the activity above them. Rendered as full-width cards they
   // tripled the length of the LP and made every stage look like three identical boxes —

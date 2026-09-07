@@ -37,28 +37,73 @@ async function htmlToPixelPdf(html, opts = {}) {
     geom = await page.evaluate(() => {
       const y = (el, edge) => el.getBoundingClientRect()[edge] + window.scrollY;
       const cuts = [];
+      // …and, separately, only those boundaries that end a WHOLE card. Both kinds are legal
+      // to cut at — a grid-row gap crosses no content — but a row gap still leaves the
+      // card's own border open across the page break, so anything choosing between cuts for
+      // appearance rather than necessity should prefer these.
+      const safe = [];
       const header = document.querySelector('.lp-header');
-      if (header) cuts.push(y(header, 'bottom'));
+      if (header) { cuts.push(y(header, 'bottom')); safe.push(y(header, 'bottom')); }
       document.querySelectorAll('.body > .section').forEach((sec) => {
         cuts.push(y(sec, 'bottom'));
-        // THE COMPONENT LAYER'S OWN BOUNDARIES. This list named only the old class names,
-        // so a stage card — which is entirely .yl-* — offered no inner boundary at all and
-        // was atomic. A geometry lesson with four stage cards then paginated at 62% fill
-        // per page: 657px used of 1059, then 525, then 811, because the next card never
-        // fitted in what was left. A stage may continue onto the next page.
-        sec.querySelectorAll('.yl-scard > .yl-act, .yl-sbody, .yl-srows, .yl-check,'
-          + ' .yl-ttext.yl-lead, .yl-mrow, .yl-mfix, .yl-bbody')
-          .forEach((el) => cuts.push(y(el, 'bottom')));
-        // A GRID ROW IS CUT AS A ROW, NEVER THROUGH ONE. Cells that share a row share a
-        // top edge; the row's boundary is the lowest of their bottoms.
+        safe.push(y(sec, 'bottom'));
+        // A ROW OF EXERCISES MAY BREAK; NOTHING ELSE INSIDE A CARD MAY. The gap between two
+        // grid rows is the one place a cut cannot cross anything: cells that share a row
+        // share a top edge, so the boundary is the lowest of their bottoms and the cut lands
+        // in the gutter. Every OTHER inner boundary is gone — with .yl-act, .yl-sbody and
+        // .yl-check as candidates, a page ended in the middle of the cube-and-cone figure.
+        // A CARD TALLER THAN A PAGE STILL BREAKS BETWEEN WHOLE ACTIVITIES. The division
+        // lesson's assessment is 1108px against a 1059px page and lays its activities out as
+        // full-width blocks rather than a grid, so it offered no candidate at all and the
+        // composer fell back to cutting at the raw page limit — straight through an exercise.
+        // The boundary BETWEEN two activities crosses nothing, exactly like the gap between
+        // two grid rows. Only the gaps between them, never a boundary inside one: that
+        // distinction is why a component-level candidate list was reverted once before, when
+        // a page ended in the middle of a figure.
+        // EVERY ROW OF THE INNER CARD IS A BOUNDARY. The assessment redesign made
+        // .yl-scard itself a two-column grid, and its children are a MIX — question cards,
+        // plain activities, spanning group headings. Grouping only one of those kinds left
+        // the fractions lesson's 2611px assessment with no usable candidate and 31 boxes
+        // crossing a hard cut. Grouping by the top edge of every child is the general form
+        // of the rule already used for the activity grid: items that share a top share a
+        // row, so the row's lowest bottom is a boundary that crosses nothing.
+        sec.querySelectorAll('.yl-scard').forEach((card) => {
+          const kids = [...card.children].filter((el) => el.nodeType === 1);
+          if (kids.length < 2) return;
+          const byTop = new Map();
+          kids.forEach((c) => {
+            const r = c.getBoundingClientRect();
+            if (!r.height) return;
+            const t = Math.round(y(c, 'top'));
+            byTop.set(t, Math.max(byTop.get(t) || 0, y(c, 'bottom')));
+          });
+          [...byTop.entries()].sort((a, b) => a[0] - b[0]).slice(0, -1)
+            .forEach(([, bottom]) => cuts.push(bottom));
+        });
+        const wholeActs = [...sec.querySelectorAll(':scope > .yl-scard > .yl-act')];
+        wholeActs.slice(0, -1).forEach((el) => cuts.push(y(el, 'bottom')));
         sec.querySelectorAll('.yl-actgrid').forEach((grid) => {
+          // EVERY CHILD, not only the cells. A spanning group heading sits in this grid too,
+          // and grouping by the cells alone produced a "row bottom" that fell inside the
+          // heading that follows it — the division lesson had an exercise cut in half by it.
+          const cells = [...grid.querySelectorAll(':scope > .yl-act, :scope > .yl-ahead, :scope > .yl-qcard')];
+          if (cells.length < 3) return;            // a 2-up row has no row to break between
           const byRow = new Map();
-          grid.querySelectorAll(':scope > .yl-act').forEach((a) => {
+          cells.forEach((a) => {
             const top = Math.round(a.getBoundingClientRect().top);
             byRow.set(top, Math.max(byRow.get(top) || 0, y(a, 'bottom')));
           });
-          byRow.forEach((b) => cuts.push(b));
+          const rows = [...byRow.entries()].sort((x, z) => x[0] - z[0]);
+          // not the LAST row: that boundary is inside the card, above its asides and its
+          // checkpoint strip, and cutting there orphans them from their own activities.
+          rows.slice(0, -1).forEach(([, b]) => cuts.push(b));
         });
+        // A CARD IS NEVER CUT ANYWHERE ELSE. Component boundaries used to be candidates here,
+        // so a stage could continue onto the next page — it lifted page fill from 62% to
+        // ~95%. But it also let a page end in the MIDDLE of an activity: the cube-and-cone
+        // figure and its ✓/✗ boxes were sliced by the footer rule. The reviewer's rule is
+        // explicit and it wins: if a row or section does not fit, the whole thing moves to
+        // the next page. Only a section's own bottom is a legal boundary.
         // A card that carries a figure (in-panel illustration or character) must never
         // be cut THROUGH the figure: inner boundaries are legal only BELOW the
         // figure's bottom edge. Cards without figures offer all inner boundaries.
@@ -74,7 +119,10 @@ async function htmlToPixelPdf(html, opts = {}) {
         ).forEach((item) => { const b = y(item, 'bottom'); if (b > figBottom + 6) cuts.push(b); });
       });
       const footer = document.querySelector('.lp-footer');
-      if (footer) { cuts.push(y(footer, 'top')); cuts.push(y(footer, 'bottom')); }
+      if (footer) {
+        cuts.push(y(footer, 'top')); cuts.push(y(footer, 'bottom'));
+        safe.push(y(footer, 'top')); safe.push(y(footer, 'bottom'));
+      }
       // OVERFLOW GUARD: no instructional text may leave its container. Checked here
       // because this is the one place the real laid-out DOM exists, before the PDF is
       // sliced. Each code-drawn card is a <g class="cf-card"> whose first child is its
@@ -164,7 +212,7 @@ async function htmlToPixelPdf(html, opts = {}) {
           }
         });
       });
-      return { cuts, overflow, height: document.documentElement.scrollHeight, width: document.documentElement.scrollWidth,
+      return { cuts, safe, overflow, height: document.documentElement.scrollHeight, width: document.documentElement.scrollWidth,
         bg: getComputedStyle(document.body).backgroundColor || '#ffffff' };
     });
     shot = await page.screenshot({ fullPage: true });
@@ -198,12 +246,24 @@ async function composeWithChromium(shotBuf, geom, opts = {}) {
   const height = Math.ceil(geom.height);
   const cuts = [...new Set((geom.cuts || []).map((c) => Math.round(c)))].sort((a, b) => a - b)
     .filter((c) => c > 0 && c <= height + 1);
+  const safeCuts = [...new Set((geom.safe || geom.cuts || []).map((c) => Math.round(c)))]
+    .sort((a, b) => a - b).filter((c) => c > 0 && c <= height + 1);
   const pages = [];
   let start = 0;
   while (start < height - 1) {
     const limit = start + usable;
+    // A WHOLE-CARD BOUNDARY WINS WHENEVER ONE FITS. Taking the last legal cut fills the page
+    // as far as possible, and a grid-row gap is legal — but choosing one when a card boundary
+    // was available splits a card that would have fitted whole on the next page. Measured:
+    // the fractions lesson's assessment is 879px and a page holds 1059, so it had no need to
+    // be cut at all, yet the composer opened it to gain 300px on the page before. The rule
+    // the reviewer set is that a card is never split and whole rows move instead — so a row
+    // gap is now the FALLBACK, used only when no card boundary fits, which is the case a card
+    // taller than a page genuinely needs.
     const within = cuts.filter((c) => c > start + 40 && c <= limit);
-    let end = within.length ? within[within.length - 1] : Math.min(limit, height);
+    const withinSafe = safeCuts.filter((c) => c > start + 40 && c <= limit);
+    let end = withinSafe.length ? withinSafe[withinSafe.length - 1]
+      : (within.length ? within[within.length - 1] : Math.min(limit, height));
     // Absorb a small trailing remainder so a few px of padding does not earn its own
     // page — but ONLY when the page still fits. The clip is a fixed `usable` box with
     // overflow:hidden, so extending it past that silently CUT the content off (a
@@ -212,6 +272,41 @@ async function composeWithChromium(shotBuf, geom, opts = {}) {
     if (height - end < 48 && height - start <= usable) end = height;
     pages.push([start, Math.min(end, height)]);
     start = end;
+  }
+  // A LAST PAGE HOLDING ALMOST NOTHING READS AS UNFINISHED. Taking the last legal cut
+  // before the limit fills each page as far as it can, which is right until the tail is
+  // reached: five of the fifteen document lessons ended on a page 8–17% full, because the
+  // page before it was packed to 98% and only a sliver was left over. Page COUNT is not the
+  // problem and is not changed here — the same number of sheets, the same legal cuts — the
+  // last two pages are simply balanced against each other, so 98% + 8% becomes something a
+  // teacher reads as two pages rather than one page and an offcut.
+  //
+  // Only cuts that leave BOTH halves inside `usable` are considered, because the clip is a
+  // fixed box with overflow:hidden and a page longer than that silently loses content.
+  if (pages.length >= 2) {
+    const lastStart = pages[pages.length - 1][0];
+    const secondStart = pages[pages.length - 2][0];
+    if (height - lastStart < usable * 0.25) {
+      const mid = secondStart + Math.round((height - secondStart) / 2);
+      // Prefer a whole-card boundary: rebalancing is a cosmetic choice, and buying a
+      // fuller last page by opening a card across the break trades one defect for another.
+      // Measured — balancing on any cut moved the fractions lesson's boundary into the
+      // middle of a card and three boxes then crossed it. Only if no card boundary can
+      // split the tail is a row gap considered.
+      const fits = (c) => c > secondStart + 40 && c - secondStart <= usable && height - c <= usable;
+      const safeLegal = safeCuts.filter(fits);
+      const legal = safeLegal.length ? safeLegal : cuts.filter(fits);
+      if (legal.length) {
+        const best = legal.reduce((a, c) => (Math.abs(c - mid) < Math.abs(a - mid) ? c : a), legal[0]);
+        pages[pages.length - 2] = [secondStart, best];
+        pages[pages.length - 1] = [best, height];
+      }
+    }
+  }
+  if (process.env.LP_DEBUG_PAGES === '1') {
+    console.log('[pages] height=' + height + ' usable=' + usable
+      + ' safe=' + JSON.stringify(safeCuts) + ' cuts=' + JSON.stringify(cuts.slice(0, 60))
+      + ' -> ' + JSON.stringify(pages));
   }
   const b64 = shotBuf.toString('base64');
   // Page-number chrome is pack-driven: 'ar-bottom' prints the pilot-style

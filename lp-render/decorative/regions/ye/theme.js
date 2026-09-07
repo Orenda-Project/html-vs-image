@@ -1826,6 +1826,352 @@ body{background:#fcfcfc;font-family:'Noto Naskh Arabic','IBM Plex Sans Arabic','
    its own accent. */
 .section.yl-block.sec-exit-ticket .yl-title{color:#7a5910 !important}
 .section.yl-block.sec-solutions .yl-title{color:#155e46 !important}
+
+/* WHEN A CARD CARRIES BOTH AN ILLUSTRATION AND AN EXERCISE GRID, the exercises are the
+   content and the illustration is supporting art. At full intro size it left a column of
+   white beside a single line of instruction, because the row is as tall as the picture. */
+.section.yl-stage:has(.yl-actgrid) .yl-illus img{max-height:186px !important}
+.section.yl-stage:has(.yl-actgrid) .yl-sbody.yl-split{grid-template-columns:1fr 1fr;
+  align-items:start}
+
+/* ═══════════════════════════════════════════════════════════════════════════════════
+   TEACHER CORNER — matched to the approved page, replacing the flush side tab.
+   The approved card is a full-width horizontal card: soft cream fill, thin rounded amber
+   border, the text CENTRED on that fill with no inner white box, and the title as a
+   ROUNDED AMBER PILL inset at the RTL start with its bubble icon. Mine had a
+   square-edged full-height tab clamped to the far end and the text in a white box, which
+   is what read as "a small side label attached awkwardly to the box".
+   ═══════════════════════════════════════════════════════════════════════════════════ */
+.section.yl-block.sec-homework{background:#fdf4e4 !important;border:1.6px solid #e2b464 !important}
+.section.yl-block.yl-tabbed.sec-homework{display:flex;align-items:center;gap:12px;
+  padding:9px 12px}
+.section.yl-block.sec-homework .yl-bhead{display:none}
+.sec-homework .yl-btab{order:0;flex:0 0 auto;background:#d9a13b;color:#fff;
+  border-radius:11px;padding:7px 10px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;min-width:74px;align-self:center}
+.sec-homework .yl-btab .yl-bubble{width:18px;height:18px}
+.sec-homework .yl-btab .yl-btl{font-size:12.5px;font-weight:800;line-height:1.25}
+.section.yl-block.sec-homework .yl-bbody{order:1;flex:1;min-width:0;padding:0 4px !important}
+/* the text sits on the card's own fill, centred, with no box around it */
+.section.yl-block.sec-homework .yl-bbody .d-note{background:none !important;
+  border:0 !important;padding:2px 6px !important;margin:0;text-align:center;
+  font-size:14.5px;font-weight:700;line-height:1.55;color:#4a3608}
+
+/* ── SIDE-BY-SIDE CELLS SHARE A HEIGHT ──────────────────────────────────────────────
+   In an exercise row the cells were as tall as their own content, so their bottoms drifted
+   apart and the answer lines sat at different heights across the row. Each cell now
+   stretches to the row and pins its answer to the bottom, so the row reads as one band. */
+.yl-actgrid{align-items:stretch}
+.yl-actgrid > .yl-act{display:flex;flex-direction:column;height:100%}
+.yl-actgrid > .yl-act > .yl-sbody{flex:1 1 auto;display:flex;align-items:center}
+.yl-actgrid > .yl-act > .yl-sbody > .yl-tvis{width:100%}
+.yl-actgrid > .yl-act > .yl-answer{margin-top:auto}
+
+/* ═══════════════════════════════════════════════════════════════════════════════════
+   DENSITY AND A DELIBERATE CLOSING STACK
+   The reviewer's two complaints pull against each other: cards must never be cut by a
+   page break, AND the page must not be left half empty. Both hold only if the cards are
+   SMALLER — so the density goes into the activity cells, which is where the slack was.
+   ═══════════════════════════════════════════════════════════════════════════════════ */
+/* exercise cells: fill their column, no dead margin, figure centred in its own cell */
+.yl-actgrid{padding:0 12px 9px;gap:0 9px}
+.yl-actgrid > .yl-act{padding:0}
+.yl-actgrid .yl-alabel{padding:7px 0 0;font-size:12px;line-height:1.4}
+.yl-actgrid .yl-sbody{padding:5px 0 0 !important}
+.yl-actgrid .yl-tvis .geo-fig{padding:6px 7px;justify-content:center}
+.yl-actgrid .yl-answer{font-size:10.5px;padding:3px 7px;margin-top:auto}
+/* a two-up row has more room per cell, so its figures may be bigger — that is what stops
+   a 2-cell row looking like two small things floating in a wide card */
+.yl-actgrid.yl-cols-2 .geo-s,.yl-actgrid.yl-cols-2 .geo-w,
+.yl-actgrid.yl-cols-2 .geo-g{max-height:86px}
+.yl-actgrid.yl-cols-3 .geo-s,.yl-actgrid.yl-cols-3 .geo-w,
+.yl-actgrid.yl-cols-3 .geo-g{max-height:66px}
+.yl-actgrid.yl-cols-2 .geo-fig,.yl-actgrid.yl-cols-3 .geo-fig{padding:8px 9px}
+
+/* THE CLOSING STACK IS ONE DELIBERATE BLOCK: notes full width, the pair in one row, the
+   teacher's corner full width, with the SAME gap between all three. */
+.body > .section.yl-notes,
+.body > .section.yl-block.sec-exit-ticket,
+.body > .section.yl-block.sec-solutions,
+.body > .section.yl-block.sec-homework{margin-bottom:6px}
+.body > .section.yl-block.sec-homework{margin-bottom:0}
+/* and they all carry the same soft-fill / rounded-border language */
+.section.yl-notes,.section.yl-block.sec-exit-ticket,
+.section.yl-block.sec-solutions,.section.yl-block.sec-homework{border-radius:13px}
+
+/* A LONG TEACHER SPEECH NEEDS WIDTH, NOT HEIGHT. العرض's text ran 363px tall in a half-width
+   column beside a compact drawn board, making a 509px card that would not fit in the 448px
+   left on page 1 — so the page broke at 58% full. The board is a fixed three-row drawing and
+   reads fine narrower; the prose gets the width instead. */
+/* Measured: العرض was 34px too tall to fit page 1, and its text column was the tall part —
+   351px of prose in a 437px column beside a compact drawn board. Widening the prose column
+   is what shortens the card; it also evens out the "one side crowded" imbalance. */
+.section.yl-stage:has(.geo-board) .yl-sbody.yl-split{grid-template-columns:1.95fr 1fr}
+.section.yl-stage:has(.geo-board) .geo-s{max-height:48px}
+
+
+
+/* PAGE 1 BREAKS ON A THRESHOLD, NOT A GRADIENT. It ended at 611px of 1059 because the next
+   card (العرض, 497px) needed 49px more than the 448px left. Freeing those 49px from the cards
+   ABOVE it does not move the boundary up by 49 — it lets the whole card land on page 1 and
+   the boundary jumps to ~1058. That is the blank area the reviewer is pointing at, and this
+   is the only lever that closes it without cutting a card. */
+.section.sec-stage-tamhid .yl-tvis .geo-fig{padding:5px 7px}
+.section.sec-stage-tamhid .geo-s{max-height:104px}
+.section.yl-miscsec .yl-mrow .yl-half{padding:7px 12px 8px}
+.section.yl-miscsec .yl-mhead{margin-bottom:3px}
+.section.yl-miscsec .yl-mfix{padding:5px 13px}
+.section.yl-block.sec-materials .yl-bbody{padding:5px 13px 6px}
+
+/* MEASURED AGAIN, AND THE TEXT WAS NEVER THE CONSTRAINT: widening the prose column changed
+   the card's height by zero, because the row is as tall as the BOARD beside it — three rows
+   of shape + answer box + caption, 351px. Eleven pixels off each row is the 34px that lets
+   the whole card land on page 1, which is what closes the blank area. */
+.section.yl-stage:has(.geo-board) .geo-s{max-height:42px}
+.section.yl-stage:has(.geo-board) .geo-brow{padding-bottom:3px}
+.section.yl-stage:has(.geo-board) .geo-box{width:19px;height:19px;font-size:11.5px}
+.section.yl-stage:has(.geo-board) .geo-cap{font-size:9.5px}
+.section.yl-stage:has(.geo-board) .geo-board{gap:4px}
+.section.yl-stage:has(.geo-board) .geo-cell{gap:3px}
+
+/* Page 1 is now 98% full and page 2 99.5% — the tail on page 3 is 80px. 55px off the
+   exercise grids' own frames closes it, and both pages stay under their limit. */
+.yl-actgrid.yl-cols-4 .geo-s,.yl-actgrid.yl-cols-4 .geo-w,
+.yl-actgrid.yl-cols-4 .geo-g{max-height:44px}
+.yl-actgrid.yl-cols-4 .geo-fig{padding:4px 4px}
+.yl-actgrid.yl-cols-2 .geo-s,.yl-actgrid.yl-cols-2 .geo-w,
+.yl-actgrid.yl-cols-2 .geo-g{max-height:74px}
+.yl-actgrid .yl-alabel{padding:6px 0 0}
+.yl-actgrid .yl-answer{padding:2px 6px}
+.section.yl-stage .yl-check{padding:4px 12px}
+.yl-srow{padding:3px 8px}
+
+/* ── NOTES: the ruled lines must read as separate lines to write on ──────────────────
+   Successive density passes had squeezed the gap to 4px, so the two dashed rules sat on
+   top of each other and read as one thick band. They are writing space: they need room to
+   write IN. */
+.section.yl-notes .yl-nbody{padding:7px 13px 9px}
+.section.yl-notes .yl-nlabel{margin-bottom:6px}
+.section.yl-notes .yl-nrules{gap:14px;padding:2px 0 3px}
+.section.yl-notes .yl-nrules i{border-bottom:1.5px dashed #b3c4de}
+
+/* ── the closing pair: a real gutter, and no card may reach into the other ───────────── */
+.body > .section.yl-block.sec-exit-ticket{grid-column:1 / 7;margin-inline-end:5px}
+.body > .section.yl-block.sec-solutions{grid-column:7 / 13;margin-inline-start:5px}
+.section.yl-block.sec-exit-ticket,.section.yl-block.sec-solutions{overflow:hidden}
+
+/* Giving the notes their writing room cost 17px, which pushed أسرتي onto a third page.
+   Taken back from the closing pair's own padding and the checkpoint strips — the writing
+   space stays, since that is what the reviewer asked for. */
+.section.yl-block.sec-exit-ticket .yl-bbody,
+.section.yl-block.sec-solutions .yl-bbody{padding:4px 11px 5px !important}
+.section.yl-stage .yl-check{padding:3px 12px 4px}
+.section.yl-notes .yl-nbody{padding:6px 13px 7px}
+
+/* the illustration sitting in the exercise grid's spare slot: same frame as its neighbours,
+   so it reads as one of the row rather than a photograph dropped into a gap */
+.yl-actgrid > .yl-act.yl-artcell{display:flex;flex-direction:column;justify-content:flex-end;
+  padding-top:6px}
+.yl-artcell .yl-illus{margin:0;background:#fff;border:1.5px solid #e1e6ef;border-radius:11px;
+  padding:4px;overflow:hidden}
+.yl-artcell .yl-illus img{width:100%;height:auto;max-height:104px;object-fit:cover;
+  border-radius:8px;display:block}
+.yl-artcell .yl-illus figcaption{font-size:9.5px;font-weight:700;color:#44506a;
+  text-align:center;padding:3px 2px 0;line-height:1.3}
+
+/* ── THE ILLUSTRATION FILLS ITS COLUMN, WHICHEVER SIDE IS TALLER ─────────────────────
+   A stage card's row is as tall as its taller column. When the PICTURE is taller it drives
+   the row and there is no gap — which is why this was invisible in the lessons I had been
+   measuring. When the TEXT is taller, the picture keeps its own height and leaves white
+   underneath: the blank area under the illustration the reviewer is pointing at.
+   The panel now stretches and the image fills it, cropping rather than leaving a gap, so no
+   lesson can produce that space whichever stage the artwork lands in. */
+.yl-sbody.yl-split > .yl-tvis{align-self:stretch;display:flex}
+.yl-sbody.yl-split > .yl-tvis > .yl-illus{display:flex;flex-direction:column;width:100%;
+  height:100%;min-height:0}
+.yl-sbody.yl-split > .yl-tvis > .yl-illus img{flex:1 1 auto;min-height:120px;height:auto;
+  max-height:none;object-fit:cover;object-position:center}
+.yl-sbody.yl-split > .yl-tvis > .yl-illus figcaption{flex:0 0 auto}
+
+/* ── A SPANNING ILLUSTRATION, THE APPROVED ANATOMY ──────────────────────────────────
+   The picture holds one column for the whole card while the teacher's text, the دعم/تحد
+   row and the checkpoint stack in the other. Whichever side would have been shorter is
+   now filled with the section's own content instead of white. The picture is nested two
+   levels down, so the wrappers become display:contents and the grid places the real
+   elements — the same trick the pilot's تحقق sidebar used. */
+.yl-scard.yl-artspan{display:grid;grid-template-columns:1fr 1.02fr;gap:0 12px;
+  padding:10px 13px 11px;align-items:start}
+.yl-artspan > .yl-act{display:contents}
+.yl-artspan .yl-sbody.yl-split{display:contents}
+.yl-artspan .yl-ttext{grid-column:1;grid-row:1;min-width:0}
+/* A 1 / -1 span resolves against the EXPLICIT grid, and there are no declared rows here, so it
+   spanned a single row and left the white it was meant to remove. The rows are declared. */
+/* A 1fr middle row expanded the card to 1087px — auto rows, and the picture
+   spans them, so the CARD's height is still set by its content. */
+.yl-scard.yl-artspan{grid-template-rows:auto auto auto}
+.yl-artspan .yl-tvis{grid-column:2;grid-row:1 / span 3;align-self:stretch;display:flex;
+  min-width:0}
+.yl-artspan .yl-srows{grid-column:1;grid-row:2;padding:8px 0 0}
+.yl-artspan .yl-srows{grid-template-columns:1fr}
+.yl-artspan .yl-check{grid-column:1;grid-row:3;margin:8px 0 0}
+.yl-artspan > .yl-act > .yl-sbody{padding:0 !important}
+.yl-artspan .yl-tvis > .yl-illus{width:100%;height:100%;display:flex;flex-direction:column;
+  min-height:0}
+.yl-artspan .yl-tvis > .yl-illus img{flex:1 1 auto;min-height:0;max-height:none;
+  height:auto;object-fit:cover}
+
+/* the behaviour checklist: one row per behaviour, box at the RTL start */
+.yl-ticklist{display:flex;flex-direction:column;gap:6px;width:100%}
+.yl-tickrow{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #e1e6ef;
+  border-radius:9px;padding:5px 9px}
+.yl-tickbox{flex:0 0 auto;width:24px;height:24px;border-radius:6px;border:1.8px solid;
+  display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800}
+.yl-tickbox.yl-t-yes{border-color:#8fbf9c;color:#2f7d4a;background:#eaf5ec}
+.yl-tickbox.yl-t-no{border-color:#cfd7e4;background:#fbfcfe}
+.yl-ticktext{min-width:0;font-size:13.5px;font-weight:700;line-height:1.45;color:var(--ink)}
+/* a question-and-answer cell: the question reads as the prompt, the answer as the response */
+.yl-actgrid > .yl-act .yl-answer{background:#eef4f0;border-color:#cfe2d6}
+
+/* ── HEADER: A BROAD TOP BANNER ──────────────────────────────────────────────────────
+   Measured off the approved set, which uses BOTH shapes: page 1 carries a centred capsule
+   61% of the page width with 19% margin each side, page 2 a full-bleed bar. I had built the
+   capsule. The reviewer wants the banner, so: the full content width, a modest radius rather
+   than a pill, and no side margin. Title centred in white, the ministry line centred
+   directly under it — same text, same weights, only the shape changes. */
+.lp-header{max-width:none !important;width:auto !important;margin:0 22px 10px !important;
+  border-radius:11px !important;padding:13px 26px 12px !important}
+.lp-header h1{font-size:27px;line-height:1.2;letter-spacing:0}
+.lp-header .sub{margin:5px 0 0;font-size:14.5px;letter-spacing:.2px}
+
+/* ── A LABELLED ACTIVITY INSIDE A SPANNING-ILLUSTRATION CARD ─────────────────────────
+   The road-safety lesson printed its label «سؤال» ALONE at the bottom of the التمهيد
+   card, with the question it labels at the top. The markup was right — the label is the
+   first child of the activity — but the card is a grid whose wrappers are
+   display:contents, and every real child was given an explicit cell EXCEPT the label.
+   With all three declared rows occupied, the one unplaced item auto-placed into a new
+   implicit row after them, i.e. the bottom of the card. Any stage whose single activity
+   carries both a label and an illustration hits this; the reading lesson never did
+   because its opening stage has no label.
+   So the label gets a row of its own at the top of the text column, and everything below
+   it shifts down one. A card with no label leaves row 1 empty, which costs nothing: it is
+   an auto row with no content and the row gap here is 0. */
+.yl-scard.yl-artspan{grid-template-rows:auto auto auto auto}
+.yl-artspan .yl-alabel{grid-column:1;grid-row:1;margin:0 0 3px}
+.yl-artspan .yl-ttext{grid-column:1;grid-row:2}
+.yl-artspan .yl-srows{grid-column:1;grid-row:3}
+.yl-artspan .yl-check{grid-column:1;grid-row:4}
+.yl-artspan .yl-tvis{grid-row:1 / span 4}
+
+/* ── COLOUR SWATCHES ────────────────────────────────────────────────────────────────
+   A row of chips, each with its name under it. It wraps rather than shrinks, so a
+   six-colour set stays readable in a half-card column. */
+.yl-swatches{display:flex;flex-wrap:wrap;gap:9px 12px;justify-content:center;
+  width:100%;padding:4px 0 2px}
+.yl-swatch{display:flex;flex-direction:column;align-items:center;gap:4px}
+.yl-swchip{width:58px;height:42px;display:block}
+.yl-swname{font-size:12.5px;font-weight:600;color:#1d2739;line-height:1.2;text-align:center}
+
+/* ── AN ANSWER PANEL FILLS ITS CARD, IT DOES NOT FLOAT AT THE BOTTOM ─────────────────
+   Equal-height activity cards are right — a ragged row of cards reads as broken — but
+   the height of the row is set by whichever card carries a figure, and the others were
+   left with a white void between their question and a thin answer strip pushed to the
+   bottom by margin-top:auto. On the sight lesson, exercise 1 draws the traffic-light
+   colours and exercises 2 and 3 sat with roughly 90px of nothing in the middle of them.
+   So the answer becomes a PANEL that takes the space the card has spare, with its text
+   centred in it. Nothing is invented to fill the gap: the card's own answer grows into
+   it, which is what makes the three read as one designed set rather than one full card
+   beside two empty ones. A card whose figure already fills the height keeps a short
+   panel, because flex-grow has nothing left to give it. */
+.yl-actgrid > .yl-act{display:flex;flex-direction:column}
+.yl-actgrid > .yl-act > .yl-answer,
+.yl-actgrid > .yl-act .yl-sbody > .yl-answer{
+  margin-top:7px;flex:1 1 auto;display:flex;align-items:center;justify-content:center;
+  text-align:center;min-height:0}
+/* the picture cell is positioned by its own rule above and must keep it */
+.yl-actgrid > .yl-act.yl-artcell{justify-content:flex-end}
+
+/* ── A GROUP HEADING INSIDE A STAGE ─────────────────────────────────────────────────
+   Spans the activity grid so the exercises below it read as its group, with a hairline
+   under it to separate one group from the next. Never a cell: a heading with an empty
+   answer panel beneath it is the abandoned-looking card the review kept catching. */
+/* Kept deliberately cheap in height: the fractions lesson sat 10px under a two-page fit,
+   and a heading that costs 14px each tipped it onto a third page that was 17% full. */
+.yl-ahead{font-size:12.5px;font-weight:700;color:#1d2739;line-height:1.3;
+  padding:2px 0 2px;border-bottom:1px solid #e4eaf3;margin:0}
+.yl-actgrid > .yl-ahead{grid-column:1/-1}
+.yl-actgrid > .yl-ahead:first-child{padding-top:2px}
+
+/* ── A STACKED FIGURE TAKES THE WHOLE CARD ──────────────────────────────────────────
+   In the stacked layout the visual sits BELOW the text rather than beside it, so it has
+   the card's full width to work with. Without these it kept the narrow column's cap and
+   a wide figure — a grid of arithmetic facts, a matching exercise — was drawn small in a
+   wide empty space. The height cap is generous because these figures ARE the exercise;
+   the page grows to fit them, which is what following the content means. */
+.yl-sbody.yl-stacked .yl-tvis{width:100%;min-width:0}
+.yl-sbody.yl-stacked .yl-tvis .cf-svg,
+.yl-sbody.yl-stacked .yl-tvis .d-code-fig .cf-svg{width:100% !important;max-width:100% !important;
+  max-height:none !important;height:auto !important;position:static !important}
+.yl-sbody.yl-stacked .yl-tvis .d-code-fig{width:100%;padding:2px 0 0}
+
+/* ── SOFT GROUNDS, AND TEXT BIG ENOUGH TO READ ──────────────────────────────────────
+   The stage tints declared earlier in this file have been dead: the StageCard reset
+   clears the wrapper with «background:none !important» because the component draws its
+   own white inner card, and a tint without !important cannot win against that. Measured
+   on the page — every stage wrapper computed to transparent, which is why the lessons
+   read as white with coloured borders rather than as the colourful design the review
+   asks for. Each stage now carries its own light ground, and the white inner card sits
+   on it so the content stays maximally readable.
+
+   Grid text was 12.5px for a label and 11px for an answer while the stage's own prose is
+   15px — the exercises, which are the part a teacher reads while teaching, were the
+   smallest text on the page. */
+.section.yl-stage{padding:7px 8px 8px !important;border-radius:15px !important}
+.section.yl-stage.sec-stage-tamhid{background:#fdf5e8 !important}
+.section.yl-stage.sec-stage-arad{background:#edf3fb !important}
+.section.yl-stage.sec-stage-tatbiq{background:#edf6ef !important}
+.section.yl-stage.sec-stage-taqwim{background:#eff0fa !important}
+.section.yl-stage.yl-empty{padding:0 !important;background:none !important}
+
+.yl-actgrid .yl-alabel{font-size:14px;line-height:1.42}
+.yl-actgrid .yl-answer{font-size:12.5px;line-height:1.45;padding:4px 8px}
+.yl-actgrid .yl-ttext p{font-size:14px;line-height:1.55}
+
+/* ── ASSESSMENT QUESTION CARDS ──────────────────────────────────────────────────────
+   «التقويم — أنت تفعل» was a long vertical list of question then answer, flat and with
+   no hierarchy between one pair and the next — a worksheet rather than part of this
+   design. Each pair is now a card: a numbered badge, the question as real HTML text in
+   the document's own Naskh, and the answer in a tinted strip of its own with the
+   region's «الإجابة» chip on it, so a question and its answer never read as two
+   paragraphs of the same weight.
+
+   Two across, because a question and a short answer do not need a full page width; a
+   long question, or one carrying a drawing, takes the whole row rather than being
+   squeezed into half of it. The grid is on the CARD's own container so the stage's
+   header, asides and checkpoint strip are untouched. */
+.yl-scard:has(> .yl-qcard){display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  align-items:start}
+.yl-scard > .yl-ttext.yl-lead{grid-column:1/-1}
+.yl-qcard{grid-column:auto;display:flex;flex-direction:column;
+  background:#f7f9fd;border:1px solid #d8e2f0;border-radius:11px;padding:8px 10px 9px;
+  min-width:0}
+.yl-qcard.yl-qwide{grid-column:1/-1}
+.yl-qhead{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.yl-qnum{flex:0 0 auto;width:21px;height:21px;border-radius:50%;background:#2f3e63;
+  color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;
+  justify-content:center;line-height:1}
+.yl-qlbl{font-size:12px;font-weight:700;color:#5a6b8a;line-height:1.3;min-width:0}
+.yl-qtext{font-size:14px;line-height:1.55;font-weight:700;color:#101a30;
+  margin:0 0 7px;min-width:0}
+.yl-qtext p{margin:0}
+.yl-qfig{margin:0 0 7px;width:100%}
+.yl-qfig .cf-svg{width:100% !important;max-width:100% !important;max-height:none !important;
+  height:auto !important;position:static !important}
+/* the answer is a state of its own, not another paragraph */
+.yl-qans{margin-top:auto;display:flex;align-items:flex-start;gap:7px;
+  background:#eaf4ee;border:1px solid #cfe3d7;border-radius:8px;padding:5px 8px}
+.yl-anschip{flex:0 0 auto;background:#2f7d55;color:#fff;font-size:10.5px;font-weight:800;
+  border-radius:5px;padding:2px 7px;line-height:1.35;white-space:nowrap}
+.yl-anstext{font-size:12.5px;line-height:1.5;font-weight:600;color:#20402f;min-width:0}
 `;
 
 // NO MAX_PAGES. This pack used to declare a two-page contract, and the Studio then

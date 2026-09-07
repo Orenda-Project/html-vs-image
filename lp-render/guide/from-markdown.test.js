@@ -144,7 +144,19 @@ test('every stage that can carry a visual gets one', () => {
   assert.ok(chant, 'the fenced chant should become a figure');
   assert.strictEqual(chant.kind, 'steps');
   assert.match(JSON.stringify(chant), /أُسْرَتِي/, 'built from the chant lines');
-  assert.ok(figOf('stage-arad'), 'a bulleted stage should become a figure');
+  // …AND A STAGE WHOSE BULLETS ARE SENTENCES MUST NOT BE FORCED INTO ONE.
+  // This used to assert the opposite, and it was asserting a defect: the chip budget is
+  // three words, so «يوزع المعلم بطاقات الكلمات على المجموعات» was drawn as «يوزع المعلم
+  // بطاقات» and «يطابق التلميذ كل كلمة بصورتها» as «يطابق التلميذ كل» — severed sentences in
+  // coloured boxes. On a reading-comprehension lesson the same rule produced «لماذا رفض
+  // الذئب» and «كسروا الباب وأخذوا», which is what the reviewer rejected as absurd.
+  // A chip figure is right when the source's own items ARE short labels; when they are
+  // sentences the words belong in the card, whole.
+  const arad = g.sections.find((s) => s.id === 'stage-arad');
+  const aradFig = arad && (arad.codeFigure || (arad.activities || []).map((a) => a.codeFigure).find(Boolean));
+  assert.ok(!aradFig, 'sentence-length bullets must not be cut into chips');
+  assert.match(JSON.stringify(arad), /يوزع المعلم بطاقات الكلمات على المجموعات/,
+    'and the sentence stays on the page in full');
 });
 
 test('the vocabulary table becomes the glossary', () => {

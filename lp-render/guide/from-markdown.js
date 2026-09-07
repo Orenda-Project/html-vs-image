@@ -342,17 +342,25 @@ function rubricItems(body) {
 // the body, so nothing is lost from the page.
 function stepsFigure(items, profile) {
   const budget = profile.chipWords || 3;
-  const picked = items.slice(0, 4).map((t) => {
-    const clean = t.replace(/\*\*/g, '').replace(/^[^:]{0,40}:\s*/, '');
-    const words = clean.split(/\s+/);
-    // A chip that stops mid-phrase reads as a defect rather than as a summary, so a
-    // profile that allows longer chips also marks the cut. Yemen's word cards are short
-    // enough that nothing is ever cut, and its budget is unchanged at three.
-    const cut = words.length > budget;
-    const label = words.slice(0, budget).join(' ') + (cut && profile.chipEllipsis ? '…' : '');
-    return { label, caption: '' };
-  }).filter((x) => x.label);
-  return picked.length >= 2 ? { kind: 'steps', items: picked } : null;
+  // A STEP LADDER IS FOR STEPS, AND A CHIP MUST NOT BE A SEVERED SENTENCE.
+  // The comment that used to sit here said Yemen's word cards are short enough that
+  // nothing is ever cut. That is true of a word-card lesson and false of a reading
+  // comprehension one: «الكلب الوفي» has bullets that are whole sentences, and every one
+  // of them was cut to three words and drawn as a numbered step card — «لماذا رفض الذئب»,
+  // «كسروا الباب وأخذوا», «(تم القبض على» — four fragments in a coloured box, which is
+  // what the reviewer called absurd. Two rules now:
+  //
+  //   1. If any item would be cut, this is the WRONG component. Return null and let the
+  //      part render as text. Silently truncating a teacher's sentence is never right,
+  //      and an ellipsis would only make the severing tidier.
+  //   2. A question-and-answer list is not a sequence. Comprehension bullets carry «؟» or
+  //      an answer marker; they belong in question/answer rows, not on a step ladder.
+  const cleaned = items.slice(0, 4).map((t) => t.replace(/\*\*/g, '').replace(/^[^:]{0,40}:\s*/, '').trim())
+    .filter(Boolean);
+  if (cleaned.length < 2) return null;
+  if (cleaned.some((t) => /[؟?]/.test(t) || /(?:الإجابة|الحل)\s*[:：]/.test(t))) return null;
+  if (cleaned.some((t) => t.split(/\s+/).length > budget)) return null;
+  return { kind: 'steps', items: cleaned.map((label) => ({ label, caption: '' })) };
 }
 
 // The lesson already labels its own parts — «**نشاط الافتتاح (Getting Started):**»,
@@ -401,7 +409,24 @@ function breakOutInlineLabels(text, profile) {
   // «* صورة البنت ← إيمان ٢) أَصِلُ…» put the next exercise's heading at the end of the
   // previous line, where nothing could see it. A digit followed by ')' after whitespace
   // starts a new line; «٥ تلاميذ» and «صفحة ٣٢» are untouched because they have no bracket.
-  out = out.replace(/([^\n])[ \t]+([٠-٩0-9]{1,2}\s*\)\s*)/g, (mm, p1, p2) => `${p1}\n${p2}`);
+  // …with a BRACKET OR A FULL STOP after the number: «١) أَصِلُ…» and «١. ضع إشارة…» are the
+  // same thing written two ways, and only the bracket form was handled — so a paste that
+  // numbered its exercises with dots ran all seven together as one blob of prose. A LETTER
+  // must follow the marker, which is what keeps «٤ أضلاع» and «صفحة ٣٢» out of it.
+  out = out.replace(/([^\n])[ \t]+([٠-٩0-9]{1,2}\s*[).]\s*)(?=[\p{L}])/gu,
+    (mm, p1, p2) => `${p1}\n${p2}`);
+  // …and a question may be numbered with a PREFIX LETTER rather than a bare digit. A sight
+  // lesson writes its assessment as «يحل التلميذ في دفتره: س١: ما هو عضو حاسة الإبصار؟
+  // الإجابة: العين. س٢: ماذا نقول على نعمة البصر؟ الإجابة: … نقطة التحقق: …» — two questions,
+  // two answers and a checkpoint in one line. A bare digit is not what marks them, so none
+  // of the splitters above could see the second question, and the whole line rendered as
+  // one blob of prose while every other stage on the page rendered as tidy parts.
+  // Only a region that DECLARES the marker splits on it, so «س» never becomes structural
+  // for a language that does not number questions this way.
+  if (profile.questionMarkRe) {
+    out = out.replace(new RegExp(`([^\\n])[ \\t]+(${profile.questionMarkRe.source})`, 'g'),
+      (mm, p1, p2) => `${p1}\n${p2}`);
+  }
   return out;
 }
 
@@ -442,6 +467,18 @@ function labelledParts(body, profile = {}) {
   // colon, so the bare-label splitter never saw it and both matching exercises ran together
   // inside one card as prose with one small merged figure. Each numbered line now starts its
   // own part, which is what lets each exercise get its own full-size visual.
+  // …and the same for a bulleted question that carries its own answer. Collected before the
+  // numbered pass so the overlap rule below sees both and keeps whichever consumes more of
+  // the line, exactly as it does for a numbered heading that also ends in a colon.
+  if (profile.qaLineRe) {
+    const qa = [];
+    const qre = new RegExp(profile.qaLineRe.source, 'gm');
+    let qm;
+    while ((qm = qre.exec(src))) {
+      qa.push({ label: qm[1].trim(), at: qm.index, end: qm.index + qm[0].length });
+    }
+    if (qa.length >= 2) marks = marks.concat(qa).sort((x, y) => x.at - y.at);
+  }
   if (profile.exerciseRe) {
     const ex = [];
     const re = new RegExp(profile.exerciseRe.source, profile.exerciseRe.flags);
@@ -552,6 +589,16 @@ function pairsFigure(body) {
   const bare = [...String(body).matchAll(/^[\s•▪●◦*-]*([^\n←→]{1,24}?)\s*[←→]\s*([^\n←→]{1,24})$/gm)]
     .map((m) => ({ label: m[1].trim(), caption: m[2].trim() }))
     .filter((x) => x.label && x.caption);
+  // AN INLINE PAIR RUN IS NOT SAFELY EXTRACTABLE, AND A WRONG DIAGRAM IS WORSE THAN NONE.
+  // Tried and reverted: splitting a line like «يكتب على السبورة: الجذور ← تثبيت وامتصاص
+  // الماء. الساق ← نقل الماء.» on its own punctuation to recover the pairs. It fires on
+  // real content but never cleanly — the plant lesson lost «الجذور» and kept the pairs in
+  // the prose as well, so the card said the same thing twice; the letter-completion lesson
+  // produced «بني ← الإجابة: يـ (يبني) ٢- بـ ..», which swallows the next exercise and
+  // states an answer marker as half of a pair; the reading lesson dropped one pair of three
+  // and carried a stray bracket into a drawn label. A matching visual asserts a fact about
+  // the lesson, so a partial extraction is a factual error, not a cosmetic one. The pairs
+  // stay in the text, whole and correct, until a line-anchored form makes them safe.
   const seen2 = new Set();
   const uniq2 = bare.filter((p) => !seen2.has(p.label + p.caption) && seen2.add(p.label + p.caption));
   // A MATCHING EXERCISE IS A MATCHING VISUAL, not a row of chips. «أصل بين الصورة والكلمة
@@ -705,6 +752,97 @@ function geoBoard(text, profile) {
   return { kind: 'geo-board', rows, yes: L.yes || '', no: L.no || '' };
 }
 
+// COLOUR NAMING IS A DRAWING, NOT A SENTENCE. Only the colours the profile declares are
+// drawn, in the order the source names them, and a set of fewer than two is not a set — so
+// «وتسمية الألوان بدقة», which names no colour at all, draws nothing.
+function colourFigure(text, profile) {
+  const map = profile.colourNames;
+  if (!map) return null;
+  const t = unvocalised(String(text || ''));
+  const hits = [];
+  const seen = new Set();
+  // Longest name first: «الأحمر» must claim its own letters before «أحمر» can match inside
+  // it, or the swatch is labelled with half the word the teacher wrote.
+  for (const name of Object.keys(map).sort((a, b) => b.length - a.length)) {
+    const needle = unvocalised(name);
+    for (let from = 0; ; ) {
+      const at = t.indexOf(needle, from);
+      if (at < 0) break;
+      if (!seen.has(map[name])) { hits.push({ at, name, hex: map[name] }); seen.add(map[name]); }
+      from = at + needle.length;
+    }
+  }
+  if (hits.length < 2) return null;
+  hits.sort((a, b) => a.at - b.at);
+  return { kind: 'colour-set', items: hits.map((h) => ({ name: h.name, hex: h.hex })) };
+}
+
+// A RUN OF ARITHMETIC FACTS IS A GRID OF CARDS. The addition lesson states twelve in one
+// line and the division lesson sixty; each one drew a single «expression» chip for the
+// first match and left the rest as prose. Every fact the source states is drawn, in the
+// source's order, and the run is then removed from the card's text because it is the same
+// words in the same order — printed twice it is the running-text duplication already
+// rejected once for matching pairs.
+const ARITH_RE = /[٠-٩]{1,3}\s*[+\-×÷]\s*[٠-٩]{1,3}\s*=\s*[٠-٩]{1,3}/g;
+function factGridFigure(body) {
+  const found = String(body || '').match(ARITH_RE) || [];
+  const seen = new Set();
+  const items = found.map((t) => t.replace(/\s+/g, ' ').trim())
+    .filter((t) => !seen.has(t) && seen.add(t))
+    .map((text) => ({ text }));
+  return items.length >= 3 ? { kind: 'fact-grid', items } : null;
+}
+
+// «ظلل نصف الشكل» / «ظلل ربعين في كل شكل» — a shading instruction names the fraction, and
+// the fraction says how many parts and how many of them are filled.
+const FRAC_RE = /([٠-٩])\s*\/\s*([٠-٩])/g;
+function fractionFigure(text, profile) {
+  const words = profile.fractionWords;
+  if (!words) return null;
+  const t = unvocalised(String(text || ''));
+  // A LIST of fractions is a SET of figures — one circle each, not one circle for the first
+  // of nine. The fractions lesson states three such lists.
+  const all = [...t.matchAll(FRAC_RE)]
+    .map((m) => ({ shaded: '٠١٢٣٤٥٦٧٨٩'.indexOf(m[1]), parts: '٠١٢٣٤٥٦٧٨٩'.indexOf(m[2]) }))
+    .filter((f) => f.parts >= 2 && f.shaded >= 1 && f.shaded <= f.parts);
+  if (all.length >= 3) return { kind: 'fraction-set', items: all };
+  // an explicit fraction beats a word: «الشكل الأول: ٢/٤» states both numbers
+  const ex = t.match(/([٠-٩])\s*\/\s*([٠-٩])/);
+  if (ex) {
+    const shaded = '٠١٢٣٤٥٦٧٨٩'.indexOf(ex[1]);
+    const parts = '٠١٢٣٤٥٦٧٨٩'.indexOf(ex[2]);
+    if (parts >= 2 && shaded >= 1 && shaded <= parts) {
+      return { kind: 'fraction-grid', shape: 'circle', parts, shaded };
+    }
+  }
+  // Longest word first, so «ربعين» is not read as «ربع» — AND THE WORD MUST STAND ALONE.
+  // A substring test drew a quarter-circle for the division lesson's «٣ أربعات» and for the
+  // geometry lesson's «أربعة أضلاع», because «ربع» sits inside both. There is no \\b to
+  // lean on here: JavaScript defines it on ASCII, so at the edge of an Arabic word both
+  // sides are non-word and it can never match. A negative lookaround for another Arabic
+  // letter is the boundary that works — the same fix this repo's role patterns needed.
+  for (const w of Object.keys(words).sort((a, b) => b.length - a.length)) {
+    const re = new RegExp('(?<![؀-ۿ])' + unvocalised(w) + '(?![؀-ۿ])');
+    if (re.test(t)) {
+      const [parts, shaded] = words[w];
+      return { kind: 'fraction-grid', shape: 'circle', parts, shaded };
+    }
+  }
+  return null;
+}
+
+// «١٢ ÷ ٤ = ٣» drawn as what it means: twelve things in three groups of four.
+function groupingFigure(text, profile) {
+  if (!profile.groupingRe) return null;
+  const m = unvocalised(String(text || '')).match(profile.groupingRe);
+  if (!m) return null;
+  const num = (a) => Number(String(a).replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+  const total = num(m[1]), per = num(m[2]), groups = num(m[3]);
+  // only when the sentence is arithmetically true and small enough to read as a picture
+  if (!(total && per && groups) || per * groups !== total || total > 30) return null;
+  return { kind: 'group-set', total, per, groups };
+}
+
 function figureFor(rawBody, profile) {
   // A demonstration board that names several contrasts beats everything: it IS the stage.
   const gb = geoBoard(rawBody, profile);
@@ -716,6 +854,21 @@ function figureFor(rawBody, profile) {
   // elsewhere (poor labels) — preferring it produced cards reading «أ | أ | أح م د».
   const eb = errorBoardFigure(rawBody, profile);
   if (eb) return eb;
+  // Before the quote and prose detectors: العرض's colours sit inside a quoted sentence, and
+  // a quote box would have won and drawn nothing.
+  const cf = colourFigure(rawBody, profile);
+  if (cf) return cf;
+  const frac = fractionFigure(rawBody, profile);
+  if (frac) return frac;
+  // A RUN OF FACTS BEATS A SINGLE ONE. The division lesson states sixty divisions in one
+  // line; the grouping detector matched the first of them and drew three rings of four,
+  // which is a fine picture of «١٤ ÷ ٢ = ٧» and leaves the other fifty-nine as a strip of
+  // prose. The grid comes first when there is a run, and grouping keeps the case it is
+  // actually for: one division sentence a teacher is unpacking on the board.
+  const fg = factGridFigure(rawBody);
+  if (fg) return fg;
+  const grp = groupingFigure(rawBody, profile);
+  if (grp) return grp;
   const pf = pairsFigure(rawBody);
   if (pf) return pf;
   // a greeting-and-answer list is the lesson's own matching exercise
@@ -753,8 +906,23 @@ function figureFor(rawBody, profile) {
 // places and a bare «MODEL ANSWER:» in others. Requiring one found nothing.
 function splitCheck(text, profile) {
   const t = String(text);
-  const m = t.search(profile.checkMarks);
-  if (m <= 40) return { body: t, check: '' };          // nothing before the marker
+  // THE MARKER SET HOLDS TWO DIFFERENT THINGS — an answer marker and the checkpoint — so
+  // searching once and giving up when the first hit lands early lets an «الإجابة:» in the
+  // opening clause suppress a «نقطة التحقق» later in the SAME paragraph. A sight lesson
+  // whose التقويم reads «…: س١: ما هو عضو حاسة الإبصار؟ الإجابة: العين. … نقطة التحقق: ٨٠٪…»
+  // lost its checkpoint strip while the other three stages kept theirs, because that first
+  // answer marker sits at character 34. Walk the matches and take the first one that
+  // actually has a body in front of it; when the first hit already qualifies — every case
+  // this function handled before — the result is unchanged.
+  let m = -1;
+  for (let from = 0; from < t.length;) {
+    const rel = t.slice(from).search(profile.checkMarks);
+    if (rel < 0) break;
+    const abs = from + rel;
+    if (abs > 40) { m = abs; break; }
+    from = abs + 1;                                    // zero-width match: step past it
+  }
+  if (m < 0) return { body: t, check: '' };            // nothing before the marker
   const body = t.slice(0, m).trim();
   const check = t.slice(m).trim();
   // The amber sidebar is a ~90px column sized for ONE line. Measured: a 600-character
@@ -1087,11 +1255,21 @@ function buildGuideFromMarkdown(md, opts = {}) {
           const am = rawLabel.match(profile.answerParenRe);
           if (am) { partAnswer = am[1].trim(); rawLabel = rawLabel.replace(profile.answerParenRe, '').trim(); }
         }
+        if (!partAnswer && profile.answerTailRe) {
+          const am = rawLabel.match(profile.answerTailRe);
+          if (am && am.index > 6) {
+            partAnswer = am[1].trim();
+            rawLabel = rawLabel.slice(0, am.index).trim();
+          }
+        }
         const isExercise = /^[\d٠-٩]/.test(rawLabel);
         const longLabel = !isExercise && rawLabel.length > 34;
         const label = longLabel ? '' : rawLabel;
         const sep = isExercise ? ' — ' : ' · ';
         const title = [T[id], label].filter(Boolean).join(sep);
+        // the stage's name as the source wrote it, minus its minutes and its mode
+        const ownName = String(b.title || '').split(/\s*[—–]\s*/)[0]
+          .replace(tailMin, '').replace(/[(（][^)）]*[)）]/g, '').trim();
         // THE LABEL IS THE EXERCISE. «١. ضع إشارة (✓) على القطعة المستقيمة.» carries all of
         // its meaning in the label and has no body at all, so a detector fed only the body
         // saw an empty string and drew nothing for seven exercises in a row.
@@ -1099,8 +1277,18 @@ function buildGuideFromMarkdown(md, opts = {}) {
         // «٢. لماذا يكون الشكلان غير متطابقين؟» sits above a check point that happens to
         // mention مكعب and مخروط, and reading both together drew a cube-and-cone figure for
         // a question about congruence.
-        const fig = (part.label ? figureFor(part.label, profile) : null)
+        let fig = (part.label ? figureFor(part.label, profile) : null)
           || figureFor([part.label, part.raw].filter(Boolean).join('\n'), profile);
+        // …BUT A RUN OF FACTS IN THE BODY BEATS A SINGLE FACT IN THE LABEL. The label is
+        // consulted first because an exercise usually states itself there, and that is
+        // right — except when the label carries one division and the body carries twenty.
+        // The assessment of the division lesson did exactly that: «كم ٢ في العدد ١٢؟» drew
+        // its three rings, which is correct for the label, and the twenty divisions under
+        // it stayed as prose because a figure had already been found.
+        if (fig && (fig.kind === 'group-set' || fig.kind === 'expression')) {
+          const richer = factGridFigure([part.label, part.raw].filter(Boolean).join('\n'));
+          if (richer && richer.items.length >= 3) fig = richer;
+        }
         // THE ACTIVITY IS THE VISUAL, NOT A PARAGRAPH TOO. When a matching figure carries
         // the pairs, printing «أبي ← صورة الأب أمي ← صورة الأم …» in the body as well is the
         // "labels squeezed into running text" the reviewer rejected. Every one of those
@@ -1114,6 +1302,21 @@ function buildGuideFromMarkdown(md, opts = {}) {
         let partBody = longLabel && part.body
           ? `${rawLabel}: ${part.body}`
           : (longLabel ? rawLabel : part.body);
+        // THE FACTS ARE DRAWN, SO THEY DO NOT ALSO RUN THROUGH THE TEXT. Left in place, the
+        // addition lesson printed «٩ + ٤ = ١٣ ٧ + ٩ = ١٦ ٧ + ٥ = ١٢ …» above its own grid of
+        // cards — the same words twice, and in prose they run together into a strip of
+        // digits with no gaps a reader can use. The instruction that introduces them stays
+        // exactly as written; only the run itself moves into the figure, where every fact is
+        // still present in the guide and still checked by the fidelity pass.
+        if (fig && fig.kind === 'fact-grid' && partBody) {
+          partBody = partBody.replace(new RegExp(ARITH_RE.source, 'g'), ' ')
+            .replace(/[(（]\s*[)）]/g, ' ')            // brackets the facts sat inside
+            .replace(/(?:\s*[،,؛;]\s*){2,}/g, ' ')    // «: ، ، ، ،» left where a table was
+            .replace(/([:：])(?:\s*[،,؛;]\s*)+/g, '$1 ')
+            .replace(/\s{2,}/g, ' ')
+            .replace(/\s*[،,؛;:：]\s*$/, '')
+            .trim();
+        }
         if (fig && fig.kind === 'match-pairs') {
           // Strip at LINE level, from part.raw — part.body has already been flattened by
           // plain(), so a line filter applied to it matched nothing and the fallback regex
@@ -1140,12 +1343,40 @@ function buildGuideFromMarkdown(md, opts = {}) {
             && partBody.search(profile.checkMarks) === 0 && partBody.length <= 160) {
           sp = { body: '', check: partBody.trim() };
         }
+        // THE ANSWER MAY BE IN THE BODY RATHER THAN THE LABEL. «س١: ما هو عضو حاسة الإبصار؟
+        // الإجابة: العين.» puts the question after the label's colon, so the label — «س١» —
+        // carries no answer, and this question kept its answer buried in a sentence while the
+        // numbered exercises on the same page had theirs lifted into the answer slot. The slot
+        // belongs to the PART; which side of the colon the words landed on is an accident of
+        // how the teacher typed the line.
+        // This runs AFTER the check has been split off, and never touches it: answerTailRe
+        // reaches to the end of the string, so applied first it swallowed «نقطة التحقق: ٨٠٪
+        // من التلاميذ…» into the answer of the question that happened to precede it.
+        if (!partAnswer && profile.answerTailRe) {
+          const hasCheck = Boolean(sp.check || sp.longCheck);
+          const target = hasCheck ? sp.body : partBody;
+          const bm = String(target || '').match(profile.answerTailRe);
+          if (bm && bm.index > 6) {
+            partAnswer = bm[1].trim();
+            const kept = String(target).slice(0, bm.index).trim();
+            if (hasCheck) sp.body = kept; else partBody = kept;
+          }
+        }
         // AN EXPLICIT STAGE COMPONENT WITH NAMED SLOTS — text, visual, checkpoint,
         // support, challenge — rather than a generic card whose contents arrange
         // themselves. The renderer lays these out on a fixed grid (see ylStage).
         const sec = { id, heading: title, type: 'stage',
           body: sp.longCheck ? sp.body : (sp.check ? sp.body : partBody) };
         if (part.lead) sec.lead = part.lead;
+        // …AND ONLY IF IT IS IN THE SAME SCRIPT AS THE DESIGN'S OWN NAME. The Yemen
+        // artifact lessons head their stages «Engage (الإحماء والتشويق) — 8-10 دقائق»: the
+        // part before the dash is an English structurer label, display-only, which this
+        // pack has always dropped. Taking it would have printed «Engage» on the tab of all
+        // fifteen shipped lessons.
+        const arabicOwn = /[؀-ۿ]/.test(ownName);
+        const arabicTpl = /[؀-ۿ]/.test(String(T[id] || ''));
+        if (ownName && ownName.length <= 24 && !/[A-Za-z]/.test(ownName)
+            && arabicOwn === arabicTpl) sec.sourceName = ownName;
         if (partAnswer) sec.answer = partAnswer;
         if (sp.check) sec.check = sp.check;
         if (first) {
@@ -1289,7 +1520,12 @@ function buildGuideFromMarkdown(md, opts = {}) {
   // only the drawing — which is how the generated artwork went missing from page 1 while
   // the log said it had been generated.
   const isStage = (x) => profile.stages.includes(x.id);
-  const artCard = sections.find((x) => isStage(x) && !x.codeFigure);
+  // A STAGE, NOT A SECTION. At this point a stage is still several part-sections, and the
+  // one carrying the stage's instruction line has no figure of its own — so this picked
+  // التطبيق, a stage whose other parts draw seven exercises, and put a photograph beside a
+  // 25px line of text. Availability is a property of the whole stage.
+  const stageDraws = (id) => sections.some((x) => x.id === id && x.codeFigure);
+  const artCard = sections.find((x) => isStage(x) && !stageDraws(x.id));
   const vocabRole = byRole.get('glossary') ? 'glossary' : (byRole.get('resources') ? 'resources' : '');
   if (vocabRole) {
     const wc = wordCardsFigure(tableRows(rawOf(vocabRole)));
@@ -1348,7 +1584,19 @@ function buildGuideFromMarkdown(md, opts = {}) {
   // art-direction pack — imagegen/prompts/regions/<region>.js — so the same brief is
   // grounded in a Yemeni classroom or a Kenyan one without being written differently.
   const images = [];
-  const warmup = artCard || sections.find((x) => x.id === profile.stages[0]);
+  // THE ILLUSTRATION GOES WHERE THERE IS ROOM FOR IT. It was landing in whichever stage
+  // came first, which put a 228px picture beside a 25px instruction line in a card that
+  // already held seven drawn exercises: 200px of empty space on one side, a 723px card,
+  // and a page break that left the previous page 58% full. A stage that already draws its
+  // own activities does not need a photograph as well — its exercises ARE the visuals — so
+  // the brief goes to the first stage that has no drawn figure, and to none if every stage
+  // has one.
+  const stageCards = (profile.stages || []).map((id) => sections.find((x) => x.id === id))
+    .filter(Boolean);
+  const hasFigure = (sec) => !!(sec.codeFigure
+    || (sec.activities || []).some((a) => a.codeFigure));
+  const warmup = artCard || stageCards.find((x) => !hasFigure(x) && (x.body
+    || (x.activities || []).some((a) => a.body)));
   // A lesson with no title line has no topic to brief an illustration from — this one had
   // none, so no artwork was authored at all. Its GOAL states what the lesson is about
   // («أستطيع التعرف على كلمات أفراد الأسرة وقراءتها والمطابقة بينها»), which is the
@@ -1432,8 +1680,13 @@ function buildGuideFromMarkdown(md, opts = {}) {
     if (m && m[1].trim().length > 1) {
       host.body = body.slice(0, m.index).trim();
       const at = sections.indexOf(host);
+      // TAGGED AS A BLOCK COMPONENT AT BIRTH. The block tagging pass runs earlier in this
+      // function, so a section created here never went through it — الإجابات fell to the
+      // generic panel while بطاقة الخروج beside it was a block component. That is why the
+      // pair looked mismatched no matter how carefully the pair CSS was written: half of it
+      // was styling a card that did not exist.
       sections.splice(at + 1, 0, { id: asp.to, heading: T[asp.to] || asp.to,
-        type: 'text', body: m[1].trim() });
+        type: 'text', body: m[1].trim(), component: 'block' });
     }
   }
 
@@ -1447,6 +1700,87 @@ function buildGuideFromMarkdown(md, opts = {}) {
       if (parts.length) sec.tab = parts[parts.length - 1];
     }
   }
+  // ── A COMPREHENSION LIST IS ONE ACTIVITY PER QUESTION ───────────────────────────────
+  // «الكلب الوفي» writes its assessment as nine bulleted «question؟ الإجابة: answer.» items.
+  // Nothing split them, so the first item swallowed the rest into its answer, the overflow
+  // became a >160-character "check" and therefore a card of its own titled «… · الحل», and
+  // that intervening card broke the run of same-id stages so التقويم rendered as THREE
+  // cards — one of them a wall of prose with «الإجابة:» in it nine times.
+  //
+  // A numbered lesson already renders this shape well: one activity per question, the
+  // question read out, the answer in its own panel. This gives a bulleted lesson the same
+  // treatment. The pairs are the source's own words in the source's own order; no numeral
+  // is invented, because the label stays empty and the question itself carries the card.
+  if (profile.answerLabel) {
+    const MARK = new RegExp(`(?:${profile.answerLabel}|الحل)\\s*[:：]`);
+    // Splitting on the answer marker gives: [Q1] [A1 + Q2] [A2 + Q3] … [An]. A lazy regex
+    // over the whole run cannot do this — the answer text contains its own «؟», so the
+    // lookahead fires immediately and every answer comes out empty with the next question
+    // glued to the previous answer. Walking the segments is exact.
+    const trailingQuestion = (seg) => {
+      const t = String(seg).trim();
+      if (!/[؟?]\s*$/.test(t)) return [t, null];          // no question at the end
+      const body = t.replace(/[؟?]\s*$/, '');
+      const at = Math.max(body.lastIndexOf('.'), body.lastIndexOf('!'), body.lastIndexOf('؟'));
+      if (at < 0) return ['', t];                          // the whole segment is a question
+      return [t.slice(0, at + 1).trim(), t.slice(at + 1).trim()];
+    };
+    const qaPairs = (text) => {
+      const segs = String(text || '').split(new RegExp(MARK.source, 'g'));
+      if (segs.length < 3) return [];                      // fewer than two Q&A pairs
+      const clean = (x) => String(x).trim().replace(/^[*•▪-]\s*/, '').replace(/\s*[*•▪-]\s*$/, '');
+      const qs = [clean(segs[0])];
+      const as = [];
+      for (let i = 1; i < segs.length - 1; i++) {
+        const [ans, nextQ] = trailingQuestion(segs[i]);
+        as.push(clean(ans));
+        qs.push(clean(nextQ || ''));
+      }
+      as.push(clean(segs[segs.length - 1]));
+      const out = [];
+      for (let i = 0; i < Math.min(qs.length, as.length); i++) {
+        if (qs[i] && qs[i].length > 6 && as[i]) {
+          out.push({ label: '', body: qs[i], answer: as[i], codeFigure: null });
+        }
+      }
+      return out;
+    };
+    for (const sec of sections) {
+      // every place the glued run can be sitting
+      const carriers = [];
+      if (sec.body) carriers.push({ get: () => sec.body, clear: () => { sec.body = ''; } });
+      for (const a of sec.activities || []) {
+        const joined = [a.body, a.answer].filter(Boolean).join(' ');
+        if ((joined.match(MARK) || []).length) {
+          carriers.push({ get: () => joined, clear: () => { a.body = ''; a.answer = ''; a.__drop = true; } });
+        }
+      }
+      for (const c of carriers) {
+        const text = c.get();
+        const hits = (String(text).match(new RegExp(MARK.source, 'g')) || []).length;
+        if (hits < 2) continue;                       // one answer is an ordinary activity
+        const pairs = qaPairs(text);
+        if (pairs.length < 2) continue;
+        c.clear();
+        sec.activities = (sec.activities || []).filter((a) => !a.__drop).concat(pairs);
+        if (sec.type !== 'stage' && (profile.stages || []).includes(sec.id)) {
+          sec.type = 'stage';
+          delete sec.component;
+          // the heading picked up the «· الحل» suffix from the card this used to become
+          sec.heading = T[sec.id] || sec.heading;
+        }
+      }
+      if (sec.activities) sec.activities = sec.activities.filter((a) => !a.__drop);
+    }
+  }
+
+  // The region's own word for an answer travels with the guide, so the renderer can label
+  // an answer strip without an Arabic literal of its own — the same reason every other
+  // label in this pack is profile-declared.
+  if (profile.answerLabel) {
+    meta.answerLabel = profile.answerLabel;
+  }
+
   if (profile.oneCardPerStage) {
     const stageIds = new Set(profile.stages || []);
     const merged = [];
@@ -1465,7 +1799,12 @@ function buildGuideFromMarkdown(md, opts = {}) {
         continue;
       }
       if (isStage) {
-        const base = { ...sec, heading: T[sec.id] || sec.heading,
+        // THE TAB SAYS WHAT THE SOURCE CALLED THE STAGE. The template's own name for the
+        // assessment role is «التقويم والختام» while this lesson calls it «التقويم» — so the
+        // tab printed 124px of text where its neighbours printed 72px, and the row read as
+        // an inconsistent heading. The source's own word is both shorter and more faithful.
+        const own = String(sec.sourceName || '').trim();
+        const base = { ...sec, heading: own || T[sec.id] || sec.heading,
           activities: [asActivity(sec)], checks: sec.check ? [sec.check] : [] };
         delete base.body; delete base.codeFigure; delete base.check;
         merged.push(base);
@@ -1475,6 +1814,58 @@ function buildGuideFromMarkdown(md, opts = {}) {
     }
     sections.length = 0;
     sections.push(...merged);
+  }
+  // A RUN OF TICKED ITEMS IS ONE EXERCISE, NOT FOUR. Runs AFTER the stage merge: before it
+  // a stage is still several part-sections and activities[] does not exist yet, which is
+  // why this quietly did nothing when it sat further up. The source marks each behaviour right
+  // or wrong by the tick in its answer — «الإجابة: (✔)» against «الإجابة: ( )». Collapsed
+  // into a single list with a box per row it is something a child can actually do.
+  if (profile.tickRe) {
+    for (const sec of sections) {
+      const acts = sec.activities;
+      if (!Array.isArray(acts) || acts.length < 3) continue;
+      const ticked = acts.filter((a) => a.answer
+        && (profile.tickRe.test(a.answer) || (profile.blankTickRe || /$^/).test(a.answer)));
+      if (ticked.length < 3) continue;
+      const items = ticked.map((a) => ({
+        text: String(a.label || '').replace(/^[٠-٩0-9]{1,2}\s*[).]\s*/, '').trim(),
+        ok: profile.tickRe.test(a.answer),
+      })).filter((x) => x.text);
+      if (items.length < 3) continue;
+      const first = acts.indexOf(ticked[0]);
+      const kept = acts.filter((a) => !ticked.includes(a));
+      kept.splice(Math.min(first, kept.length), 0,
+        { label: '', body: '', answer: '', codeFigure: { kind: 'tick-list', items } });
+      sec.activities = kept;
+    }
+  }
+
+
+  // ENFORCED AFTER THE MERGE, whatever chose the card earlier: a stage that draws its own
+  // activities does not also carry a photograph. It was putting a 228px picture beside a
+  // 25px instruction line in a card that already held seven drawn exercises — 200px of dead
+  // space on one side, a 723px card, and a page break that left the page before it 58%
+  // full. If no stage is free, the lesson simply has no photograph: its own drawn
+  // activities are the visuals.
+  for (const sec of sections) {
+    if (!sec.image) continue;
+    const draws = (sec.activities || []).some((a) => a.codeFigure) || sec.codeFigure;
+    if (!draws) continue;
+    // …AND IF ITS ACTIVITIES ARE A GRID, THE PICTURE BECOMES ONE OF THE CELLS. Dropping the
+    // artwork entirely was too blunt — a lesson whose every stage draws its own exercises
+    // ended up with no illustration at all. An exercise grid's last row is usually not full
+    // (seven exercises, four to a row, leaves one empty slot), and a picture in that slot
+    // costs no extra height, sits inside the section it belongs to, and fills the gap that
+    // would otherwise be blank.
+    const gridded = (sec.activities || []).filter((a) => a.codeFigure).length >= 3;
+    const free = sections.find((x) => x.type === 'stage' && x !== sec && !x.codeFigure
+      && !(x.activities || []).some((a) => a.codeFigure)
+      && ((x.activities || []).some((a) => a.body) || x.body));
+    const id = sec.image;
+    delete sec.image;
+    if (free) free.image = id;
+    else if (gridded) sec.artCell = id;   // into the grid's spare slot
+    else images.length = 0;               // nowhere to put it; drop the brief
   }
   return { meta, images, sections, sourceProfile: { id: profile.id, name: profile.name, mode: doc.mode } };
 }

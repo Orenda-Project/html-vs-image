@@ -264,6 +264,11 @@ let CF_DIR = 'rtl';
 const RTL_LOCALES = /^(ar|he|fa|ur|ps|sd|ku|yi|dv)\b/i;
 function cfDirFor(locale) { return RTL_LOCALES.test(String(locale || '')) ? 'rtl' : 'ltr'; }
 
+// The document's own word for «answer», supplied by the region profile through the guide.
+// Set per render beside CF_DIR; empty when a region does not declare one, in which case the
+// answer strip simply carries no chip rather than an invented label.
+let ANSWER_LABEL = '';
+
 function cfText(x, y, s, size = 13, weight = 700, fill = CF.ink, anchor = 'middle', dir = CF_DIR) {
   const txt = String(s || '');
   return '<text x="' + x + '" y="' + y + '" text-anchor="' + anchor + '" font-size="' + size
@@ -296,6 +301,38 @@ function cfFractionGrid({ shape, parts, shaded }) {
 }
 
 // A row of separate objects, K of them highlighted — counting and grouping.
+// A LIST OF FRACTIONS IS A ROW OF FRACTIONS. «٥. احصر الكسر الذي يدل على الجزء المظلل:
+// الشكل الأول: ٢/٤ الشكل الثاني: ١/٣ …» states nine of them; drawn as one figure it was a
+// single ~30px circle beside nine lines of prose. Each fraction gets its own circle at a
+// size a child can count, with the fraction written under it.
+function cfFractionSet({ items = [] }) {
+  const list = (items || []).filter((it) => it && it.parts >= 2 && it.shaded >= 1);
+  if (!list.length) return '';
+  const n = list.length;
+  const cols = n <= 3 ? n : n <= 4 ? 4 : n <= 6 ? 3 : n <= 9 ? 5 : 6;
+  const rows = Math.ceil(n / cols);
+  const R = 34, CW = R * 2 + 26, CH = R * 2 + 34, PAD = 3;
+  const W = cols * CW + PAD * 2, H = rows * CH + PAD * 2;
+  let out = '';
+  list.forEach((it, i) => {
+    const col = CF_DIR === 'rtl' ? (cols - 1 - (i % cols)) : (i % cols);
+    const row = Math.floor(i / cols);
+    const cx = PAD + col * CW + CW / 2;
+    const cy = PAD + row * CH + R + 5;
+    for (let k = 0; k < it.parts; k++) {
+      const a0 = -Math.PI / 2 + (2 * Math.PI * k) / it.parts;
+      const a1 = -Math.PI / 2 + (2 * Math.PI * (k + 1)) / it.parts;
+      const large = (a1 - a0) > Math.PI ? 1 : 0;
+      out += '<path d="M ' + cx + ' ' + cy + ' L ' + (cx + R * Math.cos(a0)) + ' ' + (cy + R * Math.sin(a0))
+        + ' A ' + R + ' ' + R + ' 0 ' + large + ' 1 ' + (cx + R * Math.cos(a1)) + ' ' + (cy + R * Math.sin(a1))
+        + ' Z" fill="' + (k < it.shaded ? CF.fill : CF.empty) + '" stroke="' + CF.stroke + '" stroke-width="2.5"/>';
+    }
+    const A = '٠١٢٣٤٥٦٧٨٩';
+    out += cfText(cx, cy + R + 20, A[it.shaded] + '/' + A[it.parts], 16, 800, CF.ink, 'middle');
+  });
+  return cfSvg(out, W, H);
+}
+
 function cfCountSet({ shape = 'circle', total = 4, shaded = 0 }) {
   const W = 240, H = 150, n = Math.max(1, Math.min(8, total));
   const gap = W / (n + 1), r = Math.min(26, gap / 2.4), cy = H / 2; let out = '';
@@ -309,6 +346,82 @@ function cfCountSet({ shape = 'circle', total = 4, shaded = 0 }) {
 }
 
 // Four labelled direction arrows (Arabic labels supplied by the guide).
+// ARITHMETIC FACTS ARE CARDS, NOT A PARAGRAPH. An addition lesson states twelve facts in
+// one line — «٩ + ٤ = ١٣ ٧ + ٩ = ١٦ ٧ + ٥ = ١٢ …» — and a division lesson states sixty. Read
+// as prose the teacher has to parse a wall of digits to find the next problem; one card per
+// fact is the exercise as a child meets it in the book. No direction override anywhere: an
+// Arabic equation steps right-to-left at token level, which is what default bidi produces,
+// and forcing it the other way is the bug this repo already fixed once.
+function cfFactGrid({ items = [], cols = 0 }) {
+  // NO CAP. The run is removed from the card's text once it is drawn, so a cap here would
+  // not shorten the figure — it would delete facts from the lesson. The division lesson
+  // states sixty-one; all sixty-one are drawn, and the page grows, which is what "page
+  // count follows the content" means.
+  const list = (items || []).map((x) => String(x && x.text !== undefined ? x.text : x).trim())
+    .filter(Boolean);
+  if (!list.length) return '';
+  const n = list.length;
+  const c = cols || (n <= 3 ? n : n <= 4 ? 2 : n <= 6 ? 3 : n <= 12 ? 4 : n <= 24 ? 6 : 7);
+  const rows = Math.ceil(n / c);
+  const CW = 120, CH = 54, GAP = 9, PAD = 3;
+  const W = c * CW + (c - 1) * GAP + PAD * 2;
+  const H = rows * CH + (rows - 1) * GAP + PAD * 2;
+  let out = '';
+  list.forEach((t, i) => {
+    // right-to-left placement: the first fact belongs at the start edge of the reading order
+    const col = CF_DIR === 'rtl' ? (c - 1 - (i % c)) : (i % c);
+    const row = Math.floor(i / c);
+    const x = PAD + col * (CW + GAP);
+    const y = PAD + row * (CH + GAP);
+    out += '<rect x="' + x + '" y="' + y + '" width="' + CW + '" height="' + CH + '" rx="9"'
+      + ' fill="#f4f8fb" stroke="' + CF.stroke + '" stroke-width="2"/>';
+    out += cfText(x + CW / 2, y + CH / 2 + 7, t, 20, 800, CF.ink, 'middle');
+  });
+  return cfSvg(out, W, H);
+}
+
+// DIVISION, DRAWN AS WHAT IT MEANS. «كم ٤ في العدد ١٢؟ … ٣ أربعات، ١٢ ÷ ٤ = ٣» is a
+// count of equal groups, which is what a teacher puts on the board and what the lesson's
+// own misconception warns about — a pupil who reads division as "make it bigger". Three
+// rings of four dots says it; a sentence with two numerals in it does not.
+function cfGroupSet({ total = 0, per = 0, groups = 0 }) {
+  const g = Math.max(1, Math.min(6, groups));
+  const p = Math.max(1, Math.min(6, per));
+  const cols = Math.min(p, 3);
+  const rws = Math.ceil(p / cols);
+  const DOT = 15, DG = 7;
+  const gw = cols * DOT * 2 + (cols - 1) * DG + 22;
+  const gh = rws * DOT * 2 + (rws - 1) * DG + 22;
+  const GAP = 13;
+  const W = g * gw + (g - 1) * GAP + 6;
+  const H = gh + 30;
+  let out = '';
+  for (let k = 0; k < g; k++) {
+    // right-to-left: the first group sits at the start edge of the reading order
+    const slot = CF_DIR === 'rtl' ? (g - 1 - k) : k;
+    const gx = 3 + slot * (gw + GAP);
+    out += '<rect x="' + gx + '" y="3" width="' + gw + '" height="' + gh + '" rx="11"'
+      + ' fill="#f2f7f4" stroke="' + CF.stroke + '" stroke-width="2" stroke-dasharray="6 4"/>';
+    for (let i = 0; i < p; i++) {
+      const c = i % cols, r = Math.floor(i / cols);
+      const cx = gx + 11 + DOT + c * (DOT * 2 + DG);
+      const cy = 14 + DOT + r * (DOT * 2 + DG);
+      out += '<circle cx="' + cx + '" cy="' + cy + '" r="' + DOT + '" fill="' + CF.fill
+        + '" stroke="' + CF.stroke + '" stroke-width="2.5"/>';
+    }
+  }
+  // the sentence the drawing is of, under it, in the document's own reading direction
+  // THE DOCUMENT'S OWN NUMERALS. Built from JS numbers this printed «12 ÷ 4 = 3» in an
+  // Arabic lesson whose every other digit is Arabic-Indic — a drawn figure contradicting
+  // the page around it.
+  const AD = (v) => String(v).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
+  const sentence = CF_DIR === 'rtl'
+    ? AD(total) + ' ÷ ' + AD(per) + ' = ' + AD(groups)
+    : total + ' ÷ ' + per + ' = ' + groups;
+  out += cfText(W / 2, H - 7, sentence, 19, 800, CF.ink, 'middle');
+  return cfSvg(out, W, H);
+}
+
 function cfCompass({ north, east, south, west, center }) {
   const W = 240, H = 200, cx = W / 2, cy = H / 2 + 4, L = 58;
   const arrow = (dx, dy) => '<path d="M ' + cx + ' ' + cy + ' L ' + (cx + dx * L) + ' ' + (cy + dy * L)
@@ -752,7 +865,43 @@ function cfMatchPairs({ items = [], wide = false } = {}) {
   return cfSvg(out, W, H);
 }
 
-const CF_WIDE = new Set(['process', 'labeled-parts', 'match-pairs']);
+// A MATCHING EXERCISE IS ALWAYS WIDE, under either of its two names. The assessment
+// variant of match-pairs was missing here, so the reading lesson's «التوصيل» exercise
+// was placed in a compact visual column: three pairs of full phrases in a ~90px slot,
+// which rendered as a narrow dashed box with the words stacked on top of each other.
+// Same component, same content, one name absent from one set.
+const CF_WIDE = new Set(['process', 'labeled-parts', 'match-pairs', 'assessment', 'fact-grid', 'fraction-set']);
+// A BEHAVIOUR CHECKLIST — «أضع علامة (✔) أمام السلوك الصحيح». One row per behaviour with a
+// box at the RTL start: ticked where the source ticked it, empty where it did not. The text
+// and the marks are the source's own; nothing is judged here.
+function cfTickList(spec) {
+  const rows = (spec.items || []).slice(0, 8).map((it) => '<div class="yl-tickrow">'
+    + '<span class="yl-tickbox' + (it.ok ? ' yl-t-yes' : ' yl-t-no') + '">'
+    + (it.ok ? '✔' : '') + '</span>'
+    + '<span class="yl-ticktext">' + esc(cleanHeading(it.text || '')) + '</span></div>').join('');
+  return '<div class="yl-ticklist">' + rows + '</div>';
+}
+
+// COLOUR SWATCHES. The teacher names the colours; the card shows them. A swatch always
+// carries a border — white on a white card is otherwise invisible — and each name sits
+// under its own chip, so a six-year-old matches word to colour without reading a sentence.
+// The hex comes from the region profile, never from the lesson, and is re-validated here:
+// a colour is the one thing on this page that must not be interpolated on trust.
+function cfColourSet(spec) {
+  const items = (spec.items || []).slice(0, 6);
+  if (!items.length) return '';
+  const cells = items.map((it) => {
+    const hex = /^#[0-9a-fA-F]{6}$/.test(String(it.hex || '')) ? it.hex : '#cccccc';
+    return '<div class="yl-swatch">'
+      + '<svg viewBox="0 0 60 44" class="yl-swchip" aria-hidden="true">'
+      + '<rect x="2.5" y="2.5" width="55" height="39" rx="7" fill="' + hex
+      + '" stroke="#7d8798" stroke-width="1.6"/></svg>'
+      + '<span class="yl-swname">' + esc(cleanHeading(it.name || '')) + '</span>'
+      + '</div>';
+  }).join('');
+  return '<div class="yl-swatches">' + cells + '</div>';
+}
+
 // ── GEOMETRY FIGURES ────────────────────────────────────────────────────────────────
 // Drawn from a spec, never from a lesson: the shapes, how many, and which one is correct
 // all come from the spec the converter built out of the source's own words. A geometry
@@ -859,10 +1008,15 @@ function cfGeoBoard(spec) {
   return `<div class="geo-fig geo-board">${rows}</div>`;
 }
 
-const CF_KINDS = new Set(['geo-pick', 'geo-dots', 'geo-grid', 'geo-match', 'geo-board', 'fraction-grid', 'count-set', 'compass', 'compare', 'expression', 'process', 'steps', 'labeled-parts', 'error-board', 'match-pairs']);
+const CF_KINDS = new Set(['fraction-set', 'group-set', 'fact-grid', 'colour-set', 'tick-list', 'geo-pick', 'geo-dots', 'geo-grid', 'geo-match', 'geo-board', 'fraction-grid', 'count-set', 'compass', 'compare', 'expression', 'process', 'steps', 'labeled-parts', 'error-board', 'match-pairs']);
 function cfMini(spec) {
   if (!spec) return '';
   switch (spec.kind) {
+    case 'fraction-set': return cfFractionSet(spec);
+    case 'group-set': return cfGroupSet(spec);
+    case 'fact-grid': return cfFactGrid(spec);
+    case 'colour-set': return cfColourSet(spec);
+    case 'tick-list': return cfTickList(spec);
     case 'geo-pick': return cfGeoPick(spec);
     case 'geo-dots': return cfGeoDots(spec);
     case 'geo-grid': return cfGeoGrid(spec);
@@ -1191,19 +1345,65 @@ function ylStage(section, accent, images, idCls) {
   const acts = Array.isArray(section.activities) && section.activities.length
     ? section.activities
     : [{ label: '', body: section.body || '', codeFigure: section.codeFigure || null }];
+  // ── AN ASSESSMENT IS A SET OF QUESTION CARDS, NOT A LIST ──────────────────────────
+  // The reviewer's brief, for «التقويم — أنت تفعل»: each question/answer pair becomes its
+  // own card with a numbered badge, the question as real HTML text, and the answer in a
+  // tinted strip of its own carrying an «الإجابة» chip — so a teacher can scan the
+  // assessment instead of reading a worksheet. Two across, and a long question spans the
+  // row rather than being squeezed. Every word is the source's; the numeral on the badge
+  // is the card's position, and the chip is the design's own label, which this pack
+  // already prints on an answer elsewhere.
+  const isAssess = section.id === 'stage-taqwim';
+  const AR = (n) => String(n).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
+  let qNo = 0;
   const blocks = acts.map((a) => {
+    if (isAssess && a.answer && (a.body || a.label)) {
+      const q = String(a.body || a.label || '');
+      const lbl = a.body ? String(a.label || '') : '';
+      qNo += 1;
+      const fig = ylVisual({ ...a, image: null }, images, engine);
+      // a long question, or one carrying a drawing, earns the whole row
+      const wideQ = q.length > 74 || !!fig || String(a.answer).length > 90;
+      return '<div class="yl-qcard' + (wideQ ? ' yl-qwide' : '') + '">'
+        + '<div class="yl-qhead"><span class="yl-qnum">' + esc(AR(qNo)) + '</span>'
+        + (lbl ? '<span class="yl-qlbl">' + esc(cleanHeading(lbl)) + '</span>' : '')
+        + '</div>'
+        + '<div class="yl-qtext">' + richText(q, { engine }) + '</div>'
+        + (fig ? '<div class="yl-qfig">' + fig + '</div>' : '')
+        + '<div class="yl-qans">'
+        + (ANSWER_LABEL ? '<span class="yl-anschip">' + esc(ANSWER_LABEL) + '</span>' : '')
+        + '<span class="yl-anstext">' + richText(a.answer, { engine }) + '</span></div>'
+        + '</div>';
+    }
     const visual = ylVisual({ ...a, image: a.image || section.image }, images, engine);
     const text = a.body ? '<div class="yl-ttext">' + para(a.body) + '</div>' : '';
     const label = a.label
       ? '<div class="yl-alabel">' + esc(cleanHeading(a.label)) + '</div>' : '';
     const answer = a.answer
       ? '<div class="yl-answer">' + richText(a.answer, { engine }) + '</div>' : '';
-    const wide = !!(a.codeFigure
-      && (a.codeFigure.kind === 'match-pairs' || a.codeFigure.kind === 'assessment'));
+    // WIDE MEANS WIDE, FOR EVERY KIND THAT DECLARES IT. This named two kinds by hand while
+    // CF_WIDE named four, so a fact grid of sixty-one divisions was placed in the narrow
+    // visual column and shrank to cards a teacher cannot read — the "SVGs are too small"
+    // report, with the figure itself perfectly correct. One list, consulted everywhere.
+    const wide = !!(a.codeFigure && CF_WIDE.has(a.codeFigure.kind));
     const vis = visual ? '<div class="yl-tvis">' + visual + '</div>' : '';
     const layout = !text || !visual ? ' yl-solo' : (wide ? ' yl-stacked' : ' yl-split');
     const body = (text || vis)
       ? '<div class="yl-sbody' + layout + '">' + text + vis + '</div>' : '';
+    // A GROUP HEADING IS A HEADING, NOT A CARD. The reading lesson groups its exercises
+    // under «١. التعبير الشفهي:», «٣. قراءة الاستماع:» — labels with nothing of their own
+    // beneath them. Placed in the activity grid like the question cards, each one became a
+    // cell with an empty panel under it, so the row read as two composed cards beside two
+    // abandoned ones. It spans the grid instead and introduces the group below it, which is
+    // what the source means by it.
+    // …AND A HEADING IS THE ONE THAT ENDS IN A COLON. Without that test this also caught
+    // complete exercise statements that happen to have no separate answer — the fractions
+    // lesson's «٢. عدد المثلثات ٢، المظللة ١، الكسر هو: ١/٢.» is an exercise, not an
+    // introduction, and demoting it to a heading stripped its card. The colon is the
+    // source's own mark for "what follows belongs to me".
+    if (label && !body && !answer && /[:：]\s*$/.test(String(a.label || '').trim())) {
+      return '<div class="yl-ahead">' + esc(cleanHeading(a.label)) + '</div>';
+    }
     return (label || body || answer)
       ? '<div class="yl-act">' + label + body + answer + '</div>' : '';
   });
@@ -1213,10 +1413,30 @@ function ylStage(section, accent, images, idCls) {
   // built from the activities that CARRY A FIGURE — an instruction line with no figure
   // stays full width above them, where it belongs — and it widens to three columns once
   // there are enough of them for two columns to waste the page.
-  const figIdx = acts.map((a, i) => (a.codeFigure ? i : -1)).filter((i) => i >= 0);
+  // A CELL EARNS ITS PLACE IN THE GRID BY CARRYING A FIGURE **OR** AN ANSWER. A question with
+  // its answer beneath it is as much an exercise block as a drawing is — «١. أين نمشي؟» over
+  // «أمشي على الرصيف» — and left out of the grid six of them stacked as six full-width text
+  // rows, which is the sparse column of prose the reviewer keeps rejecting.
+  const figIdx = acts.map((a, i) => ((a.codeFigure || a.answer) ? i : -1)).filter((i) => i >= 0);
   const gridFrom = figIdx.length > 1 && figIdx[figIdx.length - 1] === acts.length - 1
     ? figIdx[0] : -1;
-  const cols = figIdx.length >= 6 ? 4 : (figIdx.length >= 5 ? 3 : 2);
+  // THE COLUMN COUNT IS CHOSEN TO LEAVE THE FEWEST EMPTY CELLS. A fixed "four across once
+  // there are six" put six questions into 4 + 2 and left half of the second row blank —
+  // the same unused space the reviewer keeps pointing at, in miniature. Six go 3 + 3, five
+  // go 3 + 2, seven go 4 + 3. Ties break toward fewer rows.
+  const cols = (() => {
+    const n = figIdx.length;
+    if (n <= 2) return n === 1 ? 1 : 2;
+    let best = 2; let bestScore = Infinity;
+    for (const c of [4, 3, 2]) {
+      if (c > n) continue;
+      const rows = Math.ceil(n / c);
+      const empty = rows * c - n;
+      const score = empty * 10 + rows;      // empties dominate, then prefer fewer rows
+      if (score < bestScore) { bestScore = score; best = c; }
+    }
+    return best;
+  })();
   const diff = (Array.isArray(section.callouts) && section.callouts.length)
     ? '<div class="yl-srows">' + section.callouts.map((c, k) =>
       '<div class="yl-srow ' + (k === 0 ? 'yl-support' : 'yl-challenge') + '">'
@@ -1236,14 +1456,40 @@ function ylStage(section, accent, images, idCls) {
   if (!lead && !anyBlock && !checks && !diff) {
     return '<section class="section yl-stage yl-empty' + idCls + '">' + head + '</section>';
   }
+  // THE ILLUSTRATION AS A GRID CELL. A stage whose activities are drawn does not want a
+  // photograph in its visual column — that put a 228px picture beside a 25px instruction
+  // line. In the grid's spare slot it costs no height and fills what would be blank.
+  const artIm = section.artCell && images[section.artCell];
+  const artCell = (gridFrom >= 0 && artIm && artIm.dataUri)
+    ? '<div class="yl-act yl-artcell"><figure class="yl-illus"><img src="' + artIm.dataUri
+      + '" alt="' + esc(cleanHeading(artIm.label || '')) + '">'
+      + (artIm.label ? '<figcaption>' + esc(cleanHeading(artIm.label)) + '</figcaption>' : '')
+      + '</figure></div>'
+    : '';
+  // A CARD WHOSE PICTURE IS TALLER THAN ITS TEXT gets the approved anatomy: the picture
+  // spans the card's full height in one column while the text, the asides and the
+  // checkpoint stack beside it. Left as a plain row with everything full-width beneath it,
+  // whichever column was shorter left a block of white — under the picture when the prose
+  // ran long, under the prose when the picture did.
+  const artInRow = acts.length === 1 && !!(acts[0].codeFigure ? false : true)
+    && !!(section.image && images[section.image] && images[section.image].dataUri)
+    && !!acts[0].body;
   const inner = gridFrom >= 0
     ? blocks.slice(0, gridFrom).join('')
-      + '<div class="yl-actgrid yl-cols-' + cols + '">' + blocks.slice(gridFrom).join('') + '</div>'
+      + '<div class="yl-actgrid yl-cols-' + cols + '">' + blocks.slice(gridFrom).join('')
+      + artCell + '</div>'
     : blocks.join('');
   // The approved stage is TWO cards: an outer one carrying the stage's own tint, which
   // holds the header row, the asides and the checkpoint strip; and a white inner card
   // holding the teaching content. That outer block of colour is what makes a stage read
   // as one designed unit instead of a header floating above a white box.
+  const cardCls = 'yl-scard' + (artInRow && (diff || checks) ? ' yl-artspan' : '');
+  // with the picture spanning, the asides and the checkpoint belong INSIDE the card so they
+  // can sit in the column beside it
+  if (artInRow && (diff || checks)) {
+    return '<section class="section yl-stage' + idCls + '">' + head
+      + '<div class="' + cardCls + '">' + lead + inner + diff + checks + '</div></section>';
+  }
   return '<section class="section yl-stage' + idCls + '">' + head
     + '<div class="yl-scard">' + lead + inner + '</div>' + diff + checks + '</section>';
 }
@@ -1251,6 +1497,7 @@ function ylStage(section, accent, images, idCls) {
 function renderDecorativeLesson(content, images = {}, cast = {}) {
   const meta = content.meta || {};
   CF_DIR = cfDirFor(meta.locale);   // drawn labels read the way this document reads
+  ANSWER_LABEL = String(meta.answerLabel || '');
   const chips = (meta.chips || []).map((c) => `<span><b>${esc(cleanHeading(c.label))}</b>${esc(cleanHeading(c.value))}</span>`).join('');
   const htext =
     `<h1>${esc(cleanHeading(meta.title))}</h1>` +
@@ -1268,6 +1515,11 @@ function renderDecorativeLesson(content, images = {}, cast = {}) {
   if (meta.banner) referenced.add(meta.banner); // shown in the hero, not as a card
   for (const s of (content.sections || [])) if (s && s.type === 'images' && Array.isArray(s.imageIds)) s.imageIds.forEach((id) => referenced.add(id));
   for (const s of (content.sections || [])) if (s && s.image) referenced.add(s.image); // in-panel figures (see below)
+  // …and an illustration placed in an exercise grid's spare slot is referenced too. Without
+  // this it counted as leftover, so the same picture was drawn twice: once in the grid cell
+  // and again as a full-width card of unreferenced images at the end — which also added
+  // 216px to the document.
+  for (const s of (content.sections || [])) if (s && s.artCell) referenced.add(s.artCell);
   for (const s of (content.sections || [])) { if (s && s.imageWrong) referenced.add(s.imageWrong); if (s && s.imageCorrect) referenced.add(s.imageCorrect); } // code-composed twin boards
 
   // Characters are a FALLBACK only (R23): if this lesson already shows real content

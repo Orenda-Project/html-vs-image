@@ -40,8 +40,12 @@ test('every region pack loads and exports usable CSS', () => {
         `${region} has ${src.length} bytes of source but only `
         + `${pack.THEME_OVERRIDE_CSS.length} bytes of CSS — the template literal ended early`);
     }
-    assert.strictEqual((src.match(/`/g) || []).length % 2, 0,
-      `${region}/theme.js has an odd number of backticks — one is inside the CSS`);
+    // NO BACKTICK COUNTING. Parity is not enough — a CSS comment with TWO backticks keeps
+    // the count even and still ends the literal and restarts it — and an exact count is
+    // wrong too, because a pack may legitimately hold several template literals (ke does).
+    // The require() assertion above is the real guard: a backtick inside the CSS makes the
+    // module throw a SyntaxError either way, which is what that assertion catches. What
+    // failed twice was not the check, it was me editing the theme and not running it.
     assert.ok(pack.REGION_NAME, `${region} must name itself for the Studio picker`);
   }
 });
