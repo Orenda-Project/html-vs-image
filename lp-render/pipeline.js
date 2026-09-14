@@ -36,10 +36,20 @@ const CONCEPT_TO_BLOCK = { diagram: 'DIAGRAM', scene: 'HOOK_STORY', photo: 'HOOK
 // is therefore how a region re-buys its art — and why old entries stay orphaned.
 // Exported so tests seed the same key the pipeline will look up, instead of
 // re-deriving the formula and drifting from it.
-function artCacheKey(prompt, { region, locale } = {}) {
+// THE KEY MUST DISTINGUISH LESSONS, NOT JUST PROMPTS. A reviewer found one illustration
+// on many lessons and read it as a cache collision. It was not — the briefs differed and so
+// did the keys — but the concern is sound: the region declares a scene per TOPIC, so two
+// lessons on the same topic would compose the same brief and legitimately share one picture.
+// The lesson's own topic now joins the key, so a shared scene still yields a picture per
+// lesson, and nothing unrelated can resolve to the same cached asset. The topic is a KEY
+// input only; it is never added to the prompt the model sees, because an Arabic clause in an
+// English brief is what produced the identical-scene problem in the first place.
+function artCacheKey(prompt, { region, locale, topic } = {}) {
   const artRegion = String(region || ({ sw: 'ke', ar: 'ye' })[locale] || 'pk').toLowerCase();
   const artVersion = (resolveRegion(artRegion) || {}).version || 1;
-  return store.keyFor(`${prompt}|region:${artRegion}|art:v${artVersion}`);
+  const t = String(topic || '').replace(/\s+/g, ' ').trim();
+  return store.keyFor(`${prompt}|region:${artRegion}|art:v${artVersion}`
+    + (t ? `|topic:${t}` : ''));
 }
 
 function chromePath() {
@@ -94,9 +104,9 @@ async function renderLessonImage(content, opts = {}) {
 
   const imagesMap = {};
   const toGen = [];
-  const cacheKey = (prompt) => artCacheKey(prompt, { region: meta.region, locale });
+  const cacheKey = (prompt, topic) => artCacheKey(prompt, { region: meta.region, locale, topic });
   for (const im of wanted) {
-    const key = cacheKey(im.prompt);
+    const key = cacheKey(im.prompt, im.topic);
     if (GAVE_UP.has(key)) { statsOut.dropped++; log(`  ⊘ image "${im.id}" skipped — already rejected earlier in this run`); continue; }
     const priorReject = store.isRejected(key);
     if (priorReject) {

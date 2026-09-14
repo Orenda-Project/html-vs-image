@@ -843,6 +843,244 @@ function groupingFigure(text, profile) {
   return { kind: 'group-set', total, per, groups };
 }
 
+// ── DETECTORS FOR THE PATTERNS A LESSON WRITES OUT ──────────────────────────────────
+// Five of the renderer's figure primitives — process, labeled-parts, compass, compare,
+// count-set — could be drawn but could not be REACHED from raw text: the mapper emitted
+// sixteen kinds and the renderer could draw twenty-one. They were built for the model
+// path and never got detectors when the deterministic path replaced it, which is most of
+// why the maths lessons carried thirty-three of forty-three figures. Everything below
+// reads a shape the lesson has WRITTEN. Two rules are shared by all of them, and both
+// were paid for in this file already:
+//
+//   · NEVER TRUNCATE. A chain, list or run that does not fit its component whole is
+//     refused, not shortened. Shortening is what put «كسروا الباب وأخذوا» in a coloured
+//     box, and `stepsFigure` above now refuses for the same reason.
+//   · NEVER DRAW PART OF A PATTERN. A compass missing one of its four directions, or two
+//     of a lesson's four arrow chains, is a factual error rather than an untidy figure.
+//     That is why the inline pair extractor was reverted rather than tuned.
+//
+// A refusal costs nothing: the part keeps its designed text card, which is what the
+// source supports.
+
+// The text a figure has drawn is removed from the card, so the same words do not also
+// run through the prose beside their own picture. The pattern is whitespace-tolerant
+// because the body has been through plain() while the detector read the raw block.
+const stripRe = (s) => String(s).trim()
+  .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  .replace(/\s+/g, '\\s*');
+
+const ARROWS = /[←→]/;
+// A SEQUENCE THE SOURCE WROTE. «تبخر → تكاثف → هطول المطر → المياه الجارية» is a process;
+// «الجذور ← تثبيت وامتصاص الماء» is a pair, so three links are the minimum and six — what
+// the component draws whole — is the maximum.
+//
+// EXACTLY ONE CHAIN, or none. The water-cycle demonstration states four of them and the
+// last link of the fourth is a nine-word sentence: no single figure can carry all four
+// faithfully, and a figure of the first two is a partial pattern. It keeps its text card.
+function processFigure(text, profile) {
+  const t = String(text || '');
+  if (!ARROWS.test(t)) return null;
+  const chains = [];
+  for (const sentence of t.split(/[.؟!\n]+/)) {
+    const arrows = sentence.match(/[←→]/g) || [];
+    if (arrows.length < 2) continue;                     // one arrow is a pair
+    if (new Set(arrows).size > 1) continue;              // mixed directions: not one sequence
+    const segs = sentence.split(ARROWS).map((s, i) => {
+      // The first link carries the sentence's lead-in — «١- أكمل الكلمات الناقصة: تبخر» —
+      // and the lead-in stays in the card's text where the teacher reads it.
+      const own = i === 0 ? s.slice(s.lastIndexOf(':') + 1) : s;
+      return own.replace(/^[\s"«]*[٠-٩0-9]{1,2}\s*[-–.)]\s*/, '').replace(/^[\s"«]+|[\s"».،]+$/g, '').trim();
+    });
+    if (segs.length < 3 || segs.length > 6) continue;
+    if (segs.some((s) => !s || /[؟?]/.test(s))) continue;
+    if (segs.some((s) => s.split(/\s+/).length > 4 || s.length > 30)) continue;
+    chains.push({ segs, sentence });
+  }
+  if (chains.length !== 1) return null;
+  const { segs, sentence } = chains[0];
+  // A ring only where the lesson calls this sequence a cycle in the same breath, or where
+  // its own last link returns to its first. Otherwise a closing arrow would be ours.
+  const closed = segs.length > 3 && unvocalised(segs[0]) === unvocalised(segs[segs.length - 1]);
+  const stages = (closed ? segs.slice(0, -1) : segs).map((label) => ({ label }));
+  const cyclic = closed || Boolean(profile.cycleRe && profile.cycleRe.test(sentence));
+  return { kind: 'process', layout: cyclic ? 'cycle' : 'linear', stages,
+    // Either arrow: the lesson writes «←» in one stage and «→» in the next, and a pattern
+    // that hard-codes one of them leaves the chain printed beside its own diagram.
+    strip: [segs.map(stripRe).join('\\s*[←→]\\s*')] };
+}
+
+// A DRAWING'S NAMED PARTS. «الجذور ← تثبيت وامتصاص الماء. الساق ← نقل الماء. الأوراق ← صنع
+// الغذاء» names three parts of the plant the teacher is drawing on the board, so they can
+// be labelled on the drawing the renderer already owns. Two parts minimum — one label is
+// not a labelled diagram — and never more than the component draws.
+//
+// The chip carries the part word as written. What the part DOES stays in the card's text:
+// the drawing's own contribution is showing WHERE each part is, which no sentence can do,
+// and a chip carrying a four-word function drops to 8px to fit.
+function labeledPartsFigure(text, profile) {
+  const t = String(text || '');
+  for (const obj of (profile.partObjects || [])) {
+    if (obj.objectRe && !obj.objectRe.test(unvocalised(t))) continue;
+    const parts = [];
+    const seen = new Set();
+    for (const seg of t.split(/[.؛\n]+/)) {
+      const m = seg.match(/([^:：←→]{2,24})\s*(?:[←→]|[:：])\s*([^←→:：]{2,40})$/);
+      if (!m) continue;
+      const left = unvocalised(m[1]).replace(/^[\s"«(]*[٠-٩0-9]{1,2}\s*[-–.)]\s*/, '').trim();
+      if (left.split(/\s+/).length > 2) continue;        // the left side must BE the part
+      const hit = (obj.terms || []).find(([re]) => re.test(left));
+      if (!hit || seen.has(hit[1])) continue;
+      seen.add(hit[1]);
+      parts.push({ part: hit[1], label: m[1].trim() });
+    }
+    if (parts.length >= 2 && parts.length <= 6) {
+      return { kind: 'labeled-parts', object: obj.object, parts };
+    }
+  }
+  return null;
+}
+
+// THE FOUR DIRECTIONS, AND ONLY WHEN THE LESSON NAMES ALL FOUR. «الجهات الأصلية هي:
+// الشرق، الغرب، الشمال، الجنوب» is a compass; three of them is not a compass with a gap in
+// it, it is a wrong drawing. The noun guard keeps it to lessons about direction, since
+// «تشرق الشمس» contains «شرق» in a sentence about sunrise.
+function compassFigure(text, profile) {
+  const terms = profile.compassTerms;
+  if (!terms) return null;
+  const t = unvocalised(String(text || ''));
+  if (profile.compassNounRe && !profile.compassNounRe.test(t)) return null;
+  const spec = { kind: 'compass' };
+  for (const [side, re, label] of terms) {
+    if (!re.test(t)) return null;
+    spec[side] = label;
+  }
+  return spec;
+}
+
+// A SIZE CONTRAST THE LESSON STATES. Two bars, the longer for the word the lesson uses for
+// the bigger thing, in the order the lesson names them. The lengths carry the only thing
+// the source states — which one is larger — because it states no measurement.
+function compareFigure(text, profile) {
+  const pairs = profile.comparePairs;
+  if (!pairs) return null;
+  const t = unvocalised(String(text || ''));
+  if (profile.compareCueRe && !profile.compareCueRe.test(t)) return null;
+  const found = [];
+  for (const { big, small } of pairs) {
+    const b = t.match(big[0]), s = t.match(small[0]);
+    if (b && s) found.push([{ label: big[1], at: b.index, len: 1 },
+      { label: small[1], at: s.index, len: 0.42 }]);
+  }
+  // Two contrasts are four bars and the component draws three: a second pair is a refusal,
+  // never a dropped item.
+  if (found.length !== 1) return null;
+  const items = found[0].slice().sort((a, b) => a.at - b.at)
+    .map(({ label, len }) => ({ label, len }));
+  return { kind: 'compare', items };
+}
+
+const AR_INT = (s) => Number(String(s).replace(/[٠-٩]/g, (d) => AR_DIGITS.indexOf(d)));
+// A COUNTED SET OF THINGS, where the lesson asks for them to be counted. A sentence that
+// merely fetches six bottle caps is not a counting exercise, and six rings drawn for it
+// would be the decoration this work is explicitly not adding.
+function countSetFigure(text, profile) {
+  if (!profile.countNouns || !profile.countCueRe) return null;
+  const t = unvocalised(String(text || ''));
+  if (!profile.countCueRe.test(t)) return null;
+  for (const noun of profile.countNouns) {
+    const m = t.match(new RegExp('([٠-٩]{1,2})\\s*(' + noun.source + ')'));
+    if (!m) continue;
+    const total = AR_INT(m[1]);
+    if (!(total >= 2 && total <= 8)) return null;        // above eight it is not a picture
+    return { kind: 'count-set', shape: 'circle', total, shaded: 0,
+      caption: `${m[1]} ${m[2]}`.trim() };
+  }
+  return null;
+}
+
+// WHAT THE TEACHER PUTS ON THE BOARD IS A SET OF CARDS. The cue is the lesson's own «يكتب
+// على السبورة:» and what follows is drawn in whichever of three shapes it was written in.
+// Three items minimum, so one sentence on the board stays a sentence, and the run stops at
+// the first thing that is not board content: «نقطة التحقق: ٨٠٪ من التلاميذ…» is a
+// measurement of the class, not something written up for them to read.
+function boardFactsFigure(text, profile) {
+  if (!profile.boardCueRe) return null;
+  const t = String(text || '');
+  const cue = t.match(profile.boardCueRe);
+  if (!cue) return null;
+  let after = t.slice(cue.index + cue[0].length);
+  const stop = profile.boardStopRe ? after.search(profile.boardStopRe) : -1;
+  if (stop > 0) after = after.slice(0, stop);
+  after = after.replace(/^[\s:：]+/, '');
+  if (!after) return null;
+  const meta = profile.boardMetaLabels || /$^/;
+  // A source line may still carry its list marker: this reads the RAW block while the
+  // card's text has been through plain(), so «* نمشي على الرصيف» is the same content as
+  // «نمشي على الرصيف» and must be drawn — and stripped — as the latter.
+  const clean = (s) => String(s).replace(/^[\s*•▪●◦-]+/, '').replace(/[\s.،؛]+$/, '').trim();
+  const wordsIn = (s) => (s ? s.split(/\s+/).length : 0);
+  const width = (s) => unvocalised(s).length;      // diacritics are not width on a card
+  const cards = (items) => ({ kind: 'fact-grid',
+    items: items.map((x) => ({ text: x })),
+    // The span is rebuilt from the drawn items rather than sliced out of the source: the
+    // items are what the figure holds, and joining them with a tolerant separator matches
+    // the body whether the source wrote them on one line, as «. » sentences, or as
+    // bulleted lines that plain() has since flattened.
+    strip: [items.map(stripRe).join('[\\s.،؛*•▪-]*')] });
+
+  // EVERY SEGMENT OR NONE, in all three shapes. Drawing the three of four sentences that
+  // happened to fit — which an early «break» did, on a length test that counted diacritics
+  // as width — leaves the fourth printed on its own beside a set it belongs to. If any
+  // piece of what the teacher wrote up cannot be a card, none of it is drawn.
+  const segs = after.split(/[.؛\n]+/).map(clean).filter(Boolean);
+
+  // (1) A COMMA LIST IS ONE SEGMENT, so it is read before the sentence shapes: «(ذئب،
+  // كلباً، ذات، الهزال، آثار، طعام)» — the words themselves are the content, and the lesson
+  // wrote them as a single list.
+  const list = after.match(/^[(（]([^)）\n]{6,180})[)）]/) || after.match(/^([^.\n]{6,180})(?=[.\n]|$)/);
+  if (list && /[،,]/.test(list[1])) {
+    const words = list[1].split(/[،,]/).map(clean).filter(Boolean);
+    const ok = words.length >= 3 && words.every((w) => wordsIn(w) <= 2
+      && width(w) <= 16 && !/[؟?:：]/.test(w) && !meta.test(unvocalised(w)));
+    if (ok) return cards(words);
+  }
+  if (segs.length < 3) return null;
+
+  // (2) «الملك: ذو نواس. الدين: اليهودية. المكان: نجران» — a label and its value. The label
+  // is the words after the segment's own last colon but one, so «يكتب على السبورة: الملك:
+  // ذو نواس» yields «الملك», not the lead-in.
+  const pairs = segs.map((seg) => {
+    const m = seg.match(/([^:：]{2,24})\s*[:：]\s*([^:：]{2,26})$/);
+    if (!m || /[؟?]/.test(seg)) return null;
+    const label = m[1].split(/[:：]/).pop().trim();
+    const value = m[2].trim();
+    if (!label || meta.test(unvocalised(label))) return null;
+    if (wordsIn(label) > 3 || wordsIn(value) > 4) return null;
+    return `${label}: ${value}`;
+  });
+  if (pairs.every(Boolean)) return cards(pairs);
+
+  // (3) «الرَّجُلُ يَبْنِيْ بَيْتَاً. الْبَيْتُ جَمِيْلٌ. الْبِنْتُ تَحْمِلُ عِنَبَاً. عِنَبُ الْيَمَنِ لَذِيْذُ الطَّعْمِ» — the
+  // sentences a class reads off the board, each one short enough to be a card.
+  const sentences = segs.every((s) => wordsIn(s) >= 2 && wordsIn(s) <= 6 && width(s) <= 34
+    && !/[؟?:：←→]/.test(s) && !meta.test(unvocalised(s)));
+  if (sentences) return cards(segs);
+  return null;
+}
+
+// WHICH SCENE THIS LESSON'S ILLUSTRATION SHOULD SHOW. First match wins, so the region's
+// ordering decides: a lesson that merely mentions «البيت» in a warm-up question does not
+// take the house scene from the lesson that is about building one. No match returns the
+// region's fallback, which is a plain classroom — a generic picture is honest, a specific
+// picture of something the lesson never mentions is not.
+function sceneFor(haystack, profile) {
+  for (const [re, scene] of (profile.sceneTerms || [])) {
+    if (re.test(haystack)) return scene;
+  }
+  return profile.sceneFallback
+    || 'primary-school children and their teacher working together in a classroom';
+}
+
 function figureFor(rawBody, profile) {
   // A demonstration board that names several contrasts beats everything: it IS the stage.
   const gb = geoBoard(rawBody, profile);
@@ -869,6 +1107,17 @@ function figureFor(rawBody, profile) {
   if (fg) return fg;
   const grp = groupingFigure(rawBody, profile);
   if (grp) return grp;
+  // BEFORE THE PAIR DETECTORS. An arrow chain of three or more links is a sequence, not a
+  // matching exercise, and the parts of a diagram are a diagram before they are a list —
+  // «الجذور ← تثبيت وامتصاص الماء» would otherwise read as one pair of a matching set.
+  const pr = processFigure(rawBody, profile);
+  if (pr) return pr;
+  const lp = labeledPartsFigure(rawBody, profile);
+  if (lp) return lp;
+  const cp = compassFigure(rawBody, profile);
+  if (cp) return cp;
+  const cmp = compareFigure(rawBody, profile);
+  if (cmp) return cmp;
   const pf = pairsFigure(rawBody);
   if (pf) return pf;
   // a greeting-and-answer list is the lesson's own matching exercise
@@ -881,6 +1130,11 @@ function figureFor(rawBody, profile) {
   if (gf) return gf;
   const bf = buildFigure(rawBody);
   if (bf) return bf;
+  // BEFORE THE QUOTE. A stage that writes its facts on the board usually says something
+  // first — «يقول المعلم: "سأقرأ لكم الجمل بوضوح"» — and a quote box would have won and
+  // drawn the aside instead of the content.
+  const brd = boardFactsFigure(rawBody, profile);
+  if (brd) return brd;
   const qf = quoteFigure(rawBody, profile);
   if (qf) return qf;
   const lf = stepsFigure(listItems(rawBody), profile);
@@ -894,6 +1148,10 @@ function figureFor(rawBody, profile) {
   // last: a part that is mostly questions the teacher reads out
   const qsf = questionsFigure(rawBody);
   if (qsf) return qsf;
+  // LAST OF ALL, because a counted set is the weakest claim on a card: anything the lesson
+  // states more specifically — a fraction, a division, a set of colours — has already won.
+  const cs = countSetFigure(rawBody, profile);
+  if (cs) return cs;
   return null;
 }
 
@@ -1317,6 +1575,26 @@ function buildGuideFromMarkdown(md, opts = {}) {
             .replace(/\s*[،,؛;:：]\s*$/, '')
             .trim();
         }
+        // …AND THE SAME RULE FOR A PATTERN A NEW DETECTOR DREW. A detector that reads a run
+        // of words out of the body returns the span it consumed, so the words appear ONCE:
+        // drawn in the figure, gone from the prose beside it, with the sentence that
+        // introduces them left exactly as written. The span is a whitespace-tolerant
+        // pattern because the detector read the raw block and this is the flattened body.
+        // `strip` is consumed here and deleted: it is scaffolding for this step, not part
+        // of the guide the renderer and the fidelity pass see.
+        if (fig && fig.strip && partBody) {
+          for (const src of fig.strip) {
+            partBody = partBody.replace(new RegExp(src, 'g'), ' ');
+          }
+          partBody = partBody
+            .replace(/[(（]\s*[)）]/g, ' ')
+            .replace(/(?:\s*[،,؛;]\s*){2,}/g, ' ')
+            .replace(/([:：])\s*[.،]/g, '$1')
+            .replace(/\s{2,}/g, ' ')
+            .replace(/\s*[،,؛;:：]\s*$/, '')
+            .trim();
+        }
+        if (fig) delete fig.strip;
         if (fig && fig.kind === 'match-pairs') {
           // Strip at LINE level, from part.raw — part.body has already been flattened by
           // plain(), so a line filter applied to it matched nothing and the fallback regex
@@ -1607,6 +1885,13 @@ function buildGuideFromMarkdown(md, opts = {}) {
     ? String(goalSec.body || '').replace(/\*\*[^*]*\*\*/g, '').replace(/[.؟!]+\s*$/, '')
       .trim().slice(0, 90)
     : '');
+  // Every word the lesson uses, diacritics off, so a scene pattern can match «بَيْتَاً» as
+  // readily as «بيت» — the reading lesson writes its own subject fully vocalised.
+  const hay = unvocalised(sections.map((x) => [x.heading, x.body,
+    ...(x.activities || []).map((a) => [a.label, a.body, a.answer].filter(Boolean).join(' ')),
+    ...(x.checks || []), ...(x.items || []).map((it) => (it && (it.text || it.label)) || ''),
+  ].filter(Boolean).join(' ')).join(' '));
+
   if (warmup && artTopic && !warmup.codeFigure) {
     images.push({
       id: 'lesson-scene',
@@ -1640,10 +1925,21 @@ function buildGuideFromMarkdown(md, opts = {}) {
       // title line at all — this lesson's very first line is a heading — and the caption
       // already used it while the brief still used the raw variable. The composed brief
       // read «engaged in an activity about .» and the model was left to guess the subject.
-      prompt: 'Young primary-school children and their teacher together in a simple '
-        + 'classroom, engaged in an activity about ' + artTopic + '. Show faces, gestures '
-        + 'and posture; fill the frame with the people and a few simple objects they are '
-        + 'handling.',
+      // THE SCENE IS CHOSEN FROM THE LESSON'S OWN WORDS, IN ENGLISH THE MODEL CAN USE.
+      // This line used to read «engaged in an activity about <artTopic>» with the ARABIC
+      // goal interpolated. A model cannot act on an Arabic clause inside an English
+      // prompt, so every lesson got the same generic scene — a standing teacher, children
+      // in a ring, a mud-brick fortress — and the reviewer, seeing fifteen lessons with
+      // one picture, read it as a cache collision. It was not: fifteen distinct keys and
+      // fifteen distinct files, all of them the same picture, because the brief said the
+      // same thing fifteen times. The region declares what to draw for the topics it
+      // teaches; the goal still rides along for the caption and to keep the key specific.
+      prompt: sceneFor(hay, profile) + '. The composition is filled by the people and the '
+        + 'objects they are handling.',
+      // The lesson's own topic, carried as DATA for the asset key — never appended to the
+      // prompt. An Arabic clause inside an English brief is exactly what the model could not
+      // act on, and adding one back would also risk it trying to draw Arabic letters.
+      topic: artTopic,
     });
     warmup.image = 'lesson-scene';
   }
@@ -1840,6 +2136,94 @@ function buildGuideFromMarkdown(md, opts = {}) {
     }
   }
 
+
+  // A NUMBERED RUN OF INSTRUCTIONS IS ONE SEQUENCE, NOT TEN CARDS. «١. غسل الكفين إلى
+  // الرسغين (٣ مرات). ٢. المضمضة (٣ مرات). … ١٠. غسل الرجل اليسرى إلى الكعبين» is the whole
+  // demonstration of a stage whose subject IS the order, and it arrived here as ten
+  // label-only activities printed as ten bare rows. Drawn as one numbered set it is the
+  // same words in the same order, with the order visible.
+  //
+  // Runs AFTER the merge for the same reason the tick list does: before it, a stage is
+  // still several part-sections and activities[] does not exist.
+  //
+  // WHOLE RUN OR NOTHING, and only a run that is really a sequence:
+  //   · every item label-only — an item with a body or a model answer is an exercise, and
+  //     a numbered set of questions with answers is a Q&A card, not a process;
+  //   · no item a question — «١. من هو الملك…؟» is comprehension, not a step;
+  //   · the numbering starts at one and ascends by one, because the component draws its
+  //     own badges: a run starting at «٤» would be drawn as steps 1–3 and be wrong;
+  //   · every label short enough to be a card, or the run keeps its rows.
+  if (profile.orderedRun) {
+    const { minItems, maxWords, maxChars } = profile.orderedRun;
+    const ordinalOf = (s) => {
+      const m = String(s).match(/^\s*([٠-٩0-9]{1,2})\s*[-–.)]\s/);
+      return m ? Number(String(m[1]).replace(/[٠-٩]/g, (d) => AR_DIGITS.indexOf(d))) : 0;
+    };
+    for (const sec of sections) {
+      const acts = sec.activities;
+      if (!Array.isArray(acts) || acts.length < minItems) continue;
+      if (sec.image) continue;                     // the warm-up's picture is not displaced
+      const stepish = (a) => {
+        const label = String(a.label || '').trim();
+        return Boolean(label) && !a.body && !a.answer && !a.codeFigure
+          && !(a.callouts && a.callouts.length)
+          && !/[؟?]/.test(label)
+          && label.split(/\s+/).length <= maxWords + 1
+          && label.length <= maxChars
+          && ordinalOf(label) > 0;
+      };
+      // the longest consecutive run whose ordinals read 1, 2, 3, …
+      let best = null;
+      for (let i = 0; i < acts.length; i++) {
+        if (!stepish(acts[i]) || ordinalOf(acts[i].label) !== 1) continue;
+        let j = i;
+        while (j + 1 < acts.length && stepish(acts[j + 1])
+          && ordinalOf(acts[j + 1].label) === ordinalOf(acts[j].label) + 1) j++;
+        if (j - i + 1 >= minItems && (!best || j - i > best[1] - best[0])) best = [i, j];
+      }
+      if (!best) continue;
+      const [from, to] = best;
+      const run = acts.slice(from, to + 1);
+      const items = run.map((a) => ({
+        label: String(a.label).replace(/^\s*[٠-٩0-9]{1,2}\s*[-–.)]\s*/, '').replace(/[.،]\s*$/, '').trim(),
+      }));
+      if (items.some((x) => !x.label)) continue;
+      // Stacked and spanning the card: a horizontal row of ten cards is 44px per card and
+      // unreadable, while a stack costs the height it needs and reads at full size.
+      const kept = acts.slice(0, from)
+        .concat([{ label: '', body: '', answer: '',
+          codeFigure: { kind: 'steps', orient: 'v', wide: true, items } }])
+        .concat(acts.slice(to + 1));
+      sec.activities = kept;
+    }
+  }
+
+  // THE SAME DRAWING IS NOT PRINTED TWICE IN ONE LESSON. The directions lesson names all
+  // four of them twice — the teacher writes them on the board in العرض, the class draws the
+  // cross in التطبيق — and both stages drew the identical compass, one above the other on
+  // the same page. A repeated identical figure carries no second piece of information and
+  // reads exactly like the duplication a reviewer has already flagged in this pack's
+  // illustrations. The first one stays; the later card keeps its text, which is unchanged
+  // either way because these detectors take nothing out of it.
+  //
+  // …UNLESS IT IS THE FIGURE OF A NUMBERED EXERCISE. The fractions lesson draws one circle
+  // per instruction and two of its fifteen instructions genuinely ask for the same
+  // fraction: those are answers to different exercises, each belonging beside its own
+  // question, and the reviewer approved exactly that. An exercise is numbered; a
+  // demonstration is not, which is the difference this reads.
+  {
+    const seen = new Set();
+    const numbered = (a) => /^[\s(]*[٠-٩0-9]{1,2}\s*[-–.)]/.test(String(a.label || ''));
+    for (const sec of sections) {
+      for (const a of (sec.activities || [])) {
+        if (!a.codeFigure || numbered(a)) continue;
+        const key = JSON.stringify(a.codeFigure);
+        if (seen.has(key)) a.codeFigure = null;
+        else seen.add(key);
+      }
+      if (sec.codeFigure) seen.add(JSON.stringify(sec.codeFigure));
+    }
+  }
 
   // ENFORCED AFTER THE MERGE, whatever chose the card earlier: a stage that draws its own
   // activities does not also carry a photograph. It was putting a 228px picture beside a

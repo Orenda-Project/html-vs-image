@@ -333,14 +333,24 @@ function cfFractionSet({ items = [] }) {
   return cfSvg(out, W, H);
 }
 
-function cfCountSet({ shape = 'circle', total = 4, shaded = 0 }) {
-  const W = 240, H = 150, n = Math.max(1, Math.min(8, total));
-  const gap = W / (n + 1), r = Math.min(26, gap / 2.4), cy = H / 2; let out = '';
+function cfCountSet({ shape = 'circle', total = 4, shaded = 0, caption = '' }) {
+  // A ROW OF RINGS SAYS NOTHING ON ITS OWN. When the count comes from the lesson's own
+  // sentence — «كم عدد أغطية الزجاجات؟ (٦)» — the objects being counted are named under
+  // the row, in the source's words, or the figure is decoration. The model path passes no
+  // caption and its output is unchanged.
+  const cap = String(caption || '').trim();
+  const W = 240, H = cap ? 172 : 150, n = Math.max(1, Math.min(8, total));
+  // the row keeps its own centre; the caption takes the height added below it
+  const gap = W / (n + 1), r = Math.min(26, gap / 2.4), cy = 150 / 2; let out = '';
   for (let i = 0; i < n; i++) {
     const cx = gap * (i + 1), f = i < shaded ? CF.fill : CF.empty;
     if (shape === 'square') out += '<rect x="' + (cx - r) + '" y="' + (cy - r) + '" width="' + (2 * r) + '" height="' + (2 * r) + '" rx="3" fill="' + f + '" stroke="' + CF.stroke + '" stroke-width="3"/>';
     else if (shape === 'triangle') out += '<path d="M ' + cx + ' ' + (cy - r) + ' L ' + (cx + r) + ' ' + (cy + r) + ' L ' + (cx - r) + ' ' + (cy + r) + ' Z" fill="' + f + '" stroke="' + CF.stroke + '" stroke-width="3"/>';
     else out += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + f + '" stroke="' + CF.stroke + '" stroke-width="3"/>';
+  }
+  if (cap) {
+    const fit = cfFit(cap, W - 16, 15, 1, 9, 800);
+    out += cfText(W / 2, H - 12, fit.lines[0] || '', fit.size, 800);
   }
   return cfSvg(out, W, H);
 }
@@ -352,6 +362,39 @@ function cfCountSet({ shape = 'circle', total = 4, shaded = 0 }) {
 // fact is the exercise as a child meets it in the book. No direction override anywhere: an
 // Arabic equation steps right-to-left at token level, which is what default bidi produces,
 // and forcing it the other way is the bug this repo already fixed once.
+// The same grid for cards that hold words rather than digits: the cell is as wide as the
+// longest card needs (up to the canvas), and every card's text is FITTED, so a two-word
+// fact and a five-word sentence sit in the same set without either spilling or shrinking
+// to nothing. Two lines are allowed before the size drops.
+function cfFactCards(list, cols) {
+  const W = 470, GAP = 9, PAD = 3;
+  // AS FEW ROWS AS THE CARDS WILL ALLOW. Three facts in a 2×2 grid left one card hanging
+  // under two others and cost the row's height twice over — «الملك: ذو نواس» fits a third
+  // of the canvas, so three facts are one row. Below about 140px a card cannot hold a
+  // two-word fact at a readable size, which is what caps the columns at three.
+  const n = list.length;
+  const c = Math.max(1, Math.min(cols || n, n <= 3 ? n : n === 4 ? 2 : 3));
+  const CW = Math.min(228, (W - PAD * 2 - GAP * (c - 1)) / c);
+  const fits = list.map((t) => cfFit(t, CW - 16, 16, 2, 9, 800));
+  const size = Math.min(...fits.map((f) => f.size));
+  const lines = list.map((t) => cfFit(t, CW - 16, size, 2, 9, 800).lines);
+  const maxL = Math.max(...lines.map((l) => l.length));
+  const CH = 20 + maxL * (size + 5);
+  const rows = Math.ceil(list.length / c);
+  let out = '';
+  list.forEach((t, i) => {
+    // right-to-left placement, as the digit grid does: the first card at the start edge
+    const col = CF_DIR === 'rtl' ? (c - 1 - (i % c)) : (i % c);
+    const x = PAD + col * (CW + GAP);
+    const y = PAD + Math.floor(i / c) * (CH + GAP);
+    out += '<g class="cf-card"><rect x="' + x + '" y="' + y + '" width="' + CW + '" height="' + CH
+      + '" rx="9" fill="' + CF_TINT[i % CF_TINT.length] + '" stroke="' + CF.stroke + '" stroke-width="2"/>';
+    let ty = y + (CH - lines[i].length * (size + 5)) / 2 + size * 0.95;
+    for (const line of lines[i]) { out += cfText(x + CW / 2, ty, line, size, 800); ty += size + 5; }
+    out += '</g>';
+  });
+  return cfSvg(out, c * CW + (c - 1) * GAP + PAD * 2, rows * CH + (rows - 1) * GAP + PAD * 2);
+}
 function cfFactGrid({ items = [], cols = 0 }) {
   // NO CAP. The run is removed from the card's text once it is drawn, so a cap here would
   // not shorten the figure — it would delete facts from the lesson. The division lesson
@@ -363,6 +406,17 @@ function cfFactGrid({ items = [], cols = 0 }) {
   const n = list.length;
   const c = cols || (n <= 3 ? n : n <= 4 ? 2 : n <= 6 ? 3 : n <= 12 ? 4 : n <= 24 ? 6 : 7);
   const rows = Math.ceil(n / c);
+  // A CARD IS SIZED TO WHAT IT HOLDS. This grid was built for «٦ ÷ ٢ = ٣» — seven
+  // characters at a fixed 20px in a fixed 120px cell — and the same component now carries
+  // what a lesson writes on its board: «الملك: ذو نواس», «الْبَيْتُ جَمِيْلٌ». At the fixed size
+  // those run straight out through the sides of their cards. Anything longer gets wider
+  // cells and fitted text; a grid of arithmetic is untouched, cell for cell and pixel for
+  // pixel, which is what keeps the maths lessons' forty-eight drawn facts as they were.
+  // The test is the SHAPE, not a character count: «٦٠ ÷ ٥ = ١٢» is eleven characters and
+  // belongs in the digit grid, «الملك: ذو نواس» is fourteen and does not. Digits, operators
+  // and spaces stay on this path — which is every one of the forty-eight facts the maths
+  // lessons draw — and anything carrying letters gets cells sized to it.
+  if (list.some((t) => /[^\s٠-٩0-9+\-×÷=/()]/.test(t))) return cfFactCards(list, c);
   const CW = 120, CH = 54, GAP = 9, PAD = 3;
   const W = c * CW + (c - 1) * GAP + PAD * 2;
   const H = rows * CH + (rows - 1) * GAP + PAD * 2;
@@ -603,7 +657,14 @@ function cfWrap(s, width, size, lines = 2, weight = 800) {
 // an ordered set the pupil takes in at a glance (steps of a task, parts of a thing,
 // rules, materials). Every word comes from the lesson; the layout is computed.
 function cfSteps({ items = [], numbered = true, orient = 'h', wide = false }) {
-  const S = items.slice(0, 6).filter((s) => s && String(s.label || '').trim());
+  // SIX IS A ROW'S LIMIT, NOT A SEQUENCE'S. A horizontal row divides a fixed width, so a
+  // seventh card would be unreadable — but a stack grows downwards and has no such limit,
+  // and the ablution lesson's sequence is ten ordered steps. Capping a stack would delete
+  // four of the teacher's steps to make the figure fit, which is the one thing a figure
+  // must never do; the stack takes the height it needs instead. (Same reasoning as
+  // cfFactGrid's sixty-one divisions.)
+  const S = items.slice(0, orient === 'v' ? items.length : 6)
+    .filter((s) => s && String(s.label || '').trim());
   if (S.length < 2) return '';
   // Stacked: the cards fill the figure column the design set already reserves, so a
   // stage gains a visual without gaining page height.
@@ -1385,7 +1446,10 @@ function ylStage(section, accent, images, idCls) {
     // CF_WIDE named four, so a fact grid of sixty-one divisions was placed in the narrow
     // visual column and shrank to cards a teacher cannot read — the "SVGs are too small"
     // report, with the figure itself perfectly correct. One list, consulted everywhere.
-    const wide = !!(a.codeFigure && CF_WIDE.has(a.codeFigure.kind));
+    // …AND A KIND MAY DECLARE IT PER FIGURE. A step set is normally a compact visual beside
+    // the text, but a ten-step sequence is drawn as a stack on the wide canvas and has to
+    // be given the width it was drawn for, or it is scaled down into the narrow column.
+    const wide = !!(a.codeFigure && (CF_WIDE.has(a.codeFigure.kind) || a.codeFigure.wide));
     const vis = visual ? '<div class="yl-tvis">' + visual + '</div>' : '';
     const layout = !text || !visual ? ' yl-solo' : (wide ? ' yl-stacked' : ' yl-split');
     const body = (text || vis)
