@@ -370,26 +370,22 @@ function balancePages(greedyN, height, usable, safeCuts, allCuts) {
   const floor = Math.max(2, Math.ceil(height / usable));
   // How short the shortest page is, which is what "blank at the bottom" means.
   const shortest = (p) => Math.min(...p.map(([a, b]) => b - a));
-  // A card boundary is preferred, but only when it costs nothing real.
+  // A WHOLE CARD ALWAYS WINS. Reviewer's decision, after seeing what the alternative
+  // looked like: trading a clean card edge for a fuller page produced a stage opened after
+  // a single line of text with white space beneath it, which reads as a broken card rather
+  // than a continued one. "Some uneven whitespace is better than visually broken cards."
   //
-  // Two mistakes were made here in turn. First `safe || all` returned the moment whole
-  // cards could make N pages, so a better partition was never compared. Then the tolerance
-  // for choosing the better one was set at a tenth of a page, which is far too coarse: the
-  // fractions lesson could reach a 57% shortest page and kept a 48% one, because the 95px
-  // gain fell under a 106px bar. Checked against a brute-force search of every legal
-  // partition, which is what caught it.
+  // So inner lines are a LAST RESORT, not a tie-breaker: they exist only for a section
+  // genuinely taller than a page, which would otherwise be cut at the raw page limit and
+  // lose content. Whenever whole cards can make N pages, whole cards are used, even if an
+  // inner line would pack the page better.
   //
-  // The tolerance exists only to avoid opening a card's border for a sliver, so it should
-  // be a sliver: a fortieth of the printable height. Anything above that is a real amount
-  // of page and the fuller split wins.
-  const WORTH_SPLITTING = usable / 40;
+  // The remaining unevenness is not a pagination problem and is not treated as one — it is
+  // the shape of the content, and it is being fixed upstream by emitting a long stage as
+  // several activities instead of one block.
   for (let n = floor; n <= greedyN; n++) {
-    const bySafe = attempt(safeCuts, n);
-    const byAll = attempt(allCuts, n);
-    if (!bySafe && !byAll) continue;
-    if (!bySafe) return byAll;
-    if (!byAll) return bySafe;
-    return shortest(byAll) - shortest(bySafe) > WORTH_SPLITTING ? byAll : bySafe;
+    const got = attempt(safeCuts, n) || attempt(allCuts, n);
+    if (got) return got;
   }
   return null;
 }
