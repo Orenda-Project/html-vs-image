@@ -368,9 +368,24 @@ function balancePages(greedyN, height, usable, safeCuts, allCuts) {
   // and if the content genuinely needs the pages it keeps them. It just refuses to spend a
   // sheet the content did not ask for.
   const floor = Math.max(2, Math.ceil(height / usable));
+  // How short the shortest page is, which is what "blank at the bottom" means.
+  const shortest = (p) => Math.min(...p.map(([a, b]) => b - a));
+  // A card boundary is preferred, but not at any price. `safe || all` returned the moment
+  // whole cards could make N pages, so a strictly better partition using an inner line was
+  // never even compared: the directions lesson could have ended page 2 at 68% and stopped
+  // at 54%, because a card-only split existed and won by default. Both are computed now,
+  // and the inner one is taken only when it is meaningfully better — a tenth of a page,
+  // expressed as a fraction of the printable height rather than a pixel count, so it holds
+  // at any page size. Below that the card boundary keeps it, because opening a card's
+  // border across the break for a sliver of space is the worse trade.
+  const WORTH_SPLITTING = usable * 0.1;
   for (let n = floor; n <= greedyN; n++) {
-    const got = attempt(safeCuts, n) || attempt(allCuts, n);
-    if (got) return got;
+    const bySafe = attempt(safeCuts, n);
+    const byAll = attempt(allCuts, n);
+    if (!bySafe && !byAll) continue;
+    if (!bySafe) return byAll;
+    if (!byAll) return bySafe;
+    return shortest(byAll) - shortest(bySafe) > WORTH_SPLITTING ? byAll : bySafe;
   }
   return null;
 }
