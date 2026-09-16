@@ -240,6 +240,83 @@ async function htmlToPixelPdf(html, opts = {}) {
 // Node/Chromium composer: same contract as compose_pdf.py — slice the 2× screenshot
 // into A4 pages cutting only at the supplied boundaries, page number on every page,
 // top margin band, pages filled (a long section continues overleaf), no blank tail.
+/**
+ * Share the slack out across N pages instead of leaving it wherever a tall card fell.
+ *
+ * Partition [0, height] into exactly `n` pages whose boundaries are existing cut points,
+ * every page within `usable`, maximising the SHORTEST page — which is the same as
+ * minimising the biggest blank area, the thing a reader actually notices.
+ *
+ * Whole-card boundaries are tried on their own first. Only if no N-page partition exists
+ * using card boundaries alone does it fall back to the full cut list (row gaps), because a
+ * split card is a worse defect than an uneven page and this must not trade one for the
+ * other. Returns null when nothing better is available, leaving the greedy result alone.
+ *
+ * Exact rather than heuristic: the cut list is a few dozen entries and n is single digits,
+ * so the dynamic programme below is far cheaper than the screenshot it is dividing.
+ */
+function balancePages(greedyN, height, usable, safeCuts, allCuts) {
+  if (greedyN < 2) return null;
+
+  const attempt = (candidates, n) => {
+    // boundaries we may choose between, plus the two fixed ends
+    const pts = [0, ...candidates.filter((c) => c > 0 && c < height), height]
+      .filter((v, i, a) => a.indexOf(v) === i).sort((x, y) => x - y);
+    const P = pts.length;
+    if (P < n + 1) return null;
+    const NEG = -1;
+    // best[i][k] = the largest achievable "shortest page" when splitting pts[i]..height
+    // into k pages. NEG means impossible.
+    const best = Array.from({ length: P }, () => new Array(n + 1).fill(NEG));
+    const pick = Array.from({ length: P }, () => new Array(n + 1).fill(-1));
+    for (let i = 0; i < P; i++) {
+      const last = height - pts[i];
+      best[i][1] = (last > 0 && last <= usable) ? last : NEG;
+    }
+    for (let k = 2; k <= n; k++) {
+      for (let i = P - 1; i >= 0; i--) {
+        for (let j = i + 1; j < P; j++) {
+          const page = pts[j] - pts[i];
+          if (page <= 0) continue;
+          if (page > usable) break;              // pts is sorted: no longer j will fit
+          const rest = best[j][k - 1];
+          if (rest === NEG) continue;
+          const worst = Math.min(page, rest);
+          if (worst > best[i][k]) { best[i][k] = worst; pick[i][k] = j; }
+        }
+      }
+    }
+    if (best[0][n] === NEG) return null;
+    const out = [];
+    let i = 0;
+    for (let k = n; k >= 1; k--) {
+      const j = k === 1 ? P - 1 : pick[i][k];
+      out.push([pts[i], pts[j]]);
+      i = j;
+    }
+    return out;
+  };
+
+  // FEWER PAGES IS THE ONLY THING THAT ACTUALLY REMOVES BLANK SPACE.
+  //
+  // For a fixed page count the total blank is fixed too — N × usable − height — so
+  // rebalancing can only move it around, never reduce it. The reported defect was blank
+  // space, and the fractions lesson showed why: 2,488px of content spread over FOUR pages
+  // when three hold 3,177px. The greedy loop had opened a page it did not need, because a
+  // tall card would not fit and greedy has no way to reconsider an earlier boundary.
+  //
+  // So try the honest minimum first and walk up only as far as greedy already went. This
+  // does not FORCE a page count — nothing is compressed, dropped or shrunk to hit a target,
+  // and if the content genuinely needs the pages it keeps them. It just refuses to spend a
+  // sheet the content did not ask for.
+  const floor = Math.max(2, Math.ceil(height / usable));
+  for (let n = floor; n <= greedyN; n++) {
+    const got = attempt(safeCuts, n) || attempt(allCuts, n);
+    if (got) return got;
+  }
+  return null;
+}
+
 async function composeWithChromium(shotBuf, geom, opts = {}) {
   const PAGE_H = 1123; const TOP = 28; const BOT = opts.pageStyle === 'ar-bottom' ? 36 : 12;
   const usable = PAGE_H - TOP - BOT;
@@ -273,36 +350,27 @@ async function composeWithChromium(shotBuf, geom, opts = {}) {
     pages.push([start, Math.min(end, height)]);
     start = end;
   }
-  // A LAST PAGE HOLDING ALMOST NOTHING READS AS UNFINISHED. Taking the last legal cut
-  // before the limit fills each page as far as it can, which is right until the tail is
-  // reached: five of the fifteen document lessons ended on a page 8–17% full, because the
-  // page before it was packed to 98% and only a sliver was left over. Page COUNT is not the
-  // problem and is not changed here — the same number of sheets, the same legal cuts — the
-  // last two pages are simply balanced against each other, so 98% + 8% becomes something a
-  // teacher reads as two pages rather than one page and an offcut.
+  // ── BALANCE EVERY PAGE, NOT JUST THE LAST TWO ────────────────────────────────────────
   //
-  // Only cuts that leave BOTH halves inside `usable` are considered, because the clip is a
-  // fixed box with overflow:hidden and a page longer than that silently loses content.
-  if (pages.length >= 2) {
-    const lastStart = pages[pages.length - 1][0];
-    const secondStart = pages[pages.length - 2][0];
-    if (height - lastStart < usable * 0.25) {
-      const mid = secondStart + Math.round((height - secondStart) / 2);
-      // Prefer a whole-card boundary: rebalancing is a cosmetic choice, and buying a
-      // fuller last page by opening a card across the break trades one defect for another.
-      // Measured — balancing on any cut moved the fractions lesson's boundary into the
-      // middle of a card and three boxes then crossed it. Only if no card boundary can
-      // split the tail is a row gap considered.
-      const fits = (c) => c > secondStart + 40 && c - secondStart <= usable && height - c <= usable;
-      const safeLegal = safeCuts.filter(fits);
-      const legal = safeLegal.length ? safeLegal : cuts.filter(fits);
-      if (legal.length) {
-        const best = legal.reduce((a, c) => (Math.abs(c - mid) < Math.abs(a - mid) ? c : a), legal[0]);
-        pages[pages.length - 2] = [secondStart, best];
-        pages[pages.length - 1] = [best, height];
-      }
-    }
-  }
+  // The loop above is greedy: each page takes the last cut that fits, which fills THAT page
+  // as far as it can. Greedy is optimal per page and poor across a document — when a tall
+  // card will not fit, the page simply ends, and the slack all lands wherever the awkward
+  // card happens to fall. Measured on the six live lessons: 3,798px of blank across 14
+  // pages, and the fractions lesson came out 67% / 41% / 75% / 52% — a half-empty page in
+  // the MIDDLE, which the old rule never looked at because it only ever rebalanced the tail.
+  //
+  // So: keep the page COUNT greedy found (that is the minimum, and the reviewer's rule is
+  // that page count follows the content), then re-choose the boundaries so the slack is
+  // shared out. Formally — partition the strip into exactly N pages, at existing cut
+  // points, maximising the SHORTEST page. Maximising the shortest page is the same thing as
+  // minimising the largest blank area, which is the defect being reported.
+  //
+  // Only cut points the composer already trusts are used, so this cannot introduce a split
+  // card: whole-card boundaries are tried first and a row gap is the fallback, exactly as
+  // above. And every page still has to fit inside `usable` — the clip is a fixed box with
+  // overflow:hidden, so a page longer than that silently loses content.
+  const balanced = balancePages(pages.length, height, usable, safeCuts, cuts);
+  if (balanced) pages.splice(0, pages.length, ...balanced);
   if (process.env.LP_DEBUG_PAGES === '1') {
     console.log('[pages] height=' + height + ' usable=' + usable
       + ' safe=' + JSON.stringify(safeCuts) + ' cuts=' + JSON.stringify(cuts.slice(0, 60))
