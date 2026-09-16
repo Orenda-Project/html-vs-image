@@ -107,6 +107,17 @@ function bareHeading(line, profile) {
     || (raw.length <= 120 && raw.match(/^#{0,6}\s*\*{0,2}_{0,2}([^:*_\n]{2,80}?)_{0,2}\*{0,2}\s*$/));
   if (!m) return null;
   if (withColon && m[1].trim().length > 40) return null;
+  // A NUMBERED LINE IS AN ITEM IN A LIST, NOT A HEADING. Role names are ordinary words,
+  // and a role pattern will happily match one used as an ordinary noun: «١. الإجابة
+  // الكتابية عن أسئلة الاستيعاب» is a teaching activity in التقويم, and «الإجابة» three
+  // characters in was enough to read the whole line as the الإجابات heading — so the
+  // activity was consumed as a role marker and its words never reached the page. Two of
+  // seven lessons lost a line that way.
+  //
+  // The list marker is the source's own statement that this is one of several, and nothing
+  // in any profile writes a heading that opens with one. Checked BEFORE the role lookup,
+  // so it costs a heading nothing.
+  if (/^[\s*_#]*[٠-٩0-9]{1,2}\s*[).؟\-–]\s+\S/.test(raw)) return null;
   // The source's own bullet is list punctuation, never part of a heading's name, so it
   // comes off before the role is looked up and before the title is used.
   const title = m[1].replace(/^[•▪●◦*\-–—]\s*/, '').trim();
@@ -2042,6 +2053,22 @@ function buildGuideFromMarkdown(md, opts = {}) {
       return out;
     };
     for (const sec of sections) {
+      // ONLY A SECTION THAT CAN DRAW ACTIVITIES MAY BE REWRITTEN INTO ACTIVITIES.
+      // This pass moves a glued «question؟ الإجابة: answer» run OUT of a body and INTO
+      // `activities[]`, and the promotion below re-homes the section as a stage so the
+      // stage renderer can draw them. But it only promotes ids the profile lists as
+      // stages — and it was running on every section regardless. الإجابات is a `block`
+      // component: `ylBlock()` renders the body string it is handed and knows nothing
+      // about `activities`, so on an answer key written as «Q؟ الإجابة: A. Q؟ الإجابة: A»
+      // the body was emptied, the pairs were parked where nothing draws them, and the
+      // card printed its title over an empty box. That is the empty الإجابات the
+      // reviewer reported, and the same trap is waiting for every other block.
+      //
+      // The rule is general: never clear a carrier this section cannot re-home. A
+      // section qualifies only if it already draws activities, or if the promotion
+      // below can make it.
+      const canDrawActivities = sec.type === 'stage' || (profile.stages || []).includes(sec.id);
+      if (!canDrawActivities) continue;
       // every place the glued run can be sitting
       const carriers = [];
       if (sec.body) carriers.push({ get: () => sec.body, clear: () => { sec.body = ''; } });

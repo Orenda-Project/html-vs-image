@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "id": "kiswahili-g1-maamkuzi-na-maagano-guide",
+    "locale": "sw",
+    "region": "tz",
+    "subject": "Kiswahili",
+    "grade": "Darasa la 1",
+    "title": "Mwongozo wa Somo la Kila Siku",
+    "subtitle": "Kusikiliza na Kuzungumza",
+    "footer": "Kwa maswali ya ushauri, maoni, au kutengeneza andalio lako la somo, tuma WhatsApp: +254 708 474 116",
+    "chips": [
+      {
+        "label": "Suala",
+        "value": "1.0 Darasani"
+      },
+      {
+        "label": "Mada",
+        "value": "1.1 Kusikiliza na Kuzungumza"
+      },
+      {
+        "label": "Mada Ndogo",
+        "value": "1.1.1 Maamkuzi na Maagano"
+      }
+    ]
+  },
+  "images": [
+    {
+      "id": "maamkuzi-watoto",
+      "concept": "scene",
+      "label": "Watoto wawili wakisalimiana",
+      "prompt": "Textless illustration of two young Tanzanian children greeting each other in a classroom setting, one child saying hello with a friendly gesture and the other responding, children interacting naturally, educational scene, no text, no letters, no symbols."
+    }
+  ],
+  "sections": [
+    {
+      "id": "lesson-line",
+      "heading": "Somo",
+      "type": "text",
+      "body": "Kiswahili · Darasa la 1 · Maamkuzi na Maagano"
+    },
+    {
+      "id": "goal",
+      "heading": "Lengo",
+      "type": "note",
+      "body": "**Today's goal:** Wanafunzi wataweza kuamkua na kuitikia maamkuzi ipasavyo ili kufanikisha mawasiliano."
+    },
+    {
+      "id": "errors",
+      "heading": "Makosa ya kawaida",
+      "type": "qa",
+      "items": [
+        {
+          "q": "✗ Mistake",
+          "a": "Kutumia maamkuzi bila kuitikia jibu lake sahihi."
+        },
+        {
+          "q": "✓ Correct",
+          "a": "Kuamkua na kuitikia maamkuzi ipasavyo ili kufanikisha mawasiliano."
+        }
+      ]
+    },
+    {
+      "id": "errors-caption",
+      "heading": "Mstari wa maelezo",
+      "type": "text",
+      "body": "Mwalimu anaonyesha picha ya watoto wawili wakisalimiana na kusema: \"Ninaposalimu mwenzangu asubuhi, ninasema 'Hujambo?' na yeye anajibu 'Sijambo.'\""
+    },
+    {
+      "id": "stage-tamhid",
+      "heading": "Utangulizi",
+      "type": "steps",
+      "time": "dakika 4 · Mimi nafanya",
+      "image": "maamkuzi-watoto",
+      "items": [
+        {
+          "label": "",
+          "body": "Mwalimu anaanza na mfano wa maisha halisi: \"Fikiria - unapokutana na mwenzako asubuhi, unamsalimu vipi? Tuseme pamoja: 'Hujambo?'\" (Wanafunzi wanajibu kwa mifano yao wenyewe.) Ukaguzi wa haraka wa sekunde 30: \"Sikiliza: 'Hujambo?' - Sasa jibu: 'Sijambo.'\" (Wanafunzi wanajibu.)"
+        },
+        {
+          "label": "Check",
+          "body": "Kila mwanafunzi aseme kwa sauti salamu na jibu lake mara moja, asisikilize tu."
+        }
+      ]
+    },
+    {
+      "id": "stage-arad",
+      "heading": "Ukuzaji wa Somo",
+      "type": "steps",
+      "time": "dakika 22 · Mimi nafanya ← Tunafanya",
+      "items": [
+        {
+          "label": "",
+          "body": "Mwalimu anaonyesha picha ya watoto wawili wakisalimiana na kusema: \"Ninaposalimu mwenzangu asubuhi, ninasema 'Hujambo?' na yeye anajibu 'Sijambo.'\" Uliza: \"Ni maneno gani tunayosikia wakati wa kusalimiana?\" (hujenga Mawasiliano na Ushirikiano) Mazoezi ya pamoja: darasa zima linafanya mazoezi ya kuoanisha maamkuzi na majibu yake sahihi (Hujambo?-Sijambo, Hamjambo?-Hatujambo, Habari?-Nzuri). Uliza: \"Jibu sahihi la 'Hujambo?' ni lipi?\" (huzoeza Heshima)"
+        },
+        {
+          "label": "Check",
+          "body": "mwanafunzi anaweza kuamkua na kuitikia maamkuzi ipasavyo ili kufanikisha mawasiliano."
+        }
+      ]
+    },
+    {
+      "id": "stage-tatbiq",
+      "heading": "Mazoezi",
+      "type": "steps",
+      "time": "dakika 22 · Tunafanya ← Wewe unafanya",
+      "items": [
+        {
+          "label": "",
+          "body": "Jaribio la kibinafsi na ukaguzi wa mwenyewe: wanafunzi wanaigiza maamkuzi na mwenzao, kisha wanakagua kwa kuoanisha na jedwali. Uliza: \"Je, mwenzako alitumia maamkuzi sahihi?\" (hukuza Mshikamano wa Kijamii) — Wanafunzi walio chini ya lengo: wanaonyeshwa kadi ya maamkuzi na kuomba warudie baada ya mwalimu, kabla ya kuigiza pekee. Wanafunzi waliofikia lengo kikamilifu: waigize maamkuzi mengine (kama 'Kwaheri') ambayo hayakutumika darasani leo."
+        },
+        {
+          "label": "Check",
+          "body": "mwanafunzi anaigiza maamkuzi na mwenzao na anakagua kwa kuoanisha na jedwali."
+        }
+      ]
+    },
+    {
+      "id": "stage-taqwim",
+      "heading": "Hitimisho",
+      "type": "steps",
+      "time": "dakika 1 · Wewe unafanya",
+      "items": [
+        {
+          "label": "",
+          "body": "Ukaguzi wa Kujitathmini: Onyesha vidole - vitano kama unaweza kusalimu kwa ujasiri, vitatu kama unahitaji mfano mmoja zaidi, kimoja kama bado unahitaji msaada. Maswali ya mdomo ya kufunga somo: Tunasemaje tunaposalimu mwalimu? Tunasemaje tunaposalimu mwenzetu?"
+        },
+        {
+          "label": "Check",
+          "body": "mwanafunzi ajibu maswali ya mdomo ya kufunga somo."
+        }
+      ]
+    },
+    {
+      "id": "solutions",
+      "heading": "Majibu",
+      "type": "bullets",
+      "marker": "num",
+      "items": [
+        {
+          "text": "Hujambo?-Sijambo"
+        },
+        {
+          "text": "Hamjambo?-Hatujambo"
+        },
+        {
+          "text": "Habari?-Nzuri"
+        }
+      ]
+    },
+    {
+      "id": "glossary",
+      "heading": "Maneno muhimu",
+      "type": "fields",
+      "items": []
+    },
+    {
+      "id": "multigrade",
+      "heading": "Marekebisho ya Madarasa Mengi",
+      "type": "bullets",
+      "marker": "num",
+      "items": [
+        {
+          "text": "Wanafunzi walio chini ya lengo: wanaonyeshwa kadi ya maamkuzi na kuomba warudie baada ya mwalimu, kabla ya kuigiza pekee."
+        },
+        {
+          "text": "Wanafunzi waliofikia lengo kikamilifu: waigize maamkuzi mengine (kama 'Kwaheri') ambayo hayakutumika darasani leo."
+        }
+      ]
+    },
+    {
+      "id": "homework",
+      "heading": "Kazi ya Nyumbani · Rangi ya Mwalimu",
+      "type": "note",
+      "body": "Wanafunzi waliofikia lengo kikamilifu: nyumbani, waamkue mwanafamilia kwa maamkuzi mapya ambazo hazikutumika darasani leo. Wanafunzi walio chini ya lengo: waonyeshe mwanafamilia jinsi ya kusema 'Hujambo?' na kujibu 'Sijambo.'"
+    }
+  ]
+}

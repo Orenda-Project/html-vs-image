@@ -1,0 +1,180 @@
+{
+  "meta": {
+    "id": "lesson-guide",
+    "locale": "sw",
+    "region": "ke",
+    "subject": "Taarifa za Somo",
+    "grade": "",
+    "chips": [
+      {
+        "label": "Somo",
+        "value": "Taarifa za Somo"
+      }
+    ],
+    "title": "1.1.1 Maamkuzi na Maagano Muda: Dakika 40",
+    "subtitle": "Jamhuri ya Kenya · Mtaala Unaozingatia Umahiri (CBC)",
+    "footer": "Mtaala Unaozingatia Umahiri · andalio la somo"
+  },
+  "images": [
+    {
+      "id": "lesson-scene",
+      "concept": "scene",
+      "label": "1.1.1 Maamkuzi na Maagano Muda: Dakika 40",
+      "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about 1.1.1 Maamkuzi na Maagano Muda: Dakika 40. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+    }
+  ],
+  "sections": [
+    {
+      "id": "summary",
+      "heading": "Muhtasari wa Sekunde 30",
+      "type": "text",
+      "body": "Lengo: Mwanafunzi kutambua na kutumia maamkuzi na maagano.\tMuda: Dakika 40 / Maandalizi: Dakika 10\tUsikose: Igizaji wa maamkuzi na maagano."
+    },
+    {
+      "id": "admin",
+      "heading": "Maelezo ya Somo",
+      "type": "fields",
+      "items": [
+        {
+          "label": "Mada",
+          "value": "Darasani (1.0)"
+        },
+        {
+          "label": "Mada Ndogo",
+          "value": "1.1.1 Maamkuzi na Maagano Muda: Dakika 40"
+        }
+      ]
+    },
+    {
+      "id": "outcomes",
+      "heading": "Matokeo ya Kujifunza ya Somo",
+      "type": "text",
+      "body": "Kufikia mwisho wa somo, mwanafunzi aweze: Kutambua maneno yanayotumiwa katika maamkuzi na maagano. Kuamkua na kuitikia maamkuzi na maagano ipasavyo ili kufanikisha mawasiliano. Kuchangamkia maamkuzi na maagano katika maisha ya kila siku. Swali Muhimu la Uchunguzi Unatumia maneno gani kuwasalimu na kuwaaga watu?"
+    },
+    {
+      "id": "resources",
+      "heading": "Nyenzo za Kujifunza",
+      "type": "chips",
+      "items": [
+        "Kitabu cha KLB Visionary Kiswahili, uk. 1",
+        "Kadi za maneno",
+        "Ubao",
+        "Chaki",
+        "Chati ya maamkuzi"
+      ]
+    },
+    {
+      "id": "introduction",
+      "heading": "Utangulizi",
+      "type": "stage",
+      "body": "Mwalimu anaanza kwa kuingia darasani kwa tabasamu na kusema \"Hujambo!\" kwa sauti ya juu. Mwalimu anawauliza wanafunzi kama wamewahi kusalimia wazazi wao asubuhi. Uliza: \"Je, mnasema nini mnapoamka asubuhi?\" (Majibu ya pamoja: \"Hujambo!\", \"Habari!\", \"Shikamoo!\")",
+      "image": "lesson-scene"
+    },
+    {
+      "id": "development",
+      "heading": "Ukuaji wa Somo · Ukuzaji wa Somo",
+      "type": "stage",
+      "body": "Mwalimu anagawa ubao katika sehemu mbili. Upande wa kushoto wa ubao utabaki bila kufutwa muda wote wa somo kwa ajili ya \"Orodha ya Maneno Mapya\" (mfano: Hujambo, Kwaheri, Shikamoo). Upande wa kulia wa ubao utafutwa na kutumiwa upya kwa kila mfano wa mazungumzo yanayofundishwa. Mwalimu anaandika maneno ya maamkuzi upande wa kulia na kusoma kwa sauti huku wanafunzi wakirudia."
+    },
+    {
+      "id": "development",
+      "heading": "Ukuaji wa Somo · Uliza",
+      "type": "stage",
+      "body": "\"Tukisema 'Hujambo', tunajibu nini?\" (Majibu ya pamoja: \"Sijambo!\") Mwalimu anafuta upande wa kulia na kuandika maneno ya maagano (mfano: Kwaheri). Mwalimu anawaonyesha wanafunzi jinsi ya kuagana kwa kutumia ishara ya mkono."
+    },
+    {
+      "id": "development",
+      "heading": "Ukuaji wa Somo · Uliza",
+      "type": "stage",
+      "body": "\"Tukisema 'Kwaheri', tunajibu nini?\" (Majibu ya pamoja: \"Kwaheri!\") Wanafunzi wanapata nafasi ya kuigiza katika jozi. Mwanafunzi mmoja anaamkua na mwingine anajibu."
+    },
+    {
+      "id": "development",
+      "heading": "Ukuaji wa Somo · Uliza",
+      "type": "stage",
+      "body": "\"Je, tunapaswa kuwa na heshima tunaposalimia?\" (Majibu ya pamoja: \"Ndiyo!\")"
+    },
+    {
+      "id": "development",
+      "heading": "Ukuaji wa Somo · Kwa ajili ya utofautishaji",
+      "type": "stage",
+      "body": ""
+    },
+    {
+      "id": "development",
+      "heading": "Ukuaji wa Somo · Wanafunzi walio chini ya lengo",
+      "type": "stage",
+      "body": "Wanatumia kadi za picha na kurudia neno moja rahisi kama \"Hujambo\"."
+    },
+    {
+      "id": "development",
+      "heading": "Ukuaji wa Somo",
+      "type": "stage",
+      "body": "Wanafunzi waliofikia lengo kikamilifu: Wanatengeneza mazungumzo mafupi ya maamkuzi na maagano yakijumuisha vyeo (mfano: \"Shikamoo Mwalimu\")."
+    },
+    {
+      "id": "conclusion",
+      "heading": "Hitimisho",
+      "type": "stage",
+      "body": "Mwalimu anawaomba wanafunzi waguse vichwa vyao ikiwa wanajua neno la kuagana."
+    },
+    {
+      "id": "conclusion",
+      "heading": "Hitimisho · Uliza",
+      "type": "stage",
+      "body": "\"Sema neno moja la kuamkia?\" (Majibu ya pamoja)"
+    },
+    {
+      "id": "conclusion",
+      "heading": "Hitimisho · Uliza",
+      "type": "stage",
+      "body": "\"Sema neno moja la kuagana?\" (Majibu ya pamoja)"
+    },
+    {
+      "id": "rubric",
+      "heading": "Vigezo vya Tathmini",
+      "type": "rubric",
+      "items": [
+        {
+          "level": "Kuzidi Matarajio",
+          "desc": "Anatumia maamkuzi na maagano kwa ufasaha na heshima kubwa."
+        },
+        {
+          "level": "Kufikia Matarajio",
+          "desc": "Anatumia maamkuzi na maagano ipasavyo."
+        },
+        {
+          "level": "Kukaribia Matarajio",
+          "desc": "Anatumia maamkuzi na maagano kwa msaada wa mwalimu."
+        },
+        {
+          "level": "Chini ya Matarajio",
+          "desc": "Anashindwa kutambua maamkuzi na maagano."
+        }
+      ]
+    },
+    {
+      "id": "extended",
+      "heading": "Shughuli za Ziada",
+      "type": "note",
+      "body": "Kiwango cha chini: Mwanafunzi amsalimie mzazi au mlezi kwa neno moja la maamkuzi. Kiwango cha juu: Mwanafunzi ajadili na mzazi maamkuzi mbalimbali yanayotumiwa katika jamii yake."
+    },
+    {
+      "id": "remediation",
+      "heading": "Maelezo ya Kurekebisha",
+      "type": "text",
+      "body": "Ikiwa wanafunzi hawajafikia lengo, mwalimu atatumia zaidi kadi za maneno na michezo ya kuigiza kurudia maneno. Ikiwa wanafunzi walizidi matarajio, mwalimu atawapa majukumu ya kuwa viongozi wa kundi katika kuongoza maamkuzi darasani. Nafasi Maalum Mwanafunzi mwenye ulemavu wa kusikia ataketi mstari wa mbele na kutumia ishara za mikono na picha za kadi ili kuelewa maamkuzi."
+    },
+    {
+      "id": "reflection",
+      "heading": "Tafakari",
+      "type": "note",
+      "body": "___% ya wanafunzi waliofikia lengo."
+    }
+  ],
+  "sourceProfile": {
+    "id": "ke",
+    "name": "Kenya — CBC lesson plan (Kiswahili)",
+    "mode": "bare"
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "meta": {
+    "id": "lesson-guide-guide",
+    "locale": "sw",
+    "region": "ke",
+    "subject": "",
+    "grade": "",
+    "chips": [],
+    "title": "\"id\": \"E1\"",
+    "subtitle": "Jamhuri ya Kenya · Mtaala Unaozingatia Umahiri (CBC)",
+    "footer": "Mtaala Unaozingatia Umahiri · andalio la somo"
+  },
+  "images": [
+    {
+      "id": "greeting-activity-scene",
+      "concept": "scene",
+      "label": "Maamkuzi na maagano",
+      "prompt": "A realistic classroom scene in Kenya showing primary-school children warmly greeting one another and saying goodbye in pairs, using natural gestures such as waving, smiling, shaking hands, and facing one another respectfully. Teacher and pupils are engaged in the activity. Authentic Kenyan classroom environment, natural lighting, educational documentary photography style. Absolutely no text, letters, numbers, signs, captions, labels, logos, or written materials visible anywhere in the image."
+    }
+  ],
+  "sections": [
+    {
+      "id": "lesson-line",
+      "heading": "Somo",
+      "type": "text",
+      "body": "Mada: Darasani (1.0) · Kipengele: 1.1 Kusikiliza na Kuzungumza · Mada Ndogo: 1.1.1 Maamkuzi na Maagano · Somo: 1 of 3"
+    },
+    {
+      "id": "goal",
+      "heading": "Matokeo ya kujifunza",
+      "type": "note",
+      "body": "Kufikia mwisho wa mada ndogo, mwanafunzi aweze: a) kutambua maneno yanayotumiwa katika maamkuzi na maagano, b) kuamkua na kuitikia maamkuzi na maagano ipasavyo ili kufanikisha mawasiliano, c) kuchangamkia maamkuzi na maagano katika maisha ya kila siku."
+    },
+    {
+      "id": "errors",
+      "heading": "Masuala mtambuko",
+      "type": "qa",
+      "items": [
+        {
+          "q": "✗ Mistake",
+          "a": "mwanafunzi anapojadili na mzazi au mlezi kuhusu maamkuzi katika jamii yake"
+        },
+        {
+          "q": "✓ Correct",
+          "a": "mwanafunzi anapotumia maamkuzi na maagano katika jamii anaimarisha mahusiano ya kijamii."
+        }
+      ]
+    },
+    {
+      "id": "errors-caption",
+      "heading": "Maadili",
+      "type": "text",
+      "body": "Heshima - mwanafunzi anapoheshimu wenzake katika shughuli za ujifunzaji wa maamkuzi na maagano"
+    },
+    {
+      "id": "stage-tamhid",
+      "heading": "Nyenzo za Kujifunza",
+      "type": "steps",
+      "time": "40 · Mimi hufanya",
+      "items": [
+        {
+          "label": "",
+          "body": "Nyenzo zinazopendekezwa: Kadi za maneno, chati, mti maneno, kapu maneno, vifaa vya kidijitali pale inapopendekezwa, vitu halisi vya mazingira. Swali muhimu la uchunguzi: Unatumia maneno gani kuwasalimu na kuwaaga watu?"
+        },
+        {
+          "label": "Check",
+          "body": "mwanafunzi anapojifunza maamkuzi na maagano yanayotumiwa katika jamii yake"
+        }
+      ],
+      "image": "greeting-activity-scene"
+    },
+    {
+      "id": "stage-arad",
+      "heading": "Kipengele: 1.1 Kusikiliza na Kuzungumza",
+      "type": "steps",
+      "time": " · Mimi hufanya ← sisi hufanya",
+      "items": [
+        {
+          "label": "",
+          "body": "Umilisi msingi: Mawasiliano na ushirikiano - mwanafunzi anaposhiriki katika shughuli ya kikundi, kusikiliza na kutoa maoni yake kikamilifu Ujuzi wa kidijitali - mwanafunzi anapotumia kifaa cha kidijitali kujifunzia maamkuzi na maagano Hamu ya ujifunzaji - mwanafunzi anapojifunza maamkuzi na maagano yanayotumiwa katika jamii yake Ubunifu - mwanafunzi anapoigiza maamkuzi na maagano mbalimbali."
+        },
+        {
+          "label": "Check",
+          "body": "mwanafunzi anapotumia kifaa cha kidijitali kujifunzia maamkuzi na maagano"
+        }
+      ]
+    },
+    {
+      "id": "stage-tatbiq",
+      "heading": "Mada Ndogo: 1.1.1 Maamkuzi na Maagano",
+      "type": "steps",
+      "time": " · sisi hufanya ← wewe hufanya",
+      "items": [
+        {
+          "label": "",
+          "body": "mwanafunzi anapoigiza maamkuzi na maagano mbalimbali."
+        },
+        {
+          "label": "Check",
+          "body": "mwanafunzi anapoigiza maamkuzi na maagano mbalimbali."
+        }
+      ]
+    },
+    {
+      "id": "stage-taqwim",
+      "heading": "Somo: 1 of 3",
+      "type": "steps",
+      "time": " · wewe hufanya",
+      "items": [
+        {
+          "label": "",
+          "body": "Swali muhimu la uchunguzi: Unatumia maneno gani kuwasalimu na kuwaaga watu?"
+        },
+        {
+          "label": "Check",
+          "body": "mwanafunzi anaposhiriki katika shughuli ya kikundi, kusikiliza na kutoa maoni yake kikamilifu"
+        }
+      ]
+    },
+    {
+      "id": "solutions",
+      "heading": "Matokeo ya kujifunza · Somo: 1 of 3",
+      "type": "bullets",
+      "marker": "num",
+      "items": [
+        {
+          "text": "kutambua maneno yanayotumiwa katika maamkuzi na maagano"
+        },
+        {
+          "text": "kuamkua na kuitikia maamkuzi na maagano ipasavyo ili kufanikisha mawasiliano"
+        },
+        {
+          "text": "kuchangamkia maamkuzi na maagano katika maisha ya kila siku"
+        }
+      ]
+    },
+    {
+      "id": "glossary",
+      "heading": "Maneno muhimu",
+      "type": "fields",
+      "items": []
+    },
+    {
+      "id": "multigrade",
+      "heading": "Tafauti za ujifunzaji",
+      "type": "bullets",
+      "marker": "num",
+      "items": [
+        {
+          "text": "mwanafunzi anaposhiriki katika shughuli ya kikundi, kusikiliza na kutoa maoni yake kikamilifu"
+        },
+        {
+          "text": "mwanafunzi anapotumia kifaa cha kidijitali kujifunzia maamkuzi na maagano"
+        },
+        {
+          "text": "mwanafunzi anapoigiza maamkuzi na maagano mbalimbali."
+        }
+      ]
+    },
+    {
+      "id": "homework",
+      "heading": "Nyenzo za Kujifunza",
+      "type": "note",
+      "body": "mzazi au mlezi kuhusu maamkuzi katika jamii yake"
+    }
+  ]
+}

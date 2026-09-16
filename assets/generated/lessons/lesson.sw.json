@@ -1,0 +1,180 @@
+{
+  "id": "E1-guide",
+  "meta": {
+    "locale": "sw",
+    "subject": "Kiswahili",
+    "grade": "1",
+    "region": "ke",
+    "title": "Mwongozo wa somo la kila siku",
+    "subtitle": "",
+    "footer": "",
+    "chips": [
+      "Darasani",
+      "1.1.1 Maamkuzi na Maagano",
+      "Dakika 40"
+    ]
+  },
+  "sections": [
+    {
+      "id": "lesson-line",
+      "heading": "Somo",
+      "type": "text",
+      "body": "Kiswahili · Gredi: 1 · Mada Ndogo: 1.1.1 Maamkuzi na Maagano (uk. 1)"
+    },
+    {
+      "id": "goal",
+      "heading": "Lengo",
+      "type": "note",
+      "body": "**Lengo:** Mwanafunzi kutambua na kutumia maamkuzi na maagano."
+    },
+    {
+      "id": "errors",
+      "heading": "Makosa ya kawaida — yatambue",
+      "type": "qa",
+      "items": [
+        {
+          "q": "✗ Makosa",
+          "a": "Tukisema 'Hujambo', tunajibu nini?"
+        },
+        {
+          "q": "✓ Sahihi",
+          "a": "Tukisema 'Hujambo', tunajibu nini? (Majibu ya pamoja: \"Sijambo!\")"
+        }
+      ]
+    },
+    {
+      "id": "errors-caption",
+      "heading": "Kumbuka",
+      "type": "text",
+      "body": "Mwalimu anaandika maneno ya maamkuzi upande wa kulia na kusoma kwa sauti huku wanafunzi wakirudia."
+    },
+    {
+      "id": "stage-tamhid",
+      "heading": "Utangulizi",
+      "type": "steps",
+      "time": "4 · Mimi hufanya",
+      "items": [
+        {
+          "label": "",
+          "body": "Mwalimu anaanza kwa kuingia darasani kwa tabasamu na kusema \"Hujambo!\" kwa sauti ya juu. Mwalimu anawauliza wanafunzi kama wamewahi kusalimia wazazi wao asubuhi.\nUliza: \"Je, mnasema nini mnapoamka asubuhi?\" (Majibu ya pamoja: \"Hujambo!\", \"Habari!\", \"Shikamoo!\")"
+        },
+        {
+          "label": "Kagua",
+          "body": "Kufikia Matarajio: Anatumia maamkuzi na maagano ipasavyo."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": "stage-arad",
+      "heading": "Ukuzaji wa Somo",
+      "type": "steps",
+      "time": "20 · Mimi hufanya ← tunafanya",
+      "items": [
+        {
+          "label": "",
+          "body": "Mwalimu anagawa ubao katika sehemu mbili. Upande wa kushoto wa ubao utabaki bila kufutwa muda wote wa somo kwa ajili ya \"Orodha ya Maneno Mapya\" (mfano: Hujambo, Kwaheri, Shikamoo). Upande wa kulia wa ubao utafutwa na kutumiwa upya kwa kila mfano wa mazungumzo yanayofundishwa.\n\nMwalimu anaandika maneno ya maamkuzi upande wa kulia na kusoma kwa sauti huku wanafunzi wakirudia.\nUliza: \"Tukisema 'Hujambo', tunajibu nini?\" (Majibu ya pamoja: \"Sijambo!\")\n\nMwalimu anafuta upande wa kulia na kuandika maneno ya maagano (mfano: Kwaheri). Mwalimu anawaonyesha wanafunzi jinsi ya kuagana kwa kutumia ishara ya mkono.\nUliza: \"Tukisema 'Kwaheri', tunajibu nini?\" (Majibu ya pamoja: \"Kwaheri!\")"
+        },
+        {
+          "label": "Kagua",
+          "body": "Kufikia Matarajio: Anatumia maamkuzi na maagano ipasavyo."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": "stage-tatbiq",
+      "heading": "Shughuli za Ziada",
+      "type": "steps",
+      "time": "12 · tunafanya ← wewe hufanya",
+      "items": [
+        {
+          "label": "",
+          "body": "Wanafunzi wanapata nafasi ya kuigiza katika jozi. Mwanafunzi mmoja anaamkua na mwingine anajibu.\nUliza: \"Je, tunapaswa kuwa na heshima tunaposalimia?\" (Majibu ya pamoja: \"Ndiyo!\")\n\nKwa ajili ya utofautishaji:\n- Wanafunzi walio chini ya lengo: Wanatumia kadi za picha na kurudia neno moja rahisi kama \"Hujambo\".\n- Wanafunzi waliofikia lengo kikamilifu: Wanatengeneza mazungumzo mafupi ya maamkuzi na maagano yakijumuisha vyeo (mfano: \"Shikamoo Mwalimu\")."
+        },
+        {
+          "label": "Kagua",
+          "body": "Kuzidi Matarajio: Anatumia maamkuzi na maagano kwa ufasaha na heshima kubwa."
+        }
+      ],
+      "image": "img-maamkuzi-jozi"
+    },
+    {
+      "id": "stage-taqwim",
+      "heading": "Hitimisho",
+      "type": "steps",
+      "time": "4 · wewe hufanya",
+      "items": [
+        {
+          "label": "",
+          "body": "Mwalimu anawaomba wanafunzi waguse vichwa vyao ikiwa wanajua neno la kuagana.\nUliza: \"Sema neno moja la kuamkia?\" (Majibu ya pamoja)\nUliza: \"Sema neno moja la kuagana?\" (Majibu ya pamoja)\n\nKiwango cha chini: Mwanafunzi amsalimie mzazi au mlezi kwa neno moja la maamkuzi.\nKiwango cha juu: Mwanafunzi ajadili na mzazi maamkuzi mbalimbali yanayotumiwa katika jamii yake."
+        },
+        {
+          "label": "Kagua",
+          "body": "Kukaribia Matarajio: Anatumia maamkuzi na maagano kwa msaada wa mwalimu."
+        }
+      ],
+      "image": null
+    },
+    {
+      "id": "solutions",
+      "heading": "Majibu · uk. 1",
+      "type": "bullets",
+      "marker": "num",
+      "items": [
+        {
+          "text": "\"Hujambo!\", \"Habari!\", \"Shikamoo!\""
+        },
+        {
+          "text": "\"Sijambo!\""
+        },
+        {
+          "text": "\"Kwaheri!\""
+        },
+        {
+          "text": "\"Ndiyo!\""
+        }
+      ]
+    },
+    {
+      "id": "glossary",
+      "heading": "Maneno muhimu",
+      "type": "fields",
+      "items": []
+    },
+    {
+      "id": "multigrade",
+      "heading": "Utofautishaji wa madarasa",
+      "type": "bullets",
+      "marker": "num",
+      "items": [
+        {
+          "text": "Wanafunzi walio chini ya lengo: Wanatumia kadi za picha na kurudia neno moja rahisi kama \"Hujambo\"."
+        },
+        {
+          "text": "Wanafunzi waliofikia lengo kikamilifu: Wanatengeneza mazungumzo mafupi ya maamkuzi na maagano yakijumuisha vyeo (mfano: \"Shikamoo Mwalimu\")."
+        },
+        {
+          "text": "Kiwango cha chini: Mwanafunzi amsalimie mzazi au mlezi kwa neno moja la maamkuzi."
+        },
+        {
+          "text": "Kiwango cha juu: Mwanafunzi ajadili na mzazi maamkuzi mbalimbali yanayotumiwa katika jamii yake."
+        }
+      ]
+    },
+    {
+      "id": "homework",
+      "heading": "Kazi ya nyumbani · Rinc ya mwalimu",
+      "type": "note",
+      "body": "Kiwango cha chini: Mwanafunzi amsalimie mzazi au mlezi kwa neno moja la maamkuzi.\nKiwango cha juu: Mwanafunzi ajadili na mzazi maamkuzi mbalimbali yanayotumiwa katika jamii yake.\n\nIkiwa wanafunzi hawajafikia lengo, mwalimu atatumia zaidi kadi za maneno na michezo ya kuigiza kurudia maneno. Ikiwa wanafunzi walizidi matarajio, mwalimu atawapa majukumu ya kuwa viongozi wa kundi katika kuongoza maamkuzi darasani.\n\n___% ya wanafunzi waliofikia lengo."
+    }
+  ],
+  "images": [
+    {
+      "id": "img-maamkuzi-jozi",
+      "concept": "scene",
+      "label": "Wanafunzi wanaigiza maamkuzi na maagano katika jozi",
+      "prompt": "Mchoro wa kweli wa darasa la Gredi ya 1 nchini Kenya, watoto wawili wamesimama wakikabiliana na kuigiza maamkuzi na maagano katika jozi; mtoto mmoja anamsalimia mwenzake kwa heshima na mwingine anajibu, huku wanafunzi wengine wakitazama na kushiriki darasani. Ubao unaonekana lakini hauna maandishi yoyote yanayosomeka. Hakuna maandishi, herufi, namba, alama, mabango au maneno yoyote ndani ya picha. Mandhari ya kawaida ya darasa la shule ya msingi, mwonekano wa kirafiki na wa kielimu, shughuli halisi ya watoto, bila maandishi kabisa."
+    }
+  ]
+}

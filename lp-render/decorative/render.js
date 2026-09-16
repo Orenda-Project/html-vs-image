@@ -1582,7 +1582,23 @@ function ylStage(section, accent, images, idCls) {
   //
   // The section's image is offered to the FIRST activity that has no picture of its own;
   // every later activity keeps whatever it brought and nothing more.
-  let sectionArtLeft = section.image ? 1 : 0;
+  //
+  // …AND IT GOES TO ONE THAT HAS TEXT FOR IT TO SIT BESIDE. `layout` below is `yl-split`
+  // only when an activity has BOTH text and a visual; with a visual alone it is `yl-solo`
+  // and the picture takes the inner card's full width — measured at 692×517px, half the
+  // printable page, for one illustration. That is the oversized artwork the reviewer
+  // reported, and it appeared as soon as stages began arriving as several small blocks:
+  // the first activity without a picture is now often a short label-only one, so the
+  // section's illustration landed on an activity with no text and went solo.
+  //
+  // Preferring an activity that has a body puts the picture back beside the words at
+  // half width, which is the approved anatomy. The fallback keeps the old behaviour for a
+  // stage whose activities genuinely carry no text — that case is bounded by the height
+  // cap in the design pack instead, so no path can produce a page-sized picture.
+  const artTaker = (x) => !x.image && !(isAssess && x.answer && (x.body || x.label));
+  const artTarget = section.image
+    ? (acts.find((a) => artTaker(a) && a.body) || acts.find(artTaker) || null)
+    : null;
   const blocks = acts.map((a) => {
     if (isAssess && a.answer && (a.body || a.label)) {
       const q = String(a.body || a.label || '');
@@ -1603,7 +1619,7 @@ function ylStage(section, accent, images, idCls) {
         + '</div>';
     }
     let inherited = a.image;
-    if (!inherited && sectionArtLeft > 0) { inherited = section.image; sectionArtLeft -= 1; }
+    if (!inherited && a === artTarget) inherited = section.image;
     const visual = ylVisual({ ...a, image: inherited }, images, engine);
     const text = a.body ? '<div class="yl-ttext">' + para(a.body) + '</div>' : '';
     const label = a.label
