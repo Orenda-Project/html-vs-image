@@ -107,6 +107,64 @@ async function htmlToPixelPdf(html, opts = {}) {
         // A card that carries a figure (in-panel illustration or character) must never
         // be cut THROUGH the figure: inner boundaries are legal only BELOW the
         // figure's bottom edge. Cards without figures offer all inner boundaries.
+        // ── A TALL SECTION MAY CONTINUE OVERLEAF ──────────────────────────────────────
+        //
+        // Reported: a page left ~35% blank while the whole العرض section moved to the next
+        // one. Cause: in this pack a stage is ONE .yl-scard holding ONE .yl-act, so every
+        // rule above needs two of something and finds one. The section then offers only its
+        // own bottom, and a 507px block that will not fit simply leaves.
+        //
+        // Component boundaries WERE candidates here once and were reverted, for a good
+        // reason recorded above: a page ended in the middle of a figure. So the rule is not
+        // "offer inner boundaries" — it is "offer any horizontal line that provably crosses
+        // nothing". That is decided by geometry, not by a selector whitelist of where we
+        // hope it is safe:
+        //
+        //   · gather candidate lines — block bottoms, and the bottom of each LINE BOX in
+        //     prose, so a long paragraph can continue rather than move whole;
+        //   · reject any line that passes through an ATOMIC box — a figure, an image, a
+        //     chip, a badge, a callout row, a checkpoint strip, an answer strip. These are
+        //     things that would be sliced in half, which is the defect that caused the
+        //     revert;
+        //   · reject any line that would leave a heading stranded at the foot of a page
+        //     with none of its own content under it.
+        //
+        // These go in `cuts`, never in `safe`, so the composer still PREFERS whole cards and
+        // reaches for an inner line only when that is the difference between using the page
+        // and wasting it.
+        const ATOMIC = 'svg, img, canvas, figure, .yl-cf, .yl-illus, .yl-tvis, .yl-check,'
+          + ' .yl-srow, .yl-pill, .yl-tab, .yl-alabel, .yl-answer, .yl-badge, .yl-ntab,'
+          + ' .yl-qcard, .d-inline-img, .d-code-fig, .d-code-board, .cf-card';
+        const boxes = [...sec.querySelectorAll(ATOMIC)]
+          .map((el) => [y(el, 'top'), y(el, 'bottom')])
+          .filter(([t, b]) => b - t > 1);
+        // a heading must keep the first real thing under it
+        const orphan = [];
+        sec.querySelectorAll('.yl-shead').forEach((head) => {
+          let next = head.nextElementSibling;
+          while (next && !next.getBoundingClientRect().height) next = next.nextElementSibling;
+          if (!next) return;
+          const first = next.querySelector('.yl-act, .yl-ttext, p') || next;
+          orphan.push([y(head, 'top'), y(first, 'bottom')]);
+        });
+        const illegal = (v) => boxes.some(([t, b]) => v > t + 0.5 && v < b - 0.5)
+          || orphan.some(([t, b]) => v > t - 0.5 && v < b - 0.5);
+        const inner = [];
+        sec.querySelectorAll('.yl-scard, .yl-srows, .yl-act, .yl-sbody, .yl-ttext, .yl-lead')
+          .forEach((el) => inner.push(y(el, 'bottom')));
+        // line boxes inside prose: the only place a long paragraph can legally break
+        sec.querySelectorAll('.yl-ttext p, .yl-lead, .yl-ttext').forEach((block) => {
+          const range = document.createRange();
+          for (const node of block.childNodes) {
+            if (node.nodeType !== 3 || !node.textContent.trim()) continue;
+            range.selectNodeContents(node);
+            for (const r of range.getClientRects()) {
+              if (r.height > 1) inner.push(r.bottom + window.scrollY);
+            }
+          }
+        });
+        inner.forEach((v) => { if (!illegal(v)) cuts.push(v); });
+
         const fig = sec.querySelector('.d-inline-img, .char-fig');
         // A card holding a CODE-drawn figure is atomic: its figure is followed by a
         // value label and caption, so a cut 'below the figure' would slice the card
