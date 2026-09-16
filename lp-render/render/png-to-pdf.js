@@ -370,15 +370,19 @@ function balancePages(greedyN, height, usable, safeCuts, allCuts) {
   const floor = Math.max(2, Math.ceil(height / usable));
   // How short the shortest page is, which is what "blank at the bottom" means.
   const shortest = (p) => Math.min(...p.map(([a, b]) => b - a));
-  // A card boundary is preferred, but not at any price. `safe || all` returned the moment
-  // whole cards could make N pages, so a strictly better partition using an inner line was
-  // never even compared: the directions lesson could have ended page 2 at 68% and stopped
-  // at 54%, because a card-only split existed and won by default. Both are computed now,
-  // and the inner one is taken only when it is meaningfully better — a tenth of a page,
-  // expressed as a fraction of the printable height rather than a pixel count, so it holds
-  // at any page size. Below that the card boundary keeps it, because opening a card's
-  // border across the break for a sliver of space is the worse trade.
-  const WORTH_SPLITTING = usable * 0.1;
+  // A card boundary is preferred, but only when it costs nothing real.
+  //
+  // Two mistakes were made here in turn. First `safe || all` returned the moment whole
+  // cards could make N pages, so a better partition was never compared. Then the tolerance
+  // for choosing the better one was set at a tenth of a page, which is far too coarse: the
+  // fractions lesson could reach a 57% shortest page and kept a 48% one, because the 95px
+  // gain fell under a 106px bar. Checked against a brute-force search of every legal
+  // partition, which is what caught it.
+  //
+  // The tolerance exists only to avoid opening a card's border for a sliver, so it should
+  // be a sliver: a fortieth of the printable height. Anything above that is a real amount
+  // of page and the fuller split wins.
+  const WORTH_SPLITTING = usable / 40;
   for (let n = floor; n <= greedyN; n++) {
     const bySafe = attempt(safeCuts, n);
     const byAll = attempt(allCuts, n);
