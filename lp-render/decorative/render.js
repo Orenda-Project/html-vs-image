@@ -1570,6 +1570,19 @@ function ylStage(section, accent, images, idCls) {
   const isAssess = section.id === 'stage-taqwim';
   const AR = (n) => String(n).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
   let qNo = 0;
+  // THE SECTION'S PICTURE BELONGS TO THE SECTION, NOT TO EVERY ACTIVITY IN IT.
+  //
+  // `image: a.image || section.image` ran inside this loop, so a stage carrying one
+  // illustration painted it once per activity. Measured on a live addition lesson: the
+  // guide declared ONE image and one activity carrying it, and the page rendered FOUR
+  // <img> tags with a single distinct src — four copies of the same 559px picture, about
+  // 1,700px of duplicated paint, which on its own pushed that lesson from three pages to
+  // six. It reads as a layout problem (huge blank areas, sections shoved overleaf) and is
+  // actually a content problem: the same thing drawn four times.
+  //
+  // The section's image is offered to the FIRST activity that has no picture of its own;
+  // every later activity keeps whatever it brought and nothing more.
+  let sectionArtLeft = section.image ? 1 : 0;
   const blocks = acts.map((a) => {
     if (isAssess && a.answer && (a.body || a.label)) {
       const q = String(a.body || a.label || '');
@@ -1589,7 +1602,9 @@ function ylStage(section, accent, images, idCls) {
         + '<span class="yl-anstext">' + richText(a.answer, { engine }) + '</span></div>'
         + '</div>';
     }
-    const visual = ylVisual({ ...a, image: a.image || section.image }, images, engine);
+    let inherited = a.image;
+    if (!inherited && sectionArtLeft > 0) { inherited = section.image; sectionArtLeft -= 1; }
+    const visual = ylVisual({ ...a, image: inherited }, images, engine);
     const text = a.body ? '<div class="yl-ttext">' + para(a.body) + '</div>' : '';
     const label = a.label
       ? '<div class="yl-alabel">' + esc(cleanHeading(a.label)) + '</div>' : '';
