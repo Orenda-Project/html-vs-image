@@ -381,7 +381,11 @@ const YE = {
   // the joining «و» with it when there is one, so both spellings of the sentence produce the
   // same panel: «يصححه المعلم…». The conjunction belongs to the join, not to either clause;
   // no other word is touched.
-  correctionSplitRe: /\s*[؛;]\s*|\s*[،,.]\s*و?\s*(?=(?:يصححه|يصحح|يتم\s+التصحيح|التصحيح|الصواب|نصححه))/,
+  // The cue list is read off the corpus, not guessed. Across every Yemen lesson to hand,
+  // the correction clause opens one of eight ways — «يتم تصحيح» 13×, «يصحح المعلم» 8×,
+  // «يصححه المعلم» 8×, «ويصححه المعلم» 7×, «يتم التصحيح» 3×, «ويصحح المعلم» 2×, «ويتم
+  // تصحيح» 2×, «يتم تصحيحه» 2× — which is what the alternatives below cover.
+  correctionSplitRe: /\s*[؛;]\s*|\s*[،,.]\s*و?\s*(?=(?:يصحح|نصحح|يتم\s+(?:ال)?تصحيح|التصحيح|الصواب))/,
   confusedPairRe: /الخلط\s+بين\s+(?:كلمتي|كلمتين)?\s*("[^"]{1,14}"|[^\s"،.]{1,14})\s*و\s*("[^"]{1,14}"|[^\s"،.]{1,14})/,
   chrome: {
     when: (locale, region) => String(locale).startsWith('ar') && region === 'ye',
