@@ -21,6 +21,8 @@ test('generates an image for the hook, skips the structured block', async () => 
   const board = images.find((i) => i.blockType === 'BOARD_WORK');
   assert.strictEqual(hook.category, 'decorative_scene');
   assert.strictEqual(hook.asset.url, 'http://img/hook.png');
+  // this fixture is region 'pk', which keeps the shared default — Yemen's cheaper
+  // illustration model must not leak into any other region
   assert.strictEqual(hook.model, 'nano-banana-2-lite');
   assert.strictEqual(board.needsImage, false);
   assert.strictEqual(board.asset, null);
@@ -32,7 +34,9 @@ test('the ladder is a single model — no escalation to a costlier one', async (
   const gateImpl = async () => ({ pass: true });
   const { images } = await resolveSegmentImages(segment, { apiKey: 'k', generateImpl, gateImpl, cache: new MemoryAssetCache(), budget: new BudgetGuard(100) });
   const hook = images.find((i) => i.blockType === 'HOOK_STORY');
-  // One model for every image (owner decision): the ladder must not reach past it.
+  // ONE model per job, and the ladder must not reach past it: a second generation at a
+  // dearer model is the silent escalation the cost instruction rules out, so `seen` must
+  // hold exactly one distinct slug. (region 'pk' → the shared default.)
   assert.strictEqual(seen[0], 'nano-banana-2-lite');
   assert.deepStrictEqual([...new Set(seen)], ['nano-banana-2-lite']);
   assert.strictEqual(hook.model, 'nano-banana-2-lite');
@@ -68,4 +72,18 @@ test('a cache hit skips generation', async () => {
   const before = called;
   await resolveSegmentImages(segment, opts);
   assert.strictEqual(called, before, 'no new generation on the cached run');
+});
+
+// The same segment, resolved for Yemen: the only region that has declared its own
+// illustration model. Run through resolveSegmentImages rather than route() alone, so the
+// whole path — classify → route → generate — is what is being checked.
+test('a Yemen segment generates its illustration on z-image', async () => {
+  const seen = [];
+  const generateImpl = async ({ model }) => { seen.push(model); return { ok: true, model, url: 'http://img/ye.png', creditsConsumed: 0.8 }; };
+  const gateImpl = async () => ({ pass: true });
+  const { images } = await resolveSegmentImages({ ...segment, region: 'ye', locale: 'ar' },
+    { apiKey: 'k', generateImpl, gateImpl, cache: new MemoryAssetCache(), budget: new BudgetGuard(100) });
+  const hook = images.find((i) => i.blockType === 'HOOK_STORY');
+  assert.strictEqual(hook.model, 'z-image');
+  assert.deepStrictEqual([...new Set(seen)], ['z-image'], 'Yemen escalated past z-image');
 });

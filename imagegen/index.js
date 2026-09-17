@@ -27,7 +27,7 @@ async function resolveSegmentImages(segment = {}, opts = {}) {
 
     // A block may force a specific model (e.g. an open-weight flux/qwen); otherwise
     // walk the category's cost-ascending ladder. Either way the gate still decides.
-    const ladder = block.model ? [block.model] : route(category, segment.locale).ladder;
+    const ladder = block.model ? [block.model] : route(category, segment.locale, segment.region).ladder;
     const prompt = resolvePrompt({ category, subject: segment.subject, block, region, grade: segment.grade, locale: segment.locale });
     const expectation = block.text || segment.topic || category;
 

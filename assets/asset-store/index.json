@@ -2134,13 +2134,6 @@
     "concept": "scene",
     "prompt": "a boy with his sleeves rolled to the elbow washing his hands and face at a low water tap in a school courtyard. The composition is filled by the people and the objects they are handling."
   },
-  "7b18395d6e5f3023": {
-    "file": "7b18395d6e5f3023.png",
-    "mime": "image/png",
-    "model": "z-image",
-    "concept": "scene",
-    "prompt": "a child carrying a cup of water to a tired father sitting down after work, the mother smiling beside them. The composition is filled by the people and the objects they are handling."
-  },
   "9f1912f8d58e0070": {
     "file": "9f1912f8d58e0070.png",
     "mime": "image/png",
@@ -2183,20 +2176,6 @@
     "concept": "scene",
     "prompt": "the tall mud-brick tower houses of an old walled Yemeni town at evening, seen across an empty square. The composition is filled by the people and the objects they are handling."
   },
-  "fe8c515bc87ad137": {
-    "file": "fe8c515bc87ad137.jpg",
-    "mime": "image/jpeg",
-    "model": "nano-banana-2-lite",
-    "concept": "scene",
-    "prompt": "a boy with his sleeves rolled to the elbow washing his hands and face at a low water tap in a school courtyard. The composition is filled by the people and the objects they are handling."
-  },
-  "52adef24969d308a": {
-    "file": "52adef24969d308a.jpg",
-    "mime": "image/jpeg",
-    "model": "nano-banana-2-lite",
-    "concept": "scene",
-    "prompt": "rain falling from a grey cloud onto terraced hillside fields with a low stone dam below, children watching from a wall. The composition is filled by the people and the objects they are handling."
-  },
   "7dd9877c50d53855": {
     "file": "7dd9877c50d53855.jpg",
     "mime": "image/jpeg",
@@ -2204,26 +2183,12 @@
     "concept": "scene",
     "prompt": "children kneeling around a young seedling lifted out of dark soil so its roots, stem and leaves are all visible. The composition is filled by the people and the objects they are handling."
   },
-  "54537912ffe0ad3e": {
-    "file": "54537912ffe0ad3e.jpg",
-    "mime": "image/jpeg",
-    "model": "nano-banana-2-lite",
-    "concept": "scene",
-    "prompt": "a child standing with both arms stretched wide in an open field, the low sun on one side and a long shadow falling to the other. The composition is filled by the people and the objects they are handling."
-  },
   "ad63f687faee07bf": {
     "file": "ad63f687faee07bf.jpg",
     "mime": "image/jpeg",
     "model": "nano-banana-2-lite",
     "concept": "scene",
     "prompt": "two children counting small pebbles gathered into two separate heaps on a mat, one heap larger than the other. The composition is filled by the people and the objects they are handling."
-  },
-  "9a01896091eab319": {
-    "file": "9a01896091eab319.jpg",
-    "mime": "image/jpeg",
-    "model": "nano-banana-2-lite",
-    "concept": "scene",
-    "prompt": "a child colouring in one part of a large paper circle that has been folded into equal parts. The composition is filled by the people and the objects they are handling."
   },
   "3e62b7d526a6ea86": {
     "file": "3e62b7d526a6ea86.jpg",
@@ -2253,11 +2218,46 @@
     "concept": "scene",
     "prompt": "primary-school children and their teacher working together at a low table in a Yemeni classroom. The composition is filled by the people and the objects they are handling."
   },
+  "7b18395d6e5f3023": {
+    "file": "7b18395d6e5f3023.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a child carrying a cup of water to a tired father sitting down after work, the mother smiling beside them. The composition is filled by the people and the objects they are handling."
+  },
+  "fe8c515bc87ad137": {
+    "file": "fe8c515bc87ad137.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a boy with his sleeves rolled to the elbow washing his hands and face at a low water tap in a school courtyard. The composition is filled by the people and the objects they are handling."
+  },
+  "9a01896091eab319": {
+    "file": "9a01896091eab319.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a child colouring in one part of a large paper circle that has been folded into equal parts. The composition is filled by the people and the objects they are handling."
+  },
   "978ae3d26badc75d": {
-    "file": "978ae3d26badc75d.jpg",
-    "mime": "image/jpeg",
-    "model": "nano-banana-2-lite",
+    "file": "978ae3d26badc75d.png",
+    "mime": "image/png",
+    "model": "z-image",
     "concept": "scene",
     "prompt": "children kneeling around a young seedling lifted out of dark soil so its roots, stem and leaves are all visible. The composition is filled by the people and the objects they are handling."
+  },
+  "52adef24969d308a": {
+    "file": "52adef24969d308a.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "rain falling from a grey cloud onto terraced hillside fields with a low stone dam below, children watching from a wall. The composition is filled by the people and the objects they are handling."
+  },
+  "54537912ffe0ad3e": {
+    "file": "54537912ffe0ad3e.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a child standing with both arms stretched wide in an open field, the low sun on one side and a long shadow falling to the other. The composition is filled by the people and the objects they are handling."
   }
 }

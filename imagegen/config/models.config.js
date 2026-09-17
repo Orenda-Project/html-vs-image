@@ -47,11 +47,56 @@ const LADDERS = {
   labeled_diagram_complex: ['nano-banana-2-lite'],
 };
 
+// ── PER-REGION OVERRIDES — ONE REGION AT A TIME, BY CONSTRUCTION ────────────────────
+//
+// LADDERS above is the default for EVERY region and is not to be edited for one region's
+// sake. Yemen is the only region integrated so far, and a change made in LADDERS would
+// silently change Kenya, Tanzania and Pakistan with it — which is exactly what the Design
+// lane's standing constraint forbids. A region that wants a different model for one
+// category declares it here; a region with no entry keeps the default untouched.
+//
+// YEMEN — LESSON ILLUSTRATIONS ON z-image (reviewer's cost instruction, 17 Sep 2026).
+// The ask was the cheapest model that still draws an acceptable lesson illustration, with
+// anything cheaper than z-image to be recommended first. kie's own catalogue settles it
+// (GET /api/v1/models — 206 models, 32 text-to-image; kie publishes no price list
+// anywhere else):
+//
+//   z-image (Z Image Turbo)   0.8 credits  ~$0.004   ← cheapest real generator
+//   bytedance/seedream (V3)   3.5 credits  ~$0.0175    next cheapest, 4.4× more
+//   nano-banana-2-lite        4.0 credits  ~$0.02      the default, 5× more
+//   nano-banana-2             8.0 credits  ~$0.04
+//
+// Two entries LOOK cheaper and are not: `recraft/crisp-upscale` (0.5cr) is an UPSCALER —
+// it cannot draw from a prompt, and kie mislabels its taskType as Text to Image; and
+// `seedream/5-pro` quotes 0.5cr for an INPUT reference image while generation is 7cr
+// ($0.035), among the dearest. Nothing in the catalogue undercuts z-image for generation,
+// and kie flags NO model as free — there is no zero-cost generator to choose.
+//
+// Quality is measured, not assumed: 0.86 credits per image observed across six live
+// generations (5.14 credits total), and the six illustrations were reviewed in the
+// rendered pages beside their nano-banana predecessors.
+//
+// ONE ENTRY, DELIBERATELY. A second entry is a gate-escalation path, and escalating from
+// $0.004 to $0.02 without saying so is the silent fallback this change exists to rule out.
+// If the gate rejects a z-image the pipeline's retry pass rolls z-image again (same ladder,
+// fresh sample); failing that the lesson ships without a photograph, and the code-drawn
+// figures cost nothing and carry the teaching content regardless.
+//
+// DIAGRAMS AND LABELLING ARE NOT LISTED HERE, DELIBERATELY. A labelled diagram must render
+// readable words inside the image — a different and much harder job than a wordless scene,
+// settled for Arabic by the bake-off cited above, which z-image has never been tested
+// against. Cheaper artwork is not a reason to re-open a legibility question that was
+// answered with evidence.
+const REGION_LADDERS = {
+  ye: { decorative_scene: ['z-image'] },
+};
+
 // Scripts whose in-image labels only the strongest model renders reliably.
 const COMPLEX_SCRIPT = new Set(['ar', 'ur', 'sd', 'fa', 'ps']);
 
-// Resolve the model list for a category, honouring the lesson locale for diagrams.
-function ladderFor(category, locale) {
+// Resolve the model list for a category, honouring the lesson locale for diagrams and the
+// region for anything that region has declared for itself.
+function ladderFor(category, locale, region) {
   // ARTWORK MODEL OVERRIDE: with LP_ART_MODEL set, every illustration comes from
   // that one model. Used for the open-source artwork track (LP_ART_MODEL=z-image),
   // where the model draws wordless art and code renders all teaching content.
@@ -75,7 +120,11 @@ function ladderFor(category, locale) {
   if (category === 'labeled_diagram' && COMPLEX_SCRIPT.has(String(locale || '').toLowerCase())) {
     return LADDERS.labeled_diagram_complex;
   }
+  // A region's own declaration wins for the categories it names, and ONLY those. A region
+  // that declares nothing — every region but Yemen today — resolves exactly as before.
+  const own = REGION_LADDERS[String(region || '').toLowerCase()];
+  if (own && own[category]) return own[category];
   return LADDERS[category] || [];
 }
 
-module.exports = { MODELS, LADDERS, COMPLEX_SCRIPT, ladderFor };
+module.exports = { MODELS, LADDERS, REGION_LADDERS, COMPLEX_SCRIPT, ladderFor };
