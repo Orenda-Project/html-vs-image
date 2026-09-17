@@ -364,9 +364,24 @@ const YE = {
   errLeadRe: /^(?:بعض|كثير من) الطلاب\s*/,
   confusionPairRe: /يخلطون\s+بين\s+("?[^"،.]{1,12}"?)\s*و\s*("?[^"،.]{1,12}"?)/,
   // «الخلط بين كلمتي "أبي" و"أمي"» — the two words a pupil confuses, for the ✗/✓ board.
-  // The clause that says what the TEACHER does about the confusion. Arabic writes it
-  // after a semicolon («؛»); the panel gives it its own strip beneath the two halves.
-  correctionSplitRe: /\s*[؛;]\s*/,
+  // The clause that says what the TEACHER does about the confusion. The panel gives it the
+  // صواب half, or its own strip beneath the two halves when a confused pair is drawn.
+  //
+  // IT IS NOT ALWAYS AFTER A SEMICOLON. This matched «؛» only, and Yemen writes the same
+  // sentence both ways: «…لتشابه الحروف؛ يصححه المعلم بالتركيز على…» and «…والاكتفاء
+  // بالكفين، ويصححه المعلم بتوضيح الفرق…». With a comma nothing split, so the correction
+  // stayed inside the خطأ half and صواب rendered as an EMPTY GREEN BOX — in 7 of the 15
+  // approved lessons. Every one of them states its correction; none of them was shown.
+  //
+  // So the split is on where the correction BEGINS, not on the punctuation that happens to
+  // precede it: the separator is optional and consumed, the cue word is the source's own
+  // and stays in the text. A sentence that names no correction still does not split, and
+  // the renderer collapses the board rather than drawing an empty half.
+  // The separator is «؛», «،» or «.» — all three appear across the fifteen — and it carries
+  // the joining «و» with it when there is one, so both spellings of the sentence produce the
+  // same panel: «يصححه المعلم…». The conjunction belongs to the join, not to either clause;
+  // no other word is touched.
+  correctionSplitRe: /\s*[؛;]\s*|\s*[،,.]\s*و?\s*(?=(?:يصححه|يصحح|يتم\s+التصحيح|التصحيح|الصواب|نصححه))/,
   confusedPairRe: /الخلط\s+بين\s+(?:كلمتي|كلمتين)?\s*("[^"]{1,14}"|[^\s"،.]{1,14})\s*و\s*("[^"]{1,14}"|[^\s"،.]{1,14})/,
   chrome: {
     when: (locale, region) => String(locale).startsWith('ar') && region === 'ye',

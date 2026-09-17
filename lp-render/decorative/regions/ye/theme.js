@@ -2210,6 +2210,15 @@ body{background:#fcfcfc;font-family:'Noto Naskh Arabic','IBM Plex Sans Arabic','
 .yl-sbody.yl-solo > .yl-tvis > .yl-illus{width:fit-content;max-width:100%;margin-inline:auto}
 .yl-sbody.yl-solo > .yl-tvis > .yl-illus img{width:auto;max-width:100%;height:auto;
   max-height:var(--lp-art-max);object-fit:contain}
+
+/* 3 — A MISCONCEPTION BOARD WITH ONLY ONE THING TO SAY IS ONE PANEL.
+   The board is خطأ beside صواب. Where the source names a mistake and no correction there
+   is nothing honest to put in the green box, and a tick over an empty box reads as a bug.
+   The remaining panel takes the row. (Almost every Yemen lesson DOES state its correction —
+   it was going unread because the profile only split on «؛» — so this is the floor, not the
+   common path.) */
+.section.yl-miscsec .yl-misc .yl-mrow.yl-mono{grid-template-columns:1fr}
+.section.yl-miscsec .yl-misc:has(.yl-mono){grid-template-columns:1fr}
 `;
 
 // NO MAX_PAGES. This pack used to declare a two-page contract, and the Studio then

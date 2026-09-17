@@ -1443,10 +1443,18 @@ function ylMisconception(section, engine) {
   // that separates them, and the teacher's correction runs beneath both. With no pair, the
   // correction IS the right-hand side — which is what the source put there.
   const fixText = section.fix ? richText(section.fix, { engine }) : '';
-  const row = '<div class="yl-mrow">'
-    + half('yl-wrong', '✕', lw, said)
-    + half('yl-correct', '✓', lc, pair || fixText)
-    + '</div>';
+  const right = pair || fixText;
+  // …AND AN EMPTY HALF IS NOT DRAWN AT ALL. When the source names a mistake but no
+  // correction, there is nothing honest to put in the صواب box and nothing may be invented,
+  // so the board becomes one panel across the card instead of a green box with a tick and
+  // no words under it. (The common case — a correction written after «،» or «.» rather than
+  // «؛» — is a profile matter and is fixed there; this is the floor beneath it.)
+  const row = right
+    ? '<div class="yl-mrow">'
+      + half('yl-wrong', '✕', lw, said)
+      + half('yl-correct', '✓', lc, right)
+      + '</div>'
+    : '<div class="yl-mrow yl-mono">' + half('yl-wrong', '✕', lw, said) + '</div>';
   const strip = (pair && fixText) ? '<div class="yl-mfix">' + fixText + '</div>' : '';
   return '<div class="yl-misc">' + row + strip + '</div>';
 }
