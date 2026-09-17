@@ -10,7 +10,10 @@ const { resolveSegmentImages } = require('./index');
 function dryRun(segment) {
   return (segment.blocks || []).map((block) => {
     const { category, needsImage, reason } = classifyBlock(block, segment);
-    const { ladder } = route(category);
+    // Pass the segment's own locale AND region: a dry run that reports the DEFAULT model
+    // while the real run uses the region's own is worse than no dry run — it is a wrong
+    // answer to "what will this cost".
+    const { ladder } = route(category, segment.locale, segment.region);
     return {
       blockType: block.type, category, needsImage,
       model: ladder[0] || null,

@@ -2172,6 +2172,53 @@ body{background:#fcfcfc;font-family:'Noto Naskh Arabic','IBM Plex Sans Arabic','
 .yl-anschip{flex:0 0 auto;background:#2f7d55;color:#fff;font-size:10.5px;font-weight:800;
   border-radius:5px;padding:2px 7px;line-height:1.35;white-space:nowrap}
 .yl-anstext{font-size:12.5px;line-height:1.5;font-weight:600;color:#20402f;min-width:0}
+
+/* ═══════════════════════════════════════════════════════════════════════════════════
+   TWO RULES THAT ASSUMED A SHAPE OF LESSON, AND BROKE ON ANOTHER.
+   Both were written against the fifteen approved lessons and are correct for them. Both
+   fail on a Rumi-written lesson, which is a different shape: no exit ticket, and stages
+   that arrive as several small activities rather than one block of prose.
+   ═══════════════════════════════════════════════════════════════════════════════════ */
+
+/* 1 — الإجابات IS HALF A ROW ONLY WHEN IT HAS A PARTNER TO SHARE IT WITH.
+   The closing pair pins بطاقة الخروج to columns 1-6 and الإجابات to 7-12. The converse
+   already existed — an exit ticket with no answers card spans the row — but not the
+   mirror of it, and a Rumi lesson has no exit ticket at all. So a full answer key was
+   being laid out in a 366px column with 384px of empty paper beside it: the "narrow side
+   div" in the report. Alone, it takes the row, like every other closing block. */
+.body:not(:has(.sec-exit-ticket)) > .section.yl-block.sec-solutions{
+  grid-column:1 / 13;margin-inline-start:0}
+
+/* 2 — NO ILLUSTRATION IS TALLER THAN THE APPROVED DESIGN'S OWN LARGEST ILLUSTRATION.
+   --lp-art-max is the intro picture's height on the approved page: the biggest any
+   artwork gets there, and 29% of the composer's 1059px printable page. It was pinned to
+   التمهيد alone, so a picture landing in any other stage met max-height:none and was
+   sized by its column — measured at 692×517px, half a page, for one illustration.
+   The cap is a ceiling, not a size: the per-stage rules above it carry !important and
+   still decide how big a picture actually is. art-cap.test.js pins the page number to
+   the composer's own geometry so the two cannot drift apart.
+   (And no backtick may appear in this comment: it would close the template literal this
+   whole stylesheet lives in. Fourth time — the file says so twice above.) */
+:root{--lp-page-usable:1059px;--lp-art-max:312px}
+.yl-tvis .yl-illus img,
+.yl-sbody.yl-split > .yl-tvis > .yl-illus img,
+.yl-artspan .yl-tvis > .yl-illus img{max-height:var(--lp-art-max)}
+/* A PICTURE WITH NO TEXT BESIDE IT keeps its own proportions and centres. Capping the
+   height alone would leave a full-width white frame with a small picture adrift in the
+   middle of it; the frame shrinks to the picture instead, which is what the approved
+   pages do with a standalone figure. */
+.yl-sbody.yl-solo > .yl-tvis > .yl-illus{width:fit-content;max-width:100%;margin-inline:auto}
+.yl-sbody.yl-solo > .yl-tvis > .yl-illus img{width:auto;max-width:100%;height:auto;
+  max-height:var(--lp-art-max);object-fit:contain}
+
+/* 3 — A MISCONCEPTION BOARD WITH ONLY ONE THING TO SAY IS ONE PANEL.
+   The board is خطأ beside صواب. Where the source names a mistake and no correction there
+   is nothing honest to put in the green box, and a tick over an empty box reads as a bug.
+   The remaining panel takes the row. (Almost every Yemen lesson DOES state its correction —
+   it was going unread because the profile only split on «؛» — so this is the floor, not the
+   common path.) */
+.section.yl-miscsec .yl-misc .yl-mrow.yl-mono{grid-template-columns:1fr}
+.section.yl-miscsec .yl-misc:has(.yl-mono){grid-template-columns:1fr}
 `;
 
 // NO MAX_PAGES. This pack used to declare a two-page contract, and the Studio then

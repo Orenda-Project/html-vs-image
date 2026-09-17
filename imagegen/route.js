@@ -2,9 +2,11 @@
 const { MODELS, ladderFor } = require('./config/models.config');
 
 // Resolve which model(s) a category uses. `locale` selects the script-appropriate
-// diagram models (e.g. Arabic → a model that renders Arabic labels first-try).
-function route(category, locale) {
-  const ladder = ladderFor(category, locale);
+// diagram models (e.g. Arabic → a model that renders Arabic labels first-try). `region`
+// lets a single region declare its own model for a category without moving any other
+// region — Yemen is the only one that does today.
+function route(category, locale, region) {
+  const ladder = ladderFor(category, locale, region);
   return { needsImage: ladder.length > 0, ladder };
 }
 

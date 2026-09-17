@@ -1443,10 +1443,18 @@ function ylMisconception(section, engine) {
   // that separates them, and the teacher's correction runs beneath both. With no pair, the
   // correction IS the right-hand side — which is what the source put there.
   const fixText = section.fix ? richText(section.fix, { engine }) : '';
-  const row = '<div class="yl-mrow">'
-    + half('yl-wrong', '✕', lw, said)
-    + half('yl-correct', '✓', lc, pair || fixText)
-    + '</div>';
+  const right = pair || fixText;
+  // …AND AN EMPTY HALF IS NOT DRAWN AT ALL. When the source names a mistake but no
+  // correction, there is nothing honest to put in the صواب box and nothing may be invented,
+  // so the board becomes one panel across the card instead of a green box with a tick and
+  // no words under it. (The common case — a correction written after «،» or «.» rather than
+  // «؛» — is a profile matter and is fixed there; this is the floor beneath it.)
+  const row = right
+    ? '<div class="yl-mrow">'
+      + half('yl-wrong', '✕', lw, said)
+      + half('yl-correct', '✓', lc, right)
+      + '</div>'
+    : '<div class="yl-mrow yl-mono">' + half('yl-wrong', '✕', lw, said) + '</div>';
   const strip = (pair && fixText) ? '<div class="yl-mfix">' + fixText + '</div>' : '';
   return '<div class="yl-misc">' + row + strip + '</div>';
 }
@@ -1570,6 +1578,35 @@ function ylStage(section, accent, images, idCls) {
   const isAssess = section.id === 'stage-taqwim';
   const AR = (n) => String(n).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
   let qNo = 0;
+  // THE SECTION'S PICTURE BELONGS TO THE SECTION, NOT TO EVERY ACTIVITY IN IT.
+  //
+  // `image: a.image || section.image` ran inside this loop, so a stage carrying one
+  // illustration painted it once per activity. Measured on a live addition lesson: the
+  // guide declared ONE image and one activity carrying it, and the page rendered FOUR
+  // <img> tags with a single distinct src — four copies of the same 559px picture, about
+  // 1,700px of duplicated paint, which on its own pushed that lesson from three pages to
+  // six. It reads as a layout problem (huge blank areas, sections shoved overleaf) and is
+  // actually a content problem: the same thing drawn four times.
+  //
+  // The section's image is offered to the FIRST activity that has no picture of its own;
+  // every later activity keeps whatever it brought and nothing more.
+  //
+  // …AND IT GOES TO ONE THAT HAS TEXT FOR IT TO SIT BESIDE. `layout` below is `yl-split`
+  // only when an activity has BOTH text and a visual; with a visual alone it is `yl-solo`
+  // and the picture takes the inner card's full width — measured at 692×517px, half the
+  // printable page, for one illustration. That is the oversized artwork the reviewer
+  // reported, and it appeared as soon as stages began arriving as several small blocks:
+  // the first activity without a picture is now often a short label-only one, so the
+  // section's illustration landed on an activity with no text and went solo.
+  //
+  // Preferring an activity that has a body puts the picture back beside the words at
+  // half width, which is the approved anatomy. The fallback keeps the old behaviour for a
+  // stage whose activities genuinely carry no text — that case is bounded by the height
+  // cap in the design pack instead, so no path can produce a page-sized picture.
+  const artTaker = (x) => !x.image && !(isAssess && x.answer && (x.body || x.label));
+  const artTarget = section.image
+    ? (acts.find((a) => artTaker(a) && a.body) || acts.find(artTaker) || null)
+    : null;
   const blocks = acts.map((a) => {
     if (isAssess && a.answer && (a.body || a.label)) {
       const q = String(a.body || a.label || '');
@@ -1589,7 +1626,9 @@ function ylStage(section, accent, images, idCls) {
         + '<span class="yl-anstext">' + richText(a.answer, { engine }) + '</span></div>'
         + '</div>';
     }
-    const visual = ylVisual({ ...a, image: a.image || section.image }, images, engine);
+    let inherited = a.image;
+    if (!inherited && a === artTarget) inherited = section.image;
+    const visual = ylVisual({ ...a, image: inherited }, images, engine);
     const text = a.body ? '<div class="yl-ttext">' + para(a.body) + '</div>' : '';
     const label = a.label
       ? '<div class="yl-alabel">' + esc(cleanHeading(a.label)) + '</div>' : '';

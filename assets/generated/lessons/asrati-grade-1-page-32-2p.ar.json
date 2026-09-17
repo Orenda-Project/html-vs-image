@@ -1,0 +1,254 @@
+{
+  "meta": {
+    "id": "asrati-grade-1-page-32-2p",
+    "locale": "ar",
+    "subject": "اللغة العربية (نشاط قراءة وتهيئة)",
+    "grade": "الصف الأول الأساسي",
+    "region": "ye",
+    "title": "دليل الدرس اليومي",
+    "subtitle": "الجمهورية اليمنية · وزارة التربية والتعليم · التعليم المجتمعي",
+    "footer": "للتواصل مع المدرّب الرقمي: 160 661 778 967+ · دليل الدرس اليومي",
+    "chips": [
+      {
+        "label": "الزمن",
+        "value": "٤٥-٥٠ دقيقة"
+      },
+      {
+        "label": "الصفحة",
+        "value": "صفحة ٣٢"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "id": "lesson-line",
+      "heading": "درس",
+      "type": "text",
+      "body": "اللغة العربية · الصف الأول الأساسي · أسرتي: كلمات أفراد الأسرة والمطابقة (صفحة ٣٢)"
+    },
+    {
+      "id": "goal",
+      "heading": "هدف",
+      "type": "note",
+      "body": "**هدف اليوم:** يقرأ التلميذ كلمات الأسرة ويطابق الصورة بالكلمة ويميز الكلمات المتماثلة."
+    },
+    {
+      "id": "errors",
+      "heading": "أخطاء شائعة — انتبه لها",
+      "type": "qa",
+      "items": [
+        {
+          "q": "✗ خطأ",
+          "a": "الاعتماد على طول الكلمة فقط وخلط أبي مع أمي."
+        },
+        {
+          "q": "✓ صواب",
+          "a": "يتتبع التلميذ الحروف بإصبعه ويميز الحرف الأوسط: ب أو م."
+        }
+      ],
+      "codeFigure": {
+        "kind": "error-board",
+        "labelWrong": "تشابه الطول",
+        "labelCorrect": "تمييز الحرف"
+      }
+    },
+    {
+      "id": "errors-caption",
+      "heading": "ملاحظة",
+      "type": "text",
+      "body": "اعرض بطاقتي أبي وأمي واجعل التلميذ يتتبع الحرف الأوسط."
+    },
+    {
+      "id": "stage-tamhid",
+      "heading": "التمهيد",
+      "type": "steps",
+      "time": "١٠ دقائق · أنا أفعل",
+      "items": [
+        {
+          "label": "",
+          "body": "افتح كتاب صفحة ٣٢، اعرض صور الأسرة وردد أنشودة: أُسْرَتِي أُسْرَتِي، فيها أَبِي وَأُمِّي، وَأَحْمَد وَسَبَأ، وَإِيمَان تُحِبُّنِي."
+        },
+        {
+          "label": "تحقق",
+          "body": "يسمي التلميذ فرداً من الأسرة."
+        }
+      ],
+      "image": "family-reading-scene-2"
+    },
+    {
+      "id": "stage-arad",
+      "heading": "العرض",
+      "type": "steps",
+      "time": "١٥ دقيقة · أنا أفعل ← نحن نفعل",
+      "items": [
+        {
+          "label": "",
+          "body": "اعرض بطاقات أبي وأمي وأحمد وسبأ وإيمان، وتتبع الحروف على السبورة مع التلاميذ."
+        },
+        {
+          "label": "تحقق",
+          "body": "يقرأ التلميذ كلمة معروضة."
+        }
+      ],
+      "codeFigure": {
+        "kind": "steps",
+        "items": [
+          {
+            "label": "أبي",
+            "caption": "٣ حروف"
+          },
+          {
+            "label": "أمي",
+            "caption": "٣ حروف"
+          },
+          {
+            "label": "إيمان",
+            "caption": "٥ حروف"
+          }
+        ],
+        "label": "",
+        "caption": ""
+      }
+    },
+    {
+      "id": "stage-tatbiq",
+      "heading": "التطبيق",
+      "type": "steps",
+      "time": "١٥ دقيقة · نحن نفعل ← أنت تفعل",
+      "items": [
+        {
+          "label": "",
+          "body": "وزع بطاقات الكلمات والصور، وصل الصورة بالكلمة ثم طابق الكلمات المتماثلة."
+        },
+        {
+          "label": "تحقق",
+          "body": "يطابق التلميذ صورة بكلمتها."
+        }
+      ],
+      "image": "family-word-cards-2"
+    },
+    {
+      "id": "stage-taqwim",
+      "heading": "التقويم والختام",
+      "type": "steps",
+      "time": "١٠ دقائق · أنت تفعل",
+      "items": [
+        {
+          "label": "",
+          "body": "اعرض بطاقتي أحمد وسبأ، واطلب الإشارة إلى كلمة اسم الولد وقراءة كلمات الأسرة."
+        },
+        {
+          "label": "تحقق",
+          "body": "يشير التلميذ إلى كلمة أحمد."
+        }
+      ],
+      "codeFigure": {
+        "kind": "steps",
+        "items": [
+          {
+            "label": "أحمد",
+            "caption": "اسم ولد"
+          },
+          {
+            "label": "سبأ",
+            "caption": "اسم بنت"
+          }
+        ],
+        "label": "",
+        "caption": ""
+      }
+    },
+    {
+      "id": "solutions",
+      "heading": "الحلول صفحة ٣٢",
+      "type": "bullets",
+      "marker": "num",
+      "items": [
+        {
+          "text": "رجل ← أَبِي، امرأة ← أُمِّي، طفل ← أَحْمَد، بنت ← سَبَأ، بنت ← إِيمَان."
+        },
+        {
+          "text": "المطابقة المتماثلة: سَبَأ ← سَبَأ، أَحْمَد ← أَحْمَد، أُمِّي ← أُمِّي."
+        },
+        {
+          "text": "الكلمة المماثلة لسَبَأ: سبأ في السطر الأول والثالث."
+        }
+      ],
+      "codeFigure": {
+        "kind": "steps",
+        "items": [
+          {
+            "label": "صورة",
+            "caption": "وصل"
+          },
+          {
+            "label": "كلمة",
+            "caption": "طابق"
+          }
+        ],
+        "label": "",
+        "caption": ""
+      }
+    },
+    {
+      "id": "glossary",
+      "heading": "مصطلحات",
+      "type": "fields",
+      "items": [
+        {
+          "label": "المطابقة",
+          "value": "وصل الصورة بالكلمة"
+        },
+        {
+          "label": "التمييز البصري",
+          "value": "معرفة شكل الكلمة"
+        },
+        {
+          "label": "الكلمة المتماثلة",
+          "value": "نفس الحروف والشكل"
+        },
+        {
+          "label": "القراءة",
+          "value": "نطق الكلمة المكتوبة"
+        }
+      ]
+    },
+    {
+      "id": "multigrade",
+      "heading": "تكييف متعدد الصفوف",
+      "type": "bullets",
+      "marker": "num",
+      "items": [
+        {
+          "text": "الأدنى: استخدم بطاقتين فقط للمطابقة."
+        },
+        {
+          "text": "الحالي: اقرأ الكلمات الخمس وطابقها."
+        },
+        {
+          "text": "الأعلى: اكتب اسم فرد من الأسرة."
+        }
+      ]
+    },
+    {
+      "id": "homework",
+      "heading": "الواجب المنزلي · ركن المعلم",
+      "type": "note",
+      "body": "١. أكمل تمرين رقم ٣ من صفحة ٣٢. ٢. اكتب اسمك بمساعدة الأسرة وقارن الحروف مع أحمد. ٣. راجع كلمات الأسرة بصوت مرتفع. أعد الشرح إذا خلط التلميذ بين أبي وأمي. سؤال التأمل: كيف عرفت الكلمة الصحيحة؟"
+    }
+  ],
+  "images": [
+    {
+      "id": "family-reading-scene-2",
+      "concept": "scene",
+      "label": "صور الأسرة",
+      "prompt": "Flat vector educational illustration, clean children's textbook style, soft colours. Young Yemeni children in a classroom looking at a family picture book with simple family illustrations, teacher nearby. The image contains ABSOLUTELY NO text, no letters, no numbers, no symbols, no equation signs, no boxes, frames, placeholders, blank cards, answer slots, tick marks or arrows on any surface; boards, pages, cards and walls are completely EMPTY surfaces with nothing drawn on them."
+    },
+    {
+      "id": "family-word-cards-2",
+      "concept": "scene",
+      "label": "بطاقات الأسرة",
+      "prompt": "Flat vector educational illustration, clean children's textbook style, soft colours. Children in a classroom holding small word cards and matching them with family picture cards on a table. The image contains ABSOLUTELY NO text, no letters, no numbers, no symbols, no equation signs, no boxes, frames, placeholders, blank cards, answer slots, tick marks or arrows on any surface; boards, pages, cards and walls are completely EMPTY surfaces with nothing drawn on them."
+    }
+  ]
+}

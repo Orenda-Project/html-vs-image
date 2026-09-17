@@ -1927,5 +1927,337 @@
     "model": "z-image",
     "concept": "scene",
     "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع التعرف على كلمات أفراد الأسرة وقراءتها والمطابقة بينها. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "ce19908f6e9a4c04": {
+    "file": "ce19908f6e9a4c04.jpg",
+    "mime": "image/jpeg",
+    "model": "nano-banana-2-lite",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about الهندسة. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "6a037a26ac0102ac": {
+    "rejected": true,
+    "reason": "culture_reject after 2 re-roll(s): Arabic written text is clearly visible across the top of the picture.",
+    "at": "2026-08-28T04:37:26.807Z"
+  },
+  "0384ad6353f4d1be": {
+    "rejected": true,
+    "reason": "culture_reject after 2 re-roll(s): Arabic letters and numbers are clearly visible on wall charts, books, cards, and worksheets.",
+    "at": "2026-08-28T04:41:01.021Z"
+  },
+  "8d975d7cb5e2190f": {
+    "file": "8d975d7cb5e2190f.jpg",
+    "mime": "image/jpeg",
+    "model": "nano-banana-2-lite",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about النبات يتغذى وينمو. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "ff14b6ae314240b8": {
+    "file": "ff14b6ae314240b8.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع التمييز بين القطعة المستقيمة والشكل الرباعي والأشكال المتطابقة والمكعب والمخروط ورس. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "48cbd42e8ffbdd5b": {
+    "file": "48cbd42e8ffbdd5b.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع أن أطبق آداب المشي في الطريق وأميز السلوك الصحيح. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "35121ee33fc013e8": {
+    "file": "35121ee33fc013e8.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "A realistic classroom scene in Kenya showing primary-school children warmly greeting one another and saying goodbye in pairs, using natural gestures such as waving, smiling, shaking hands, and facing one another respectfully. Teacher and pupils are engaged in the activity. Authentic Kenyan classroom environment, natural lighting, educational documentary photography style. Absolutely no text, letters, numbers, signs, captions, labels, logos, or written materials visible anywhere in the image."
+  },
+  "4fd2bb3657c24417": {
+    "file": "4fd2bb3657c24417.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Children in a classroom greeting each other in pairs, smiling, simple classroom setting, no text"
+  },
+  "507dd29595e95e3e": {
+    "file": "507dd29595e95e3e.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about 1.1.1 Maamkuzi na Maagano Muda: Dakika 40. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "36f84d5f6e681ebc": {
+    "file": "36f84d5f6e681ebc.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع استخدام عيني للوصف والتمييز والعناية بنعمة البصر. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "23ef5135b1c970f7": {
+    "file": "23ef5135b1c970f7.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع إيجاد ناتج جمع عددين مجموعهما لا يتجاوز ١٨المواد: السبورة، الطباشير، كتاب التلميذ، . Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "61db04da27cb556e": {
+    "file": "61db04da27cb556e.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع أن أقرأ جمل الدرس وأكمل الكلمات الناقصة بحروف صحيحة. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "7112c6e52a05eee7": {
+    "file": "7112c6e52a05eee7.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع تسمية أجزاء النبات وتحديد وظائفها ومراحل نموه. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "57e12a184c012406": {
+    "file": "57e12a184c012406.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع أن أطبق خطوات الوضوء الصحيحة بالترتيب. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "c9877577d07bb29e": {
+    "file": "c9877577d07bb29e.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع أن أقرأ نص حب الوالدين قراءة صحيحة وأجيب عن أسئلة الاستيعاب. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "2c529da803643b09": {
+    "file": "2c529da803643b09.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع التعرف على الكسور (١/٢، ١/٣، ١/٤، ٢/٤) وتمثيلها وكتابتها في الأشكال والمجموعات. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "ac268890bdebbd7d": {
+    "file": "ac268890bdebbd7d.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع إيجاد ناتج القسمة على ٢ و٣ و٤ و٥ وربط القسمة بالضرب والطرح. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "7fcb26ef1bcfb255": {
+    "file": "7fcb26ef1bcfb255.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع أن أشرح مراحل دورة الماء في الطبيعة وكيفية تكون المياه الجوفية. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "f9e8f86b39f14ab5": {
+    "file": "f9e8f86b39f14ab5.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع تحديد الجهات الأصلية الأربع ومعرفة فائدتها. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "b9c99d73160ab3cc": {
+    "file": "b9c99d73160ab3cc.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع أن أقرأ قصة \"الكلب الوفي\" وأستخرج منها المعاني والأنماط اللغوية المطلوبة. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "4b1c81d86f8f7307": {
+    "file": "4b1c81d86f8f7307.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "Young primary-school children and their teacher together in a simple classroom, engaged in an activity about أستطيع أن أقرأ نص قصة أصحاب الأخدود قراءة صحيحة وأستخرج منها المعلومات الأساسية. Show faces, gestures and posture; fill the frame with the people and a few simple objects they are handling."
+  },
+  "cdfc040d655e83b7": {
+    "file": "cdfc040d655e83b7.jpg",
+    "mime": "image/jpeg",
+    "model": "nano-banana-2-lite",
+    "concept": "scene",
+    "prompt": "Mchoro wa kweli wa darasa la Gredi ya 1 nchini Kenya, watoto wawili wamesimama wakikabiliana na kuigiza maamkuzi na maagano katika jozi; mtoto mmoja anamsalimia mwenzake kwa heshima na mwingine anajibu, huku wanafunzi wengine wakitazama na kushiriki darasani. Ubao unaonekana lakini hauna maandishi yoyote yanayosomeka. Hakuna maandishi, herufi, namba, alama, mabango au maneno yoyote ndani ya picha. Mandhari ya kawaida ya darasa la shule ya msingi, mwonekano wa kirafiki na wa kielimu, shughuli halisi ya watoto, bila maandishi kabisa."
+  },
+  "1cb7a1b293c2f831": {
+    "file": "1cb7a1b293c2f831.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a mother, a father and their children standing together in the courtyard of a mud-brick house, the youngest child holding up a small drawing. The composition is filled by the people and the objects they are handling."
+  },
+  "fd9ab6bd7c2c1a53": {
+    "file": "fd9ab6bd7c2c1a53.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a child ruling a straight line on a slate with a wooden ruler, a clay cube and a clay cone resting on the mat beside it. The composition is filled by the people and the objects they are handling."
+  },
+  "08177febd1de299d": {
+    "file": "08177febd1de299d.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "children walking in single file along the raised kerb of a village street while a traffic warden holds up an open hand to stop a car. The composition is filled by the people and the objects they are handling."
+  },
+  "aaa22e8562258bf9": {
+    "file": "aaa22e8562258bf9.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a child cupping both hands around their eyes to peer at a bright red bottle cap that a classmate is holding up. The composition is filled by the people and the objects they are handling."
+  },
+  "cc3a393969f2adfe": {
+    "file": "cc3a393969f2adfe.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "two children counting small pebbles gathered into two separate heaps on a mat, one heap larger than the other. The composition is filled by the people and the objects they are handling."
+  },
+  "cf2c8b64355eb92d": {
+    "file": "cf2c8b64355eb92d.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a builder pressing a mud brick into a half-built house wall while a girl carries a heavy bunch of grapes past him. The composition is filled by the people and the objects they are handling."
+  },
+  "e930980042d440e0": {
+    "file": "e930980042d440e0.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "children kneeling around a young seedling lifted out of dark soil so its roots, stem and leaves are all visible. The composition is filled by the people and the objects they are handling."
+  },
+  "345678845572532e": {
+    "file": "345678845572532e.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a boy with his sleeves rolled to the elbow washing his hands and face at a low water tap in a school courtyard. The composition is filled by the people and the objects they are handling."
+  },
+  "9f1912f8d58e0070": {
+    "file": "9f1912f8d58e0070.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a child colouring in one part of a large paper circle that has been folded into equal parts. The composition is filled by the people and the objects they are handling."
+  },
+  "0ef01368c063b036": {
+    "file": "0ef01368c063b036.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "children sharing a heap of coloured bottle caps into several equal piles on a mat, one pile in front of each child. The composition is filled by the people and the objects they are handling."
+  },
+  "8d8489224fc36cb7": {
+    "file": "8d8489224fc36cb7.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "rain falling from a grey cloud onto terraced hillside fields with a low stone dam below, children watching from a wall. The composition is filled by the people and the objects they are handling."
+  },
+  "321fc22d3a95df28": {
+    "file": "321fc22d3a95df28.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a child standing with both arms stretched wide in an open field, the low sun on one side and a long shadow falling to the other. The composition is filled by the people and the objects they are handling."
+  },
+  "bd057f5b5f0544fc": {
+    "file": "bd057f5b5f0544fc.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a watchful dog sitting upright beside the shuttered wooden door of a small village shop at dusk. The composition is filled by the people and the objects they are handling."
+  },
+  "bd924dbe4705929e": {
+    "file": "bd924dbe4705929e.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "the tall mud-brick tower houses of an old walled Yemeni town at evening, seen across an empty square. The composition is filled by the people and the objects they are handling."
+  },
+  "7dd9877c50d53855": {
+    "file": "7dd9877c50d53855.jpg",
+    "mime": "image/jpeg",
+    "model": "nano-banana-2-lite",
+    "concept": "scene",
+    "prompt": "children kneeling around a young seedling lifted out of dark soil so its roots, stem and leaves are all visible. The composition is filled by the people and the objects they are handling."
+  },
+  "ad63f687faee07bf": {
+    "file": "ad63f687faee07bf.jpg",
+    "mime": "image/jpeg",
+    "model": "nano-banana-2-lite",
+    "concept": "scene",
+    "prompt": "two children counting small pebbles gathered into two separate heaps on a mat, one heap larger than the other. The composition is filled by the people and the objects they are handling."
+  },
+  "3e62b7d526a6ea86": {
+    "file": "3e62b7d526a6ea86.jpg",
+    "mime": "image/jpeg",
+    "model": "nano-banana-2-lite",
+    "concept": "scene",
+    "prompt": "a child standing with both arms stretched wide in an open field, the low sun on one side and a long shadow falling to the other. The composition is filled by the people and the objects they are handling."
+  },
+  "eb6c6184455ca774": {
+    "file": "eb6c6184455ca774.jpg",
+    "mime": "image/jpeg",
+    "model": "nano-banana-2-lite",
+    "concept": "scene",
+    "prompt": "two children counting small pebbles gathered into two separate heaps on a mat, one heap larger than the other. The composition is filled by the people and the objects they are handling."
+  },
+  "1a7fc6cf21a1e0c9": {
+    "file": "1a7fc6cf21a1e0c9.jpg",
+    "mime": "image/jpeg",
+    "model": "nano-banana-2-lite",
+    "concept": "scene",
+    "prompt": "a mother, a father and their children standing together in the courtyard of a mud-brick house, the youngest child holding up a small drawing. The composition is filled by the people and the objects they are handling."
+  },
+  "0f167fec840cb4d1": {
+    "file": "0f167fec840cb4d1.jpg",
+    "mime": "image/jpeg",
+    "model": "nano-banana-2-lite",
+    "concept": "scene",
+    "prompt": "primary-school children and their teacher working together at a low table in a Yemeni classroom. The composition is filled by the people and the objects they are handling."
+  },
+  "7b18395d6e5f3023": {
+    "file": "7b18395d6e5f3023.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a child carrying a cup of water to a tired father sitting down after work, the mother smiling beside them. The composition is filled by the people and the objects they are handling."
+  },
+  "fe8c515bc87ad137": {
+    "file": "fe8c515bc87ad137.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a boy with his sleeves rolled to the elbow washing his hands and face at a low water tap in a school courtyard. The composition is filled by the people and the objects they are handling."
+  },
+  "9a01896091eab319": {
+    "file": "9a01896091eab319.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a child colouring in one part of a large paper circle that has been folded into equal parts. The composition is filled by the people and the objects they are handling."
+  },
+  "978ae3d26badc75d": {
+    "file": "978ae3d26badc75d.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "children kneeling around a young seedling lifted out of dark soil so its roots, stem and leaves are all visible. The composition is filled by the people and the objects they are handling."
+  },
+  "52adef24969d308a": {
+    "file": "52adef24969d308a.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "rain falling from a grey cloud onto terraced hillside fields with a low stone dam below, children watching from a wall. The composition is filled by the people and the objects they are handling."
+  },
+  "54537912ffe0ad3e": {
+    "file": "54537912ffe0ad3e.png",
+    "mime": "image/png",
+    "model": "z-image",
+    "concept": "scene",
+    "prompt": "a child standing with both arms stretched wide in an open field, the low sun on one side and a long shadow falling to the other. The composition is filled by the people and the objects they are handling."
   }
 }

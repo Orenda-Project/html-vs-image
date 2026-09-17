@@ -1,153 +1,155 @@
 {
-  "meta": {
-    "title": "Lesson",
-    "locale": "en"
+  "id": "E1",
+  "bucket": "Easy",
+  "generated_at": "2026-08-31T08:35:28.178Z",
+  "model": {
+    "requested": "google/gemma-4-31b-it",
+    "served": "google/gemma-4-31b-it",
+    "temperature": 0.7,
+    "max_tokens": 8000
   },
-  "images": [
-    {
-      "id": "c1-abstract-addition-equation",
-      "concept": "diagram",
-      "label": "3 + 2 = 5",
-      "prompt": "Labelled diagram showing the equation 3 + 2 = 5 with the plus sign and equal sign explained using groups of objects for Pakistani primary school learners"
-    }
-  ],
+  "prompt_spec": {
+    "function": "buildKenyaKiswahiliPrompt",
+    "source_card": "RES-068",
+    "section_count_expected": 13
+  },
+  "curriculum": {
+    "grade": "1",
+    "subject": "Kiswahili",
+    "theme": "Darasani",
+    "theme_num": "1.0",
+    "strand": "1.1 Kusikiliza na Kuzungumza",
+    "sub_strand": "1.1.1 Maamkuzi na Maagano",
+    "lesson_num": "1 of 3",
+    "slo_codes": "1.1.X [Kuanzisha na kuiga (Introduce and model)]",
+    "slo_descriptions": "Kufikia mwisho wa mada ndogo, mwanafunzi aweze: a) kutambua maneno yanayotumiwa katika maamkuzi na maagano, b) kuamkua na kuitikia maamkuzi na maagano ipasavyo ili kufanikisha mawasiliano, c) kuchangamkia maamkuzi na maagano katika maisha ya kila siku.",
+    "key_inquiry_question": "Unatumia maneno gani kuwasalimu na kuwaaga watu?",
+    "core_competency": "Mawasiliano na ushirikiano - mwanafunzi anaposhiriki katika shughuli ya kikundi, kusikiliza na kutoa maoni yake kikamilifu; Ujuzi wa kidijitali - mwanafunzi anapotumia kifaa cha kidijitali kujifunzia maamkuzi na maagano; Hamu ya ujifunzaji - mwanafunzi anapojifunza maamkuzi na maagano yanayotumiwa katika jamii yake; Ubunifu - mwanafunzi anapoigiza maamkuzi na maagano mbalimbali.",
+    "value": "Heshima - mwanafunzi anapoheshimu wenzake katika shughuli za ujifunzaji wa maamkuzi na maagano; Umoja - mwanafunzi anaposhirikiana na wenzake kuamkuana na kuagana; Uzalendo - mwanafunzi anapojadili na mzazi au mlezi kuhusu maamkuzi katika jamii yake; Amani - mwanafunzi anapoamkuana na wenzake kwa utulivu; Uadilifu - mwanafunzi anapomwamkua mzazi au mlezi ifaavyo kwa heshima.",
+    "pci": "Mshikamano wa kijamii - mwanafunzi anapotumia maamkuzi na maagano katika jamii anaimarisha mahusiano ya kijamii.",
+    "materials": "Kadi za maneno; chati; mti maneno; kapu maneno; vifaa vya kidijitali pale inapopendekezwa; vitu halisi vya mazingira",
+    "blooms": "Understand/Affective",
+    "duration_min_kicd": 40
+  },
+  "grounding": {
+    "source": "kenya-cbc-corpus-row",
+    "note": "KLB Visionary page images were not available; chapterText is built from the KICD corpus row, not from a vision read of the page.",
+    "klb_page_ref": 1,
+    "chapter_text": "Mada: Darasani (1.0)\nKipengele: 1.1 Kusikiliza na Kuzungumza\nMada Ndogo: 1.1.1 Maamkuzi na Maagano\nSomo: 1 of 3\nMatokeo ya kujifunza: Kufikia mwisho wa mada ndogo, mwanafunzi aweze: a) kutambua maneno yanayotumiwa katika maamkuzi na maagano, b) kuamkua na kuitikia maamkuzi na maagano ipasavyo ili kufanikisha mawasiliano, c) kuchangamkia maamkuzi na maagano katika maisha ya kila siku.\nSwali muhimu la uchunguzi: Unatumia maneno gani kuwasalimu na kuwaaga watu?\nUmilisi msingi: Mawasiliano na ushirikiano - mwanafunzi anaposhiriki katika shughuli ya kikundi, kusikiliza na kutoa maoni yake kikamilifu; Ujuzi wa kidijitali - mwanafunzi anapotumia kifaa cha kidijitali kujifunzia maamkuzi na maagano; Hamu ya ujifunzaji - mwanafunzi anapojifunza maamkuzi na maagano yanayotumiwa katika jamii yake; Ubunifu - mwanafunzi anapoigiza maamkuzi na maagano mbalimbali.\nMaadili: Heshima - mwanafunzi anapoheshimu wenzake katika shughuli za ujifunzaji wa maamkuzi na maagano; Umoja - mwanafunzi anaposhirikiana na wenzake kuamkuana na kuagana; Uzalendo - mwanafunzi anapojadili na mzazi au mlezi kuhusu maamkuzi katika jamii yake; Amani - mwanafunzi anapoamkuana na wenzake kwa utulivu; Uadilifu - mwanafunzi anapomwamkua mzazi au mlezi ifaavyo kwa heshima.\nMasuala mtambuko: Mshikamano wa kijamii - mwanafunzi anapotumia maamkuzi na maagano katika jamii anaimarisha mahusiano ya kijamii.\nNyenzo zinazopendekezwa: Kadi za maneno; chati; mti maneno; kapu maneno; vifaa vya kidijitali pale inapopendekezwa; vitu halisi vya mazingira"
+  },
+  "duration": {
+    "used_minutes": 40,
+    "kicd_corpus_minutes": 40,
+    "prompt_default_minutes": 30,
+    "note": "KICD corpus says 40 min; the RES-068 prompt defaults to 30. Corpus value used."
+  },
+  "checks": {
+    "banned_words_found": [],
+    "multi_day_framing": false,
+    "truncated_mid_word": false,
+    "plural_wanafunzi_in_objectives": false,
+    "declared_period_minutes": 40,
+    "mentions_other_duration": false
+  },
+  "structure": {
+    "sections_present": 13,
+    "sections_expected": 13,
+    "order_correct": true
+  },
   "sections": [
     {
-      "heading": "Lesson",
-      "type": "text",
-      "body": "{\n  \"model\": \"gemma-4-31b-it-q4\",\n  \"via\": \"rumi-prod buildChapterPrompt (sw directive, book-agnostic)\",\n  \"language\": \"sw\",\n  \"region\": \"Tanzania/Kenya\",\n  \"base_url\": \"http://127.0.0.1:8000/v1\",\n  \"self_hosted\": true,\n  \"results\": [\n    {\n      \"grade\": 1,\n      \"subject\": \"Maths\",\n      \"topic\": \"Kujumlisha Namba 1-10\",\n      \"ok\": true,\n      \"chars\": 9191,\n      \"prompt_chars\": 12511,\n      \"usage\": {\n        \"completion_tokens\": 3415,\n        \"prompt_tokens\": 2932,\n        \"total_tokens\": 6347,\n        \"prompt_tokens_details\": {\n          \"cached_tokens\": 1\n        }\n      },\n      \"elapsed_s\": 153.6,\n      \"text\": \"## Weekly Pacing & Progress Monitoring\\n\\n| Day | Focus / Sub-topic | Key Activity | Success Criteria |\\n|-----|-------------------|-------------|-----------------|\\n| 1-1 | Utangulizi wa Kujumlisha (1-10) | Kutumia mawe na vidole kuunganisha makundi mawili ya vitu. | \\\"Naweza kujumlisha namba mbili ndogo (1-10) kwa kutumia vitu halisi.\\\" |\\n\\n**Kumbukumbu ya Ufuatiliaji wa Maendeleo (Progress Monitoring):**\\nMwalimu anapaswa kuangalia kama kila mwanafunzi anaweza kuhesabu vitu viwili tofauti na kuvijumlisha kuwa kundi moja kubwa. Ikiwa mwanafunzi anashindwa kuhesabu mfululizo (counting on), anahitaji msaada zaidi wa vitu halisi (concrete manipulatives) kabla ya kuhamia kwenye alama za namba.\\n\\n---\\n\\n## Learning Objectives & Success Criteria\\n\\n**Malengo ya Somo:**\\n1. Mwanafunzi ataelewa maana ya kujumlisha kama kitendo cha kuweka pamoja vitu.\\n2. Mwanafunzi ataweza kutumia alama ya kujumlisha (+) na alama ya usawa (=) kwa usahihi.\\n3. Mwanafunzi ataweza kutatua mazoezi ya kujumlisha namba kuanzia 1 hadi 10.\\n\\n**Success Criteria (Vigezo vya Mafanikio):**\\n- \\\"Naweza kueleza kuwa kujumlisha ni kuweka pamoja.\\\"\\n- \\\"Naweza kutumia vidole au mawe kupata jibu la jumla.\\\"\\n- \\\"Naweza kuandika sentensi ya hesabu (number sentence) kwa kutumia + na =.\\\"\\n\\n---\\n\\n## Chapter Overview & Materials\\n\\n**Darasa:** Grade 1\\n**Somo:** Hisabati (Mathematics)\\n**Muda:** Saa 1 na Dakika 30 (Somo moja refu)\\n**Msamiati Muhimu:**\\n| Neno (English) | Maana (Kiswahili) |\\n|----------------|-------------------|\\n| Addition (Kujumlisha) | Kitendo cha kuweka pamoja vitu viwili au zaidi ili kupata jumla. |\\n| Plus sign (+) (Alama ya kujumlisha) | Alama inayotumika kuonyesha kuwa tunajumlisha. |\\n| Equal sign (=) (Alama ya usawa) | Alama inayotumika kuonyesha jibu la mwisho. |\\n| Sum (Jumla) | Jibu linalopatikana baada ya kujumlisha. |\\n\\n**Mahitaji ya Awali (Prerequisites):**\\n- Uwezo wa kutambua na kuhesabu namba 1-10.\\n- Uwezo wa kuchora vitu rahisi (duara, mstari).\\n\\n**Vifaa vya Kufundishia (Locally Available):**\\n- Mawe madogo ya nje.\\n- vifuniko vya chupa (bottle caps).\\n- Vijiti vya mbao au vishikizo vya kiberiti (matchsticks).\\n- Chaki na ubao.\\n\\n**Orodha ya Maandalizi ya Mwalimu:**\\n- [ ] Kusanya vifuniko vya chupa 50 na mawe 50.\\n- [ ] Kuchora mifano ya kwanza kwenye ubao kabla ya wanafunzi kuingia.\\n- [ ] Kuhakikisha kila mwanafunzi ana nafasi ya kukaa na mwenzake kwa ajili ya kazi ya vikundi.\\n\\n---\\n\\n## Lesson Plans\\n\\n### Day 1: Utangulizi wa Kujumlisha Namba 1-10\\n\\n**Mbinu ya CPA:** Concrete (Vitu halisi $\\\\rightarrow$ Mawe/Vidole) $\\\\rightarrow$ Pictorial (Michoro ubaoni) $\\\\rightarrow$ Abstract (Alama za namba).\\n\\n#### Engage (10 minutes)\\n**Hook / Warm-Up:**\\nSomo linaanza na wimbo wa namba na mchezo wa \\\"Kuweka Pamoja\\\".\\n\\n**Wimbo wa Kujumlisha (Ilimbikiwa na miondoko ya kupiga makofi):**\\n*(Mwalimu anaanza, wanafunzi wanafuata)*\\n\\\"Tunaweka pamoja, (piga makofi mara 2)\\nTunaongeza zaidi, (piga makofi mara 2)\\nKujumlisha ni nini? (wanafunzi wajibu: NI KUWEKA PAMOJA!)\\\"\\n\\n**Teacher says:** \\\"Habari zenu wanafunzi! Leo tutajifunza kitu kipya na cha kusisimua sana. Je, mmeshawahi kupewa pipi mbili, kisha mama akawapa pipi nyingine mbili? Je, sasa mna pipi ngapi? Leo tutajifunza jinsi ya kupata jibu hilo kwa kutumia 'Kujumlisha'. Kujumlisha ni nini? Ni kuweka vitu pamoja!\\\"\\n\\n**BOARD:**\\n```\\nSomo: KUJUMLISHA (ADDITION)\\nLengo: Naweza kujumlisha namba 1-10.\\nSwali: Kujumlisha ni nini?\\n```\\n\\n#### Explore (20 minutes)\\n**Mini-Lesson (I Do):**\\nMwalimu anatumia mbinu ya Concrete (Vitu halisi).\\n\\n1. Mwalimu anaita mwanafunzi mmoja (mfano: Juma) na kumpa mawe 3.\\n2. Mwalimu anaita mwanafunzi mwingine (mfano: Asha) na kumpa mawe 2.\\n3. Mwalimu anawaambia waweke mawe yao yote kwenye sahani moja kubwa.\\n4. Mwalimu anawaongoza wanafunzi wote kuhesabu mawe yote kwa sauti: \\\"Moja, mbili, tatu, nne, tano!\\\"\\"
+      "heading_sw": "Muhtasari wa Sekunde 30",
+      "present": true,
+      "content": "| Lengo: Mwanafunzi kutambua na kutumia maamkuzi na maagano. | Muda: Dakika 40 / Maandalizi: Dakika 10 | Usikose: Igizaji wa maamkuzi na maagano. |\n| :--- | :--- | :--- |"
     },
     {
-      "heading": "Explain (15 minutes)",
-      "type": "steps",
-      "items": [
-        {
-          "label": "Guided Practice (We Do)",
-          "body": "Sasa tunahamia kwenye Abstract (Alama). Mwalimu anatambulisha alama ya `+` na `=`.\n\n**Teacher says:** \"Katika hisabati, hatuandiki neno 'jumlisha' kila mara. Tunatumia alama hii `+` (Plus sign). Na tunapotaka kuonyesha jibu, tunatumia alama hii `=` (Equal sign).\"\n\n**BOARD (Abstract):**\nMwalimu anaandika hatua kwa hatua:\n```\n3 + 2 = 5\n(3) (jumlisha) (2) (sawa na) (5)\n```"
-        },
-        {
-          "label": "Kazi ya Mwenza (Partner Work)",
-          "body": "Wanafunzi wanakaa wawili wawili. Kila jozi inapata vifuniko 10 vya chupa.\n- Mwalimu anasema: \"Weka vifuniko 4 upande wa kushoto. Sasa weka 3 upande wa kulia. Jumlisha vyote!\"\n- Wanafunzi wanahesabu na kusema jibu kwa sauti: \"Saba!\"\n\n**Teacher says:** \"Sasa, hebu jaribuni kuandika hiyo kwenye mchanga au kwenye madaftari yenu kwa kutumia alama ya + na =.\"\n\n**Circulate notes:** Tembea darasani. Angalia kama wanafunzi wanatumia alama ya `+` katikati ya namba mbili. Ikiwa mwanafunzi anaandika `5 3 + 2`, mrekebishe kwa kumwambia, \"Alama ya jumlisha inakaa katikati ya namba tunazotaka kuunganisha.\""
-        }
-      ]
+      "heading_sw": "Taarifa za Somo",
+      "present": true,
+      "content": "Gredi: 1\nSomo: Kiswahili\nMada: Darasani (1.0)\nMada Ndogo: 1.1.1 Maamkuzi na Maagano\nMuda: Dakika 40"
     },
     {
-      "heading": "",
-      "type": "images",
-      "imageIds": [
-        "c1-abstract-addition-equation"
-      ]
+      "heading_sw": "Matokeo ya Kujifunza ya Somo",
+      "present": true,
+      "content": "Kufikia mwisho wa somo, mwanafunzi aweze:\n1. Kutambua maneno yanayotumiwa katika maamkuzi na maagano.\n2. Kuamkua na kuitikia maamkuzi na maagano ipasavyo ili kufanikisha mawasiliano.\n3. Kuchangamkia maamkuzi na maagano katika maisha ya kila siku."
     },
     {
-      "heading": "Practice (20 minutes)",
-      "type": "steps",
-      "items": [
-        {
-          "label": "Independent Practice (You Do)",
-          "body": "Wanafunzi wanafanya mazoezi ya kwenye kitabu (Textbook pages 1-2)."
-        },
-        {
-          "label": "Mazoezi ya Kitabu",
-          "body": "1. Solve Exercise 1.1, Questions 1-4 (page 1).\n2. Solve Exercise 1.2, Questions 1-2 (page 2)."
-        },
-        {
-          "label": "Word Problems (Muktadha wa Kitanzania/Kikenya)",
-          "body": "(Mwalimu anasoma maswali haya kwa sauti, wanafunzi wanachora na kujibu).\n\n1. **Swali la 1:** Ali ana maembe 4. Fatima anampa maembe mengine 2. Je, Ali sasa ana maembe mangapi?\n2. **Swali la 2:** Kwenye meza kuna vitabu 5. Mwalimu anaongeza vitabu 3. Je, kuna jumla ya vitabu mangapi mezani?\n\n**MODEL ANSWERS:**\n1. Ali: 4 + 2 = 6 maembe. (Working: OOOO + OO = OOOOOO)\n2. Vitabu: 5 + 3 = 8 vitabu. (Working: OOOOO + OOO = OOOOOOOO)"
-        },
-        {
-          "label": "Scaffolding (Kwa wanafunzi wanaohitaji msaada)",
-          "body": "- Wape vijiti halisi. Waambie washike vijiti 4 mkono wa kulia na 2 mkono wa kushoto, kisha wavunge vyote pamoja na wahesabu.\n- Tumia \"sentence frames\": \"4 jumlisha 2 ni sawa na ____.\""
-        },
-        {
-          "label": "Extension Challenge (Kwa wanafunzi wanaomaliza haraka)",
-          "body": "\"Kama una pipi 5, na rafiki yako akakupa pipi 5 nyingine, utapata jumla ya ngapi? Je, unaweza kuandika hiyo hesabu ubaoni?\" (Jibu: 5 + 5 = 10)."
-        }
-      ]
+      "heading_sw": "Swali Muhimu la Uchunguzi",
+      "present": true,
+      "content": "Unatumia maneno gani kuwasalimu na kuwaaga watu?"
     },
     {
-      "heading": "Assess & Close (10 minutes)",
-      "type": "steps",
-      "items": [
-        {
-          "label": "Exit Ticket",
-          "body": "Kila mwanafunzi anapaswa kujibu swali hili kwenye kipande cha karatasi kabla ya kutoka:\n\"Tafuta jibu: 6 + 3 = ?\"\n**MODEL ANSWER:** 6 + 3 = 9."
-        },
-        {
-          "label": "Homework",
-          "body": "Kamilisha Exercise 1.1, Question 5-6 (page 1) nyumbani.\nZoezi la nyumbani: \"Hesabu vijiko 3 na vijiko 3 jikoni, kisha waambie mzazi wako jumla ni ngapi.\""
-        },
-        {
-          "label": "Cross-curricular Link",
-          "body": "- **Sanaa (Art):** Wanafunzi wanaweza kuchora matunda mawili tofauti (mfano: ndizi na machungwa) na kuandika jumla ya matunda hayo chini ya mchoro."
-        },
-        {
-          "label": "Quick Recap",
-          "body": "**Teacher says:** \"Leo tumejifunza kuwa kujumlisha ni kuweka pamoja. Tumetumia mawe, vidole, na alama ya `+` na `=`. Kumbukeni, kila tunapojumlisha, idadi ya vitu huongezeka! Kesho tutaendelea na namba kubwa zaidi. Kazi nzuri sana!\""
-        }
-      ]
+      "heading_sw": "Nyenzo za Kujifunza",
+      "present": true,
+      "content": "Kitabu cha KLB Visionary Kiswahili, uk. 1; Kadi za maneno; Ubao; Chaki; Chati ya maamkuzi."
     },
     {
-      "heading": "End-of-Chapter Assessment Worksheet",
-      "type": "fields",
-      "items": [
-        {
-          "label": "Jina la Mwanafunzi",
-          "value": "__________________________"
-        },
-        {
-          "label": "Tarehe",
-          "value": "__________"
-        },
-        {
-          "label": "Darasa",
-          "value": "Grade 1"
-        },
-        {
-          "label": "Alama",
-          "value": "____ / 20"
-        }
-      ]
+      "heading_sw": "Utangulizi",
+      "present": true,
+      "content": "Mwalimu anaanza kwa kuingia darasani kwa tabasamu na kusema \"Hujambo!\" kwa sauti ya juu. Mwalimu anawauliza wanafunzi kama wamewahi kusalimia wazazi wao asubuhi.\nUliza: \"Je, mnasema nini mnapoamka asubuhi?\" (Majibu ya pamoja: \"Hujambo!\", \"Habari!\", \"Shikamoo!\")"
     },
     {
-      "heading": "Chapter Assessment: Kujumlisha Namba 1-10",
-      "type": "text",
-      "body": "**Sehemu A: Chora na Jibu (Alama 6)**\n*Chora vitu kulingana na namba, kisha tafuta jumla.*\n\n1. 2 + 3 = ____\n   (Chora hapa: ____________________________________)\n\n2. 4 + 1 = ____"
+      "heading_sw": "Ukuzaji wa Somo",
+      "present": true,
+      "content": "Mwalimu anagawa ubao katika sehemu mbili. Upande wa kushoto wa ubao utabaki bila kufutwa muda wote wa somo kwa ajili ya \"Orodha ya Maneno Mapya\" (mfano: Hujambo, Kwaheri, Shikamoo). Upande wa kulia wa ubao utafutwa na kutumiwa upya kwa kila mfano wa mazungumzo yanayofundishwa.\n\nMwalimu anaandika maneno ya maamkuzi upande wa kulia na kusoma kwa sauti huku wanafunzi wakirudia.\nUliza: \"Tukisema 'Hujambo', tunajibu nini?\" (Majibu ya pamoja: \"Sijambo!\")\n\nMwalimu anafuta upande wa kulia na kuandika maneno ya maagano (mfano: Kwaheri). Mwalimu anawaonyesha wanafunzi jinsi ya kuagana kwa kutumia ishara ya mkono.\nUliza: \"Tukisema 'Kwaheri', tunajibu nini?\" (Majibu ya pamoja: \"Kwaheri!\")\n\nWanafunzi wanapata nafasi ya kuigiza katika jozi. Mwanafunzi mmoja anaamkua na mwingine anajibu.\nUliza: \"Je, tunapaswa kuwa na heshima tunaposalimia?\" (Majibu ya pamoja: \"Ndiyo!\")\n\nKwa ajili ya utofautishaji:\n- Wanafunzi walio chini ya lengo: Wanatumia kadi za picha na kurudia neno moja rahisi kama \"Hujambo\".\n- Wanafunzi waliofikia lengo kikamilifu: Wanatengeneza mazungumzo mafupi ya maamkuzi na maagano yakijumuisha vyeo (mfano: \"Shikamoo Mwalimu\")."
     },
     {
-      "heading": "Sehemu B: Jaza Nafasi Zilizo wazi (Alama 6)",
-      "type": "bullets",
-      "lead": "Tafuta jibu sahihi.",
-      "marker": "num",
-      "items": [
-        {
-          "text": "4. 3 + 3 = ____"
-        },
-        {
-          "text": "5. 6 + 2 = ____"
-        },
-        {
-          "text": "6. 1 + 7 = ____"
-        }
-      ]
+      "heading_sw": "Hitimisho",
+      "present": true,
+      "content": "Mwalimu anawaomba wanafunzi waguse vichwa vyao ikiwa wanajua neno la kuagana.\nUliza: \"Sema neno moja la kuamkia?\" (Majibu ya pamoja)\nUliza: \"Sema neno moja la kuagana?\" (Majibu ya pamoja)"
     },
     {
-      "heading": "Sehemu C: Maswali ya Maneno (Alama 8)",
-      "type": "steps",
-      "items": [
-        {
-          "label": "7.",
-          "body": "Amina ana kalamu 2. Ananunua kalamu nyingine 4. Ana jumla ya kalamu ngapi?\nHesabu: ____ + ____ = ____"
-        },
-        {
-          "label": "8.",
-          "body": "Kuna mbuzi 3 kwenye zizi. Mama anaongeza mbuzi 3 wengine. Je, sasa kuna mbuzi wangapi?\nHesabu: ____ + ____ = ____"
-        }
-      ]
+      "heading_sw": "Shughuli za Ziada",
+      "present": true,
+      "content": "- Kiwango cha chini: Mwanafunzi amsalimie mzazi au mlezi kwa neno moja la maamkuzi.\n- Kiwango cha juu: Mwanafunzi ajadili na mzazi maamkuzi mbalimbali yanayotumiwa katika jamii yake."
     },
     {
-      "heading": "FOR TEACHER ONLY — ANSWER KEY",
-      "type": "note",
-      "body": "Sehemu A:\n1. 2 + 3 = 5 (Michoro: OO + OOO) - [2 marks]\n2. 4 + 1 = 5 (Michoro: OOOO + O) - [2 marks]\n3. 5 + 2 = 7 (Michoro: OOOOO + OO) - [2 marks]\n\nSehemu B:\n4. 6 - [2 marks]\n5. 8 - [2 marks]\n6. 8 - [2 marks]\n\nSehemu C:\n7. 2 + 4 = 6 - [4 marks]\n8. 3 + 3 = 6 - [4 marks]\n\nScoring Guide:\n- 18 - 20: Excellent (Bora Sana)\n- 14 - 17: Good (Vema)\n- 10 - 13: Needs Review (Anahitaji Mapitio)\n- Below 10: Re-teach (Fundisha Tena)"
+      "heading_sw": "Tafakari",
+      "present": true,
+      "content": "___% ya wanafunzi waliofikia lengo."
+    },
+    {
+      "heading_sw": "Maelezo ya Kurekebisha",
+      "present": true,
+      "content": "Ikiwa wanafunzi hawajafikia lengo, mwalimu atatumia zaidi kadi za maneno na michezo ya kuigiza kurudia maneno. Ikiwa wanafunzi walizidi matarajio, mwalimu atawapa majukumu ya kuwa viongozi wa kundi katika kuongoza maamkuzi darasani."
+    },
+    {
+      "heading_sw": "Nafasi Maalum",
+      "present": true,
+      "content": "Mwanafunzi mwenye ulemavu wa kusikia ataketi mstari wa mbele na kutumia ishara za mikono na picha za kadi ili kuelewa maamkuzi."
+    },
+    {
+      "heading_sw": "Vigezo vya Tathmini",
+      "present": true,
+      "content": "Kuzidi Matarajio: Anatumia maamkuzi na maagano kwa ufasaha na heshima kubwa.\nKufikia Matarajio: Anatumia maamkuzi na maagano ipasavyo.\nKukaribia Matarajio: Anatumia maamkuzi na maagano kwa msaada wa mwalimu.\nChini ya Matarajio: Anashindwa kutambua maamkuzi na maagano."
     }
-  ]
+  ],
+  "raw_output": "**Muhtasari wa Sekunde 30**\n| Lengo: Mwanafunzi kutambua na kutumia maamkuzi na maagano. | Muda: Dakika 40 / Maandalizi: Dakika 10 | Usikose: Igizaji wa maamkuzi na maagano. |\n| :--- | :--- | :--- |\n\n**Taarifa za Somo**\nGredi: 1\nSomo: Kiswahili\nMada: Darasani (1.0)\nMada Ndogo: 1.1.1 Maamkuzi na Maagano\nMuda: Dakika 40\n\n**Matokeo ya Kujifunza ya Somo**\nKufikia mwisho wa somo, mwanafunzi aweze:\n1. Kutambua maneno yanayotumiwa katika maamkuzi na maagano.\n2. Kuamkua na kuitikia maamkuzi na maagano ipasavyo ili kufanikisha mawasiliano.\n3. Kuchangamkia maamkuzi na maagano katika maisha ya kila siku.\n\n**Swali Muhimu la Uchunguzi**\nUnatumia maneno gani kuwasalimu na kuwaaga watu?\n\n**Nyenzo za Kujifunza**\nKitabu cha KLB Visionary Kiswahili, uk. 1; Kadi za maneno; Ubao; Chaki; Chati ya maamkuzi.\n\n**Utangulizi (dakika 4)**\nMwalimu anaanza kwa kuingia darasani kwa tabasamu na kusema \"Hujambo!\" kwa sauti ya juu. Mwalimu anawauliza wanafunzi kama wamewahi kusalimia wazazi wao asubuhi.\nUliza: \"Je, mnasema nini mnapoamka asubuhi?\" (Majibu ya pamoja: \"Hujambo!\", \"Habari!\", \"Shikamoo!\")\n\n**Ukuzaji wa Somo (dakika 32)**\nMwalimu anagawa ubao katika sehemu mbili. Upande wa kushoto wa ubao utabaki bila kufutwa muda wote wa somo kwa ajili ya \"Orodha ya Maneno Mapya\" (mfano: Hujambo, Kwaheri, Shikamoo). Upande wa kulia wa ubao utafutwa na kutumiwa upya kwa kila mfano wa mazungumzo yanayofundishwa.\n\nMwalimu anaandika maneno ya maamkuzi upande wa kulia na kusoma kwa sauti huku wanafunzi wakirudia.\nUliza: \"Tukisema 'Hujambo', tunajibu nini?\" (Majibu ya pamoja: \"Sijambo!\")\n\nMwalimu anafuta upande wa kulia na kuandika maneno ya maagano (mfano: Kwaheri). Mwalimu anawaonyesha wanafunzi jinsi ya kuagana kwa kutumia ishara ya mkono.\nUliza: \"Tukisema 'Kwaheri', tunajibu nini?\" (Majibu ya pamoja: \"Kwaheri!\")\n\nWanafunzi wanapata nafasi ya kuigiza katika jozi. Mwanafunzi mmoja anaamkua na mwingine anajibu.\nUliza: \"Je, tunapaswa kuwa na heshima tunaposalimia?\" (Majibu ya pamoja: \"Ndiyo!\")\n\nKwa ajili ya utofautishaji:\n- Wanafunzi walio chini ya lengo: Wanatumia kadi za picha na kurudia neno moja rahisi kama \"Hujambo\".\n- Wanafunzi waliofikia lengo kikamilifu: Wanatengeneza mazungumzo mafupi ya maamkuzi na maagano yakijumuisha vyeo (mfano: \"Shikamoo Mwalimu\").\n\n**Hitimisho (dakika 2)**\nMwalimu anawaomba wanafunzi waguse vichwa vyao ikiwa wanajua neno la kuagana.\nUliza: \"Sema neno moja la kuamkia?\" (Majibu ya pamoja)\nUliza: \"Sema neno moja la kuagana?\" (Majibu ya pamoja)\n\n**Shughuli za Ziada (dakika 2)**\n- Kiwango cha chini: Mwanafunzi amsalimie mzazi au mlezi kwa neno moja la maamkuzi.\n- Kiwango cha juu: Mwanafunzi ajadili na mzazi maamkuzi mbalimbali yanayotumiwa katika jamii yake.\n\n**Tafakari**\n___% ya wanafunzi waliofikia lengo.\n\n**Maelezo ya Kurekebisha**\nIkiwa wanafunzi hawajafikia lengo, mwalimu atatumia zaidi kadi za maneno na michezo ya kuigiza kurudia maneno. Ikiwa wanafunzi walizidi matarajio, mwalimu atawapa majukumu ya kuwa viongozi wa kundi katika kuongoza maamkuzi darasani.\n\n**Nafasi Maalum**\nMwanafunzi mwenye ulemavu wa kusikia ataketi mstari wa mbele na kutumia ishara za mikono na picha za kadi ili kuelewa maamkuzi.\n\n**Vigezo vya Tathmini**\nKuzidi Matarajio: Anatumia maamkuzi na maagano kwa ufasaha na heshima kubwa.\nKufikia Matarajio: Anatumia maamkuzi na maagano ipasavyo.\nKukaribia Matarajio: Anatumia maamkuzi na maagano kwa msaada wa mwalimu.\nChini ya Matarajio: Anashindwa kutambua maamkuzi na maagano.",
+  "usage": {
+    "prompt_tokens": 1652,
+    "completion_tokens": 1305,
+    "total_tokens": 2957,
+    "cost": 0.00059238,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.00059238,
+      "upstream_inference_prompt_cost": 0.00014868,
+      "upstream_inference_completions_cost": 0.0004437
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    }
+  },
+  "finish_reason": "stop",
+  "prompt_sent": "Write ONE single Kiswahili-medium lesson plan for Grade 1 Kenya (CBC), on \"Darasani — 1.1 Kusikiliza na Kuzungumza: 1.1.1 Maamkuzi na Maagano\".\n\nLANGUAGE: Every heading and every word of content must be Kiswahili (Kenya-standard), not English. Do NOT print any English word anywhere in the output, including these words used only as instructions to you: \"RIGOR\", \"HOTS\", \"GRADE GUIDANCE\", \"COMPACT\", \"KICD\", or any other internal instruction text. Print each Kiswahili heading given below exactly as named — do not translate or substitute a heading into English.\n\nDURATION: This is ONE single lesson, 40 minutes total (Kenya lower-primary period length) — NOT a multi-day plan. Do not produce a \"Day 1 / Day 2\" table or any multi-day structure. Every section below must fit inside these 40 minutes; the per-section minutes given below must sum to exactly 40 and must be followed.\n\nGROUNDING: Base the lesson on this real textbook passage (KLB Visionary Kiswahili, p.1) — do not invent unrelated content:\n\"\"\"\nMada: Darasani (1.0)\nKipengele: 1.1 Kusikiliza na Kuzungumza\nMada Ndogo: 1.1.1 Maamkuzi na Maagano\nSomo: 1 of 3\nMatokeo ya kujifunza: Kufikia mwisho wa mada ndogo, mwanafunzi aweze: a) kutambua maneno yanayotumiwa katika maamkuzi na maagano, b) kuamkua na kuitikia maamkuzi na maagano ipasavyo ili kufanikisha mawasiliano, c) kuchangamkia maamkuzi na maagano katika maisha ya kila siku.\nSwali muhimu la uchunguzi: Unatumia maneno gani kuwasalimu na kuwaaga watu?\nUmilisi msingi: Mawasiliano na ushirikiano - mwanafunzi anaposhiriki katika shughuli ya kikundi, kusikiliza na kutoa maoni yake kikamilifu; Ujuzi wa kidijitali - mwanafunzi anapotumia kifaa cha kidijitali kujifunzia maamkuzi na maagano; Hamu ya ujifunzaji - mwanafunzi anapojifunza maamkuzi na maagano yanayotumiwa katika jamii yake; Ubunifu - mwanafunzi anapoigiza maamkuzi na maagano mbalimbali.\nMaadili: Heshima - mwanafunzi anapoheshimu wenzake katika shughuli za ujifunzaji wa maamkuzi na maagano; Umoja - mwanafunzi anaposhirikiana na wenzake kuamkuana na kuagana; Uzalendo - mwanafunzi anapojadili na mzazi au mlezi kuhusu maamkuzi katika jamii yake; Amani - mwanafunzi anapoamkuana na wenzake kwa utulivu; Uadilifu - mwanafunzi anapomwamkua mzazi au mlezi ifaavyo kwa heshima.\nMasuala mtambuko: Mshikamano wa kijamii - mwanafunzi anapotumia maamkuzi na maagano katika jamii anaimarisha mahusiano ya kijamii.\nNyenzo zinazopendekezwa: Kadi za maneno; chati; mti maneno; kapu maneno; vifaa vya kidijitali pale inapopendekezwa; vitu halisi vya mazingira\n\"\"\"\n\nSTRUCTURE — produce exactly these sections, in this order, each with the Kiswahili heading given (verbatim):\n\n1. \"Muhtasari wa Sekunde 30\" — a short box: (a) what the learner will be able to do, (b) total time / prep time, (c) one thing not to skip.\n2. \"Taarifa za Somo\" — Grade, Subject (Kiswahili), Mada (unit), Mada Ndogo (sub-topic), Muda (40 min).\n3. \"Matokeo ya Kujifunza ya Somo\" — 2-3 measurable objectives, each starting \"Kufikia mwisho wa somo, MWANAFUNZI aweze...\" — singular \"mwanafunzi\" (learner), never plural \"wanafunzi\" (learners), in every objective.\n4. \"Swali Muhimu la Uchunguzi\" — one inquiry question to open curiosity before the lesson starts.\n5. \"Nyenzo za Kujifunza\" — cite the real textbook passage above with its page number, plus simple locally-available materials (ubao, chaki, etc.).\n6. \"Utangulizi\" (dakika 4) — a real-life hook + a 30-second quick check.\n7. \"Ukuzaji wa Somo\" (dakika 32) — plain flowing steps, no \"Step 1/2/3\" or \"Hatua 1/2/3\" labels:\n   - Be explicit about which side of the chalkboard is used for what: one side stays UNCHANGED for the whole lesson (e.g. a running word/idea list), the other side is ERASED and reused for each new example — name this explicitly, it matters for classrooms with limited board space.\n   - Every major step includes a check-for-understanding written inline as \"Uliza: ...?\" answerable by the WHOLE class at once (choral response or a visible hand signal) — this matters for classes of 50-100 learners, do not write questions that require calling on one student at a time.\n   - Include at least one explicit differentiation moment for \"Wanafunzi walio chini ya lengo\" (below expectation) and \"Wanafunzi waliofikia lengo kikamilifu\" (exceeding expectation).\n8. \"Hitimisho\" (dakika 2) — a self-assessment check + 1-2 closing oral questions.\n9. \"Shughuli za Ziada\" (dakika 2) — homework, differentiated for two ability levels.\n10. \"Tafakari\" — one line: ___% of learners who achieved the outcome (a blank for the teacher to fill in after teaching).\n11. \"Maelezo ya Kurekebisha\" — its OWN section (not folded into Tafakari): what to do if learners did not pass the check, and what to do if they exceeded expectations early.\n12. \"Nafasi Maalum\" — one short line on how the teacher can adapt this specific lesson for a learner with a hearing or visual impairment (e.g. extra verbal description, front-row seating, a peer buddy) — do not skip this section.\n13. \"Vigezo vya Tathmini\" — the 4 official assessment bands, one line each, tied to this lesson's specific outcome: Kuzidi Matarajio / Kufikia Matarajio / Kukaribia Matarajio / Chini ya Matarajio. State only these 4 Kiswahili band names — do not add a label naming the framework they come from.\n\nThe whole lesson is 40 minutes ONLY — do not lengthen it or add extra days.",
+  "meta": {
+    "region": "ke"
+  }
 }

@@ -107,6 +107,64 @@ async function htmlToPixelPdf(html, opts = {}) {
         // A card that carries a figure (in-panel illustration or character) must never
         // be cut THROUGH the figure: inner boundaries are legal only BELOW the
         // figure's bottom edge. Cards without figures offer all inner boundaries.
+        // ── A TALL SECTION MAY CONTINUE OVERLEAF ──────────────────────────────────────
+        //
+        // Reported: a page left ~35% blank while the whole العرض section moved to the next
+        // one. Cause: in this pack a stage is ONE .yl-scard holding ONE .yl-act, so every
+        // rule above needs two of something and finds one. The section then offers only its
+        // own bottom, and a 507px block that will not fit simply leaves.
+        //
+        // Component boundaries WERE candidates here once and were reverted, for a good
+        // reason recorded above: a page ended in the middle of a figure. So the rule is not
+        // "offer inner boundaries" — it is "offer any horizontal line that provably crosses
+        // nothing". That is decided by geometry, not by a selector whitelist of where we
+        // hope it is safe:
+        //
+        //   · gather candidate lines — block bottoms, and the bottom of each LINE BOX in
+        //     prose, so a long paragraph can continue rather than move whole;
+        //   · reject any line that passes through an ATOMIC box — a figure, an image, a
+        //     chip, a badge, a callout row, a checkpoint strip, an answer strip. These are
+        //     things that would be sliced in half, which is the defect that caused the
+        //     revert;
+        //   · reject any line that would leave a heading stranded at the foot of a page
+        //     with none of its own content under it.
+        //
+        // These go in `cuts`, never in `safe`, so the composer still PREFERS whole cards and
+        // reaches for an inner line only when that is the difference between using the page
+        // and wasting it.
+        const ATOMIC = 'svg, img, canvas, figure, .yl-cf, .yl-illus, .yl-tvis, .yl-check,'
+          + ' .yl-srow, .yl-pill, .yl-tab, .yl-alabel, .yl-answer, .yl-badge, .yl-ntab,'
+          + ' .yl-qcard, .d-inline-img, .d-code-fig, .d-code-board, .cf-card';
+        const boxes = [...sec.querySelectorAll(ATOMIC)]
+          .map((el) => [y(el, 'top'), y(el, 'bottom')])
+          .filter(([t, b]) => b - t > 1);
+        // a heading must keep the first real thing under it
+        const orphan = [];
+        sec.querySelectorAll('.yl-shead').forEach((head) => {
+          let next = head.nextElementSibling;
+          while (next && !next.getBoundingClientRect().height) next = next.nextElementSibling;
+          if (!next) return;
+          const first = next.querySelector('.yl-act, .yl-ttext, p') || next;
+          orphan.push([y(head, 'top'), y(first, 'bottom')]);
+        });
+        const illegal = (v) => boxes.some(([t, b]) => v > t + 0.5 && v < b - 0.5)
+          || orphan.some(([t, b]) => v > t - 0.5 && v < b - 0.5);
+        const inner = [];
+        sec.querySelectorAll('.yl-scard, .yl-srows, .yl-act, .yl-sbody, .yl-ttext, .yl-lead')
+          .forEach((el) => inner.push(y(el, 'bottom')));
+        // line boxes inside prose: the only place a long paragraph can legally break
+        sec.querySelectorAll('.yl-ttext p, .yl-lead, .yl-ttext').forEach((block) => {
+          const range = document.createRange();
+          for (const node of block.childNodes) {
+            if (node.nodeType !== 3 || !node.textContent.trim()) continue;
+            range.selectNodeContents(node);
+            for (const r of range.getClientRects()) {
+              if (r.height > 1) inner.push(r.bottom + window.scrollY);
+            }
+          }
+        });
+        inner.forEach((v) => { if (!illegal(v)) cuts.push(v); });
+
         const fig = sec.querySelector('.d-inline-img, .char-fig');
         // A card holding a CODE-drawn figure is atomic: its figure is followed by a
         // value label and caption, so a cut 'below the figure' would slice the card
@@ -240,6 +298,98 @@ async function htmlToPixelPdf(html, opts = {}) {
 // Node/Chromium composer: same contract as compose_pdf.py — slice the 2× screenshot
 // into A4 pages cutting only at the supplied boundaries, page number on every page,
 // top margin band, pages filled (a long section continues overleaf), no blank tail.
+/**
+ * Share the slack out across N pages instead of leaving it wherever a tall card fell.
+ *
+ * Partition [0, height] into exactly `n` pages whose boundaries are existing cut points,
+ * every page within `usable`, maximising the SHORTEST page — which is the same as
+ * minimising the biggest blank area, the thing a reader actually notices.
+ *
+ * Whole-card boundaries are tried on their own first. Only if no N-page partition exists
+ * using card boundaries alone does it fall back to the full cut list (row gaps), because a
+ * split card is a worse defect than an uneven page and this must not trade one for the
+ * other. Returns null when nothing better is available, leaving the greedy result alone.
+ *
+ * Exact rather than heuristic: the cut list is a few dozen entries and n is single digits,
+ * so the dynamic programme below is far cheaper than the screenshot it is dividing.
+ */
+function balancePages(greedyN, height, usable, safeCuts, allCuts) {
+  if (greedyN < 2) return null;
+
+  const attempt = (candidates, n) => {
+    // boundaries we may choose between, plus the two fixed ends
+    const pts = [0, ...candidates.filter((c) => c > 0 && c < height), height]
+      .filter((v, i, a) => a.indexOf(v) === i).sort((x, y) => x - y);
+    const P = pts.length;
+    if (P < n + 1) return null;
+    const NEG = -1;
+    // best[i][k] = the largest achievable "shortest page" when splitting pts[i]..height
+    // into k pages. NEG means impossible.
+    const best = Array.from({ length: P }, () => new Array(n + 1).fill(NEG));
+    const pick = Array.from({ length: P }, () => new Array(n + 1).fill(-1));
+    for (let i = 0; i < P; i++) {
+      const last = height - pts[i];
+      best[i][1] = (last > 0 && last <= usable) ? last : NEG;
+    }
+    for (let k = 2; k <= n; k++) {
+      for (let i = P - 1; i >= 0; i--) {
+        for (let j = i + 1; j < P; j++) {
+          const page = pts[j] - pts[i];
+          if (page <= 0) continue;
+          if (page > usable) break;              // pts is sorted: no longer j will fit
+          const rest = best[j][k - 1];
+          if (rest === NEG) continue;
+          const worst = Math.min(page, rest);
+          if (worst > best[i][k]) { best[i][k] = worst; pick[i][k] = j; }
+        }
+      }
+    }
+    if (best[0][n] === NEG) return null;
+    const out = [];
+    let i = 0;
+    for (let k = n; k >= 1; k--) {
+      const j = k === 1 ? P - 1 : pick[i][k];
+      out.push([pts[i], pts[j]]);
+      i = j;
+    }
+    return out;
+  };
+
+  // FEWER PAGES IS THE ONLY THING THAT ACTUALLY REMOVES BLANK SPACE.
+  //
+  // For a fixed page count the total blank is fixed too — N × usable − height — so
+  // rebalancing can only move it around, never reduce it. The reported defect was blank
+  // space, and the fractions lesson showed why: 2,488px of content spread over FOUR pages
+  // when three hold 3,177px. The greedy loop had opened a page it did not need, because a
+  // tall card would not fit and greedy has no way to reconsider an earlier boundary.
+  //
+  // So try the honest minimum first and walk up only as far as greedy already went. This
+  // does not FORCE a page count — nothing is compressed, dropped or shrunk to hit a target,
+  // and if the content genuinely needs the pages it keeps them. It just refuses to spend a
+  // sheet the content did not ask for.
+  const floor = Math.max(2, Math.ceil(height / usable));
+  // How short the shortest page is, which is what "blank at the bottom" means.
+  const shortest = (p) => Math.min(...p.map(([a, b]) => b - a));
+  // A WHOLE CARD ALWAYS WINS. Reviewer's decision, after seeing what the alternative
+  // looked like: trading a clean card edge for a fuller page produced a stage opened after
+  // a single line of text with white space beneath it, which reads as a broken card rather
+  // than a continued one. "Some uneven whitespace is better than visually broken cards."
+  //
+  // So inner lines are a LAST RESORT, not a tie-breaker: they exist only for a section
+  // genuinely taller than a page, which would otherwise be cut at the raw page limit and
+  // lose content. Whenever whole cards can make N pages, whole cards are used, even if an
+  // inner line would pack the page better.
+  //
+  // The remaining unevenness is not a pagination problem and is not treated as one — it is
+  // the shape of the content, and it is being fixed upstream by emitting a long stage as
+  // several activities instead of one block.
+  for (let n = floor; n <= greedyN; n++) {
+    const got = attempt(safeCuts, n) || attempt(allCuts, n);
+    if (got) return got;
+  }
+  return null;
+}
+
 async function composeWithChromium(shotBuf, geom, opts = {}) {
   const PAGE_H = 1123; const TOP = 28; const BOT = opts.pageStyle === 'ar-bottom' ? 36 : 12;
   const usable = PAGE_H - TOP - BOT;
@@ -273,36 +423,27 @@ async function composeWithChromium(shotBuf, geom, opts = {}) {
     pages.push([start, Math.min(end, height)]);
     start = end;
   }
-  // A LAST PAGE HOLDING ALMOST NOTHING READS AS UNFINISHED. Taking the last legal cut
-  // before the limit fills each page as far as it can, which is right until the tail is
-  // reached: five of the fifteen document lessons ended on a page 8–17% full, because the
-  // page before it was packed to 98% and only a sliver was left over. Page COUNT is not the
-  // problem and is not changed here — the same number of sheets, the same legal cuts — the
-  // last two pages are simply balanced against each other, so 98% + 8% becomes something a
-  // teacher reads as two pages rather than one page and an offcut.
+  // ── BALANCE EVERY PAGE, NOT JUST THE LAST TWO ────────────────────────────────────────
   //
-  // Only cuts that leave BOTH halves inside `usable` are considered, because the clip is a
-  // fixed box with overflow:hidden and a page longer than that silently loses content.
-  if (pages.length >= 2) {
-    const lastStart = pages[pages.length - 1][0];
-    const secondStart = pages[pages.length - 2][0];
-    if (height - lastStart < usable * 0.25) {
-      const mid = secondStart + Math.round((height - secondStart) / 2);
-      // Prefer a whole-card boundary: rebalancing is a cosmetic choice, and buying a
-      // fuller last page by opening a card across the break trades one defect for another.
-      // Measured — balancing on any cut moved the fractions lesson's boundary into the
-      // middle of a card and three boxes then crossed it. Only if no card boundary can
-      // split the tail is a row gap considered.
-      const fits = (c) => c > secondStart + 40 && c - secondStart <= usable && height - c <= usable;
-      const safeLegal = safeCuts.filter(fits);
-      const legal = safeLegal.length ? safeLegal : cuts.filter(fits);
-      if (legal.length) {
-        const best = legal.reduce((a, c) => (Math.abs(c - mid) < Math.abs(a - mid) ? c : a), legal[0]);
-        pages[pages.length - 2] = [secondStart, best];
-        pages[pages.length - 1] = [best, height];
-      }
-    }
-  }
+  // The loop above is greedy: each page takes the last cut that fits, which fills THAT page
+  // as far as it can. Greedy is optimal per page and poor across a document — when a tall
+  // card will not fit, the page simply ends, and the slack all lands wherever the awkward
+  // card happens to fall. Measured on the six live lessons: 3,798px of blank across 14
+  // pages, and the fractions lesson came out 67% / 41% / 75% / 52% — a half-empty page in
+  // the MIDDLE, which the old rule never looked at because it only ever rebalanced the tail.
+  //
+  // So: keep the page COUNT greedy found (that is the minimum, and the reviewer's rule is
+  // that page count follows the content), then re-choose the boundaries so the slack is
+  // shared out. Formally — partition the strip into exactly N pages, at existing cut
+  // points, maximising the SHORTEST page. Maximising the shortest page is the same thing as
+  // minimising the largest blank area, which is the defect being reported.
+  //
+  // Only cut points the composer already trusts are used, so this cannot introduce a split
+  // card: whole-card boundaries are tried first and a row gap is the fallback, exactly as
+  // above. And every page still has to fit inside `usable` — the clip is a fixed box with
+  // overflow:hidden, so a page longer than that silently loses content.
+  const balanced = balancePages(pages.length, height, usable, safeCuts, cuts);
+  if (balanced) pages.splice(0, pages.length, ...balanced);
   if (process.env.LP_DEBUG_PAGES === '1') {
     console.log('[pages] height=' + height + ' usable=' + usable
       + ' safe=' + JSON.stringify(safeCuts) + ' cuts=' + JSON.stringify(cuts.slice(0, 60))

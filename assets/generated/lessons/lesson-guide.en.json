@@ -1,0 +1,163 @@
+{
+  "meta": {
+    "id": "lesson-guide",
+    "locale": "en",
+    "region": "ke",
+    "subject": "Science and Technology",
+    "grade": "Grade 5",
+    "chips": [
+      {
+        "label": "Learning Area",
+        "value": "Science and Technology"
+      },
+      {
+        "label": "",
+        "value": "Grade 5"
+      }
+    ],
+    "title": "The Breathing System",
+    "subtitle": "Republic of Kenya · Competency-Based Curriculum",
+    "footer": "Competency-Based Curriculum · lesson plan"
+  },
+  "images": [
+    {
+      "id": "lesson-scene",
+      "concept": "scene",
+      "label": "The Breathing System",
+      "prompt": "Flat vector educational illustration, clean children's textbook style, soft colours, warm daylight. Young primary-school children and their teacher together in a simple classroom, engaged in an activity about The Breathing System. Show faces, gestures and posture; fill the frame with the people and a few simple objects. Absolutely no writing of any kind anywhere in the picture: no letters, numerals, signs or labels. No empty boards, blank cards, picture frames or vacant panels."
+    }
+  ],
+  "sections": [
+    {
+      "id": "admin",
+      "heading": "Lesson details",
+      "type": "fields",
+      "items": [
+        {
+          "label": "Strand",
+          "value": "Living things and their environment"
+        },
+        {
+          "label": "Sub-Strand",
+          "value": "The Breathing System"
+        }
+      ]
+    },
+    {
+      "id": "outcomes",
+      "heading": "Lesson Learning Outcomes",
+      "type": "bullets",
+      "marker": "num",
+      "items": [
+        {
+          "text": "Identify the main parts of the human breathing system from a chart."
+        },
+        {
+          "text": "Describe the functions of each part of the human breathing system to peers."
+        },
+        {
+          "text": "Appreciate the need for maintaining a healthy breathing system for a healthy living."
+        }
+      ],
+      "lead": "By the end of the lesson, the learner should be able to:"
+    },
+    {
+      "id": "inquiry",
+      "heading": "Key Inquiry Question(s)",
+      "type": "bullets",
+      "marker": "dot",
+      "items": [
+        {
+          "text": "How does the breathing system help us stay alive?"
+        },
+        {
+          "text": "What makes up the human breathing system?"
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "heading": "Learning Resources",
+      "type": "chips",
+      "items": [
+        "Chart, Model of the breathing system",
+        "Pictures of lungs and nose",
+        "Balloons",
+        "Flashcards",
+        "Textbook (Indicate the title and page, both the teacher's and the learner's book)",
+        "An internet enabled digital device"
+      ]
+    },
+    {
+      "id": "introduction",
+      "heading": "Introduction",
+      "type": "text",
+      "body": "Learners are guided to carry out an activity on breathing in and out. They will then respond to oral questions about the body parts that help in breathing.",
+      "time": "5 min",
+      "image": "lesson-scene"
+    },
+    {
+      "id": "development",
+      "heading": "Lesson Development · Step 1",
+      "type": "text",
+      "body": "Learners are guided to study the chart on human breathing system. They will then explain the functions of the nose, trachea (wind pipe), lungs and the diaphragm. This will nurture the core competency of learning to learn and creativity and imagination.",
+      "time": "18 min"
+    },
+    {
+      "id": "development",
+      "heading": "Lesson Development · Step 2",
+      "type": "text",
+      "body": "learners are guided to discuss in groups on how to label the parts of the human breathing system. This will develop the core value of love and respect as the learners use etiquette in their discussion."
+    },
+    {
+      "id": "development",
+      "heading": "Lesson Development · Step 3",
+      "type": "text",
+      "body": "learners are guided to search from a digital device the ways of maintaining a healthy breathing system. This will nurture the core competency of digital literacy."
+    },
+    {
+      "id": "conclusion",
+      "heading": "Conclusion",
+      "type": "text",
+      "body": "Learners are guided to respond to oral questions on how to keep their breathing system healthy. This will nurture the PCI of safety as learners mention aspects such as avoiding smoking.",
+      "time": "5 min"
+    },
+    {
+      "id": "assessment",
+      "heading": "Assessment",
+      "type": "bullets",
+      "marker": "num",
+      "items": [
+        {
+          "text": "Name 4 parts of the human breathing system"
+        },
+        {
+          "text": "What is the work of the lungs"
+        },
+        {
+          "text": "Why is the nose important in breathing"
+        },
+        {
+          "text": "State 2 ways of keeping the breathing system healthy"
+        }
+      ]
+    },
+    {
+      "id": "extended",
+      "heading": "Extended Activities",
+      "type": "note",
+      "body": "Learners to draw and label the human Breathing System in their exercise books and write 3 ways of caring for it."
+    },
+    {
+      "id": "reflection",
+      "heading": "Reflection",
+      "type": "note",
+      "body": ""
+    }
+  ],
+  "sourceProfile": {
+    "id": "ke",
+    "name": "Kenya — CBC lesson plan",
+    "mode": "bare"
+  }
+}

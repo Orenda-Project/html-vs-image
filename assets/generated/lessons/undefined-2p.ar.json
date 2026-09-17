@@ -1,0 +1,236 @@
+{
+  "meta": {
+    "id": "undefined-2p",
+    "title": "دليل الدرس اليومي",
+    "subtitle": "الجمهورية اليمنية · وزارة التربية والتعليم · التعليم المجتمعي",
+    "footer": "للتواصل مع المدرّب الرقمي: 160 661 778 967+ · دليل الدرس اليومي",
+    "locale": "ar",
+    "subject": "",
+    "grade": "",
+    "region": "ye",
+    "chips": []
+  },
+  "sections": [
+    {
+      "id": "lesson-line",
+      "heading": "درس",
+      "type": "text",
+      "body": "المادة والصف غير محددين · موضوع الدرس غير متوفر"
+    },
+    {
+      "id": "goal",
+      "heading": "الهدف",
+      "type": "note",
+      "body": "**هدف اليوم:** التعرف على نشاط الدرس وتطبيق الخطوات المتاحة."
+    },
+    {
+      "id": "errors",
+      "heading": "أخطاء شائعة — انتبه لها",
+      "type": "qa",
+      "items": [
+        {
+          "q": "✗ خطأ",
+          "a": "تنفيذ النشاط دون ملاحظة الأداة أو الخطوة المطلوبة."
+        },
+        {
+          "q": "✓ صواب",
+          "a": "يمسك التلميذ الأداة ويتبع الخطوة المحددة بتركيز."
+        }
+      ],
+      "codeFigure": {
+        "kind": "error-board",
+        "wrong": {
+          "kind": "expression",
+          "text": "✗ خطأ",
+          "label": "",
+          "caption": ""
+        },
+        "correct": {
+          "kind": "expression",
+          "text": "✓ صواب",
+          "label": "",
+          "caption": ""
+        },
+        "labelWrong": "خطأ",
+        "labelCorrect": "صواب"
+      }
+    },
+    {
+      "id": "errors-caption",
+      "heading": "ملاحظة",
+      "type": "text",
+      "body": "اعرض الأداة واطلب من التلميذ تنفيذ الخطوة أمامك."
+    },
+    {
+      "id": "stage-tamhid",
+      "heading": "التمهيد",
+      "type": "steps",
+      "time": "غير محدد · أنا أفعل",
+      "items": [
+        {
+          "label": "",
+          "body": "أمسك أدوات التعلم المتاحة، واطلب من التلميذ لمسها ووصف ما يراه."
+        },
+        {
+          "label": "تحقق",
+          "body": "يذكر التلميذ ما يلاحظه في الأداة."
+        }
+      ],
+      "image": "tamhid-learning-tools"
+    },
+    {
+      "id": "stage-arad",
+      "heading": "العرض",
+      "type": "steps",
+      "time": "غير محدد · أنا أفعل ← نحن نفعل",
+      "items": [
+        {
+          "label": "",
+          "body": "اعرض مادة الدرس، واطلب من التلميذ لمسها والإشارة إلى العنصر المحدد."
+        },
+        {
+          "label": "تحقق",
+          "body": "يشير التلميذ إلى العنصر المحدد."
+        }
+      ],
+      "codeFigure": {
+        "kind": "steps",
+        "items": [
+          {
+            "label": "شاهد",
+            "caption": ""
+          },
+          {
+            "label": "أشر",
+            "caption": ""
+          }
+        ],
+        "label": "",
+        "caption": ""
+      }
+    },
+    {
+      "id": "stage-tatbiq",
+      "heading": "التطبيق",
+      "type": "steps",
+      "time": "غير محدد · نحن نفعل ← أنت تفعل",
+      "items": [
+        {
+          "label": "",
+          "body": "دع التلميذ يمسك مادة الدرس ويطبق النشاط المتاح بيده."
+        },
+        {
+          "label": "تحقق",
+          "body": "ينفذ التلميذ النشاط بيده."
+        }
+      ],
+      "codeFigure": {
+        "kind": "steps",
+        "items": [
+          {
+            "label": "تدرب",
+            "caption": ""
+          },
+          {
+            "label": "راجع",
+            "caption": ""
+          }
+        ],
+        "label": "",
+        "caption": ""
+      }
+    },
+    {
+      "id": "stage-taqwim",
+      "heading": "التقويم والختام",
+      "type": "steps",
+      "time": "غير محدد · أنت تفعل",
+      "items": [
+        {
+          "label": "",
+          "body": "اطلب من التلميذ رفع يده والإجابة ثم لمس ما راجعه."
+        },
+        {
+          "label": "تحقق",
+          "body": "يجيب التلميذ عن المهمة المتاحة."
+        }
+      ],
+      "codeFigure": {
+        "kind": "steps",
+        "items": [
+          {
+            "label": "أجب",
+            "caption": ""
+          },
+          {
+            "label": "اختم",
+            "caption": ""
+          }
+        ],
+        "label": "",
+        "caption": ""
+      }
+    },
+    {
+      "id": "solutions",
+      "heading": "الإجابات",
+      "type": "bullets",
+      "marker": "num",
+      "items": [
+        {
+          "text": "لا يوجد مفتاح إجابة في المصدر."
+        }
+      ]
+    },
+    {
+      "id": "glossary",
+      "heading": "مصطلحات",
+      "type": "fields",
+      "items": [
+        {
+          "term": "المهارة",
+          "value": "غير محددة"
+        },
+        {
+          "term": "المفهوم",
+          "value": "غير محدد"
+        },
+        {
+          "term": "التطبيق",
+          "value": "تنفيذ النشاط"
+        }
+      ]
+    },
+    {
+      "id": "multigrade",
+      "heading": "تكييف متعدد الصفوف",
+      "type": "bullets",
+      "marker": "num",
+      "items": [
+        {
+          "text": "الصف الأدنى: تبسيط الإمساك والملاحظة."
+        },
+        {
+          "text": "الصف الحالي: تنفيذ الدرس كما ورد."
+        },
+        {
+          "text": "الصف الأعلى: إضافة شرح أعمق للنشاط."
+        }
+      ]
+    },
+    {
+      "id": "homework",
+      "heading": "الواجب المنزلي · ركن المعلم",
+      "type": "note",
+      "body": "لا يوجد واجب منزلي محدد في المصدر."
+    }
+  ],
+  "images": [
+    {
+      "id": "tamhid-learning-tools",
+      "concept": "scene",
+      "label": "أدوات التعلم",
+      "prompt": "Flat vector educational illustration, clean children's textbook style, soft colours. Children in a classroom touching and examining simple learning tools with a teacher nearby. The image contains ABSOLUTELY NO text, no letters, no numbers, no symbols, no equation signs, no boxes, frames, placeholders, blank cards, answer slots, tick marks or arrows on any surface; boards, pages, cards and walls are completely EMPTY surfaces with nothing drawn on them."
+    }
+  ]
+}
