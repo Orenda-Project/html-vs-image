@@ -4,7 +4,7 @@ const assert = require('node:assert');
 const fs = require('node:fs');
 const path = require('node:path');
 const { renderLessonPdf } = require('../adapter');
-const { artCacheKey } = require('../pipeline');
+const { artCacheKey, modelForImage } = require('../pipeline');
 const store = require('../store/assets');
 
 // A 1x1 transparent PNG: these tests are about the render path, not the artwork.
@@ -46,8 +46,15 @@ test('renderLessonPdf renders an already-structured fixture with store images (n
   // credits — a test of the restore path should never depend on cache archaeology.
   // Sentinel briefs keep the placeholder out of the way of any real lesson.
   content.images = (content.images || []).map((im, i) => ({ ...im, prompt: `test-fixture placeholder ${i} — never generated` }));
+  // …AND THE KEY NOW CARRIES THE MODEL. Seeding without it writes a key the pipeline no
+  // longer looks up, so the restore misses and this test starts demanding credits again —
+  // the same "cache archaeology" trap as the version bump above. `modelForImage` is
+  // exported precisely so a seeder resolves the model the same way the lookup does,
+  // instead of hard-coding a slug that a region config change would silently invalidate.
   for (const im of content.images) {
-    store.put(artCacheKey(im.prompt, { region: content.meta.region, locale: 'sw' }), PIXEL, { test: true });
+    const model = modelForImage(im, { region: content.meta.region, locale: 'sw' });
+    store.put(artCacheKey(im.prompt, { region: content.meta.region, locale: 'sw', model }),
+      PIXEL, { test: true, model });
   }
   const { pdf, locale } = await renderLessonPdf(content, {});
   assert.strictEqual(pdf.slice(0, 4).toString('latin1'), '%PDF');

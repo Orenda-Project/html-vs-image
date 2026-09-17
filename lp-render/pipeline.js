@@ -44,12 +44,41 @@ const CONCEPT_TO_BLOCK = { diagram: 'DIAGRAM', scene: 'HOOK_STORY', photo: 'HOOK
 // lesson, and nothing unrelated can resolve to the same cached asset. The topic is a KEY
 // input only; it is never added to the prompt the model sees, because an Arabic clause in an
 // English brief is what produced the identical-scene problem in the first place.
-function artCacheKey(prompt, { region, locale, topic } = {}) {
+// …AND THE MODEL IS PART OF THE KEY. Keyed on the prompt alone, the store answered a
+// z-image request with a nano-banana picture, because the two share a prompt: Yemen was
+// configured for the cheap model and two of seven lessons came back drawn by the expensive
+// one. A cache that ignores which model made the asset cannot honour a change of model.
+//
+// The model is a SUFFIX on the existing hash rather than another hashed input, for two
+// reasons. The base hash stays byte-identical, so the 324 assets already in the store could
+// be migrated by appending the model each entry already records — nothing had to be
+// regenerated, and Kenya/Tanzania/Pakistan keep every picture they had. And the model is
+// then legible in the index: `7b18…@z-image` says what drew it without a lookup.
+//
+// A request for a model that has no asset MISSES, which is the point — an old
+// nano-banana file can no longer be returned to a z-image request.
+function artCacheKey(prompt, { region, locale, topic, model } = {}) {
   const artRegion = String(region || ({ sw: 'ke', ar: 'ye' })[locale] || 'pk').toLowerCase();
   const artVersion = (resolveRegion(artRegion) || {}).version || 1;
   const t = String(topic || '').replace(/\s+/g, ' ').trim();
-  return store.keyFor(`${prompt}|region:${artRegion}|art:v${artVersion}`
+  const base = store.keyFor(`${prompt}|region:${artRegion}|art:v${artVersion}`
     + (t ? `|topic:${t}` : ''));
+  // No model given → the bare base key, which is what the pre-migration store used. Kept
+  // so a caller that genuinely does not know the model (the Studio's preview lookup) still
+  // resolves, rather than silently returning nothing.
+  return model ? `${base}@${String(model)}` : base;
+}
+
+// WHICH MODEL WILL DRAW THIS IMAGE. Resolved the same way the generator resolves it —
+// concept → block type → category → the region's ladder — so the key names the model that
+// is actually going to be asked for the picture, not a guess at it.
+function modelForImage(im, { region, locale }) {
+  const { classifyBlock } = require('../imagegen/classify');
+  const { route } = require('../imagegen/route');
+  const type = CONCEPT_TO_BLOCK[im && im.concept] || 'HOOK_STORY';
+  const { category, needsImage } = classifyBlock({ type });
+  if (!needsImage) return null;
+  return (route(category, locale, region).ladder || [])[0] || null;
 }
 
 function chromePath() {
@@ -104,9 +133,10 @@ async function renderLessonImage(content, opts = {}) {
 
   const imagesMap = {};
   const toGen = [];
-  const cacheKey = (prompt, topic) => artCacheKey(prompt, { region: meta.region, locale, topic });
+  const cacheKey = (prompt, topic, model) => artCacheKey(prompt, { region: meta.region, locale, topic, model });
   for (const im of wanted) {
-    const key = cacheKey(im.prompt, im.topic);
+    const model = modelForImage(im, { region: meta.region, locale });
+    const key = cacheKey(im.prompt, im.topic, model);
     if (GAVE_UP.has(key)) { statsOut.dropped++; log(`  ⊘ image "${im.id}" skipped — already rejected earlier in this run`); continue; }
     const priorReject = store.isRejected(key);
     if (priorReject) {
@@ -118,7 +148,7 @@ async function renderLessonImage(content, opts = {}) {
       const hit = store.get(key);
       if (hit) { imagesMap[im.id] = { dataUri: hit.dataUri, label: im.label, cover: im.concept !== 'diagram' }; statsOut.restored++; log(`  ⤿ image "${im.id}" restored from store (no credits)`); continue; }
     }
-    toGen.push({ im, key });
+    toGen.push({ im, key, model });
   }
 
   if (toGen.length) {
@@ -149,7 +179,15 @@ async function renderLessonImage(content, opts = {}) {
       const { im, key } = toGen[i]; const got = images[i];
       if (got && got.asset && got.asset.url) {
         const dataUri = await download(got.asset.url);
-        store.put(key, dataUri, { model: got.model, concept: im.concept, prompt: im.prompt });
+        // STORE IT UNDER THE MODEL THAT ACTUALLY DREW IT. The lookup key names the model
+        // the ladder intended; if a gate escalation ever returns a different one, filing it
+        // under the intended model would put the wrong picture where the next request for
+        // that model looks. Today the ladders hold one entry each so the two always agree —
+        // this keeps that true by construction rather than by assumption.
+        const putKey = (got.model && got.model !== toGen[i].model)
+          ? cacheKey(im.prompt, im.topic, got.model) : key;
+        if (putKey !== key) log(`  ℹ image "${im.id}" was drawn by ${got.model}, not the ${toGen[i].model} the key asked for — filed under ${got.model}`);
+        store.put(putKey, dataUri, { model: got.model, concept: im.concept, prompt: im.prompt });
         imagesMap[im.id] = { dataUri, label: im.label, cover: im.concept !== 'diagram' };
         statsOut.generated++; log(`  ✓ image "${im.id}" generated (${got.model}) → saved to store`);
       } else {
@@ -258,4 +296,4 @@ async function renderLessonImage(content, opts = {}) {
   return { png, pdf, html, contentId, locale, stats: statsOut, maxPages: regionMaxPages, stripHeight, pageBudget, overflow: overflowFindings };
 }
 
-module.exports = { renderLessonImage, artCacheKey, ROOT };
+module.exports = { renderLessonImage, artCacheKey, modelForImage, ROOT };
