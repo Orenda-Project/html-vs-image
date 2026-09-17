@@ -55,8 +55,23 @@ function ladderFor(category, locale) {
   // ARTWORK MODEL OVERRIDE: with LP_ART_MODEL set, every illustration comes from
   // that one model. Used for the open-source artwork track (LP_ART_MODEL=z-image),
   // where the model draws wordless art and code renders all teaching content.
+  //
+  // AN UNRECOGNISED VALUE MUST NOT BE IGNORED. This read `if (forced && MODELS[forced])`,
+  // so a value that is not a registered slug — a typo, a stale slug, a name from kie's
+  // catalogue that was never added to MODELS above — fell straight through to the default
+  // ladder. Anyone who set the variable then believed the cheap model was in use while
+  // every image was billed at the default's rate: nano-banana-2-lite is 4 credits (~$0.02)
+  // against z-image's 0.8 (~$0.004), so a silent miss costs five times what was intended.
+  // A cost directive that fails quietly is worse than one that fails loudly.
   const forced = process.env.LP_ART_MODEL;
-  if (forced && MODELS[forced]) return [forced];
+  if (forced) {
+    if (MODELS[forced]) return [forced];
+    throw new Error(
+      `LP_ART_MODEL="${forced}" is not a registered model, so it would be ignored and the `
+      + `default (${(LADDERS.decorative_scene || [])[0]}) billed instead. Register it in `
+      + `MODELS in imagegen/config/models.config.js, or use one of: ${Object.keys(MODELS).join(', ')}`,
+    );
+  }
   if (category === 'labeled_diagram' && COMPLEX_SCRIPT.has(String(locale || '').toLowerCase())) {
     return LADDERS.labeled_diagram_complex;
   }

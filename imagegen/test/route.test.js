@@ -49,3 +49,37 @@ test('modelInput merges the prompt with the model default params', () => {
   const s = modelInput('bytedance/seedream-v4-text-to-image', 'x');
   assert.strictEqual(s.image_size, 'landscape_4_3');
 });
+
+// A COST DIRECTIVE MUST NOT FAIL QUIETLY.
+//
+// `LP_ART_MODEL` is how the cheap open-weights artwork track is selected. The check used
+// to be `if (forced && MODELS[forced])`, so any value that is not a registered slug — a
+// typo, a stale slug, a name copied from kie's catalogue that was never added to MODELS —
+// fell through to the default ladder without a word. Whoever set the variable believed the
+// cheap model was running while every image was billed at the default's rate: 4 credits
+// (~$0.02) for nano-banana-2-lite against 0.8 (~$0.004) for z-image, five times the
+// intended cost, invisible in every log.
+test('an unregistered LP_ART_MODEL fails loudly instead of silently billing the default', () => {
+  const prev = process.env.LP_ART_MODEL;
+  try {
+    process.env.LP_ART_MODEL = 'z_image';          // the kind of near-miss that caused this
+    assert.throws(() => route('decorative_scene', 'ar'), /not a registered model/,
+      'an unrecognised model name was ignored and the default would have been billed');
+    // and the message has to be actionable: it names the default that would have been used
+    assert.throws(() => route('decorative_scene', 'ar'), /nano-banana-2-lite/);
+  } finally {
+    if (prev === undefined) delete process.env.LP_ART_MODEL; else process.env.LP_ART_MODEL = prev;
+  }
+});
+
+test('a registered LP_ART_MODEL is still honoured for every image category', () => {
+  const prev = process.env.LP_ART_MODEL;
+  try {
+    process.env.LP_ART_MODEL = 'z-image';
+    for (const cat of ['decorative_scene', 'labeled_diagram', 'labeled_diagram_complex']) {
+      assert.deepStrictEqual(route(cat, 'ar').ladder, ['z-image'], `${cat} ignored the override`);
+    }
+  } finally {
+    if (prev === undefined) delete process.env.LP_ART_MODEL; else process.env.LP_ART_MODEL = prev;
+  }
+});

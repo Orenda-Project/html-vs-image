@@ -2252,5 +2252,12 @@
     "model": "nano-banana-2-lite",
     "concept": "scene",
     "prompt": "primary-school children and their teacher working together at a low table in a Yemeni classroom. The composition is filled by the people and the objects they are handling."
+  },
+  "978ae3d26badc75d": {
+    "file": "978ae3d26badc75d.jpg",
+    "mime": "image/jpeg",
+    "model": "nano-banana-2-lite",
+    "concept": "scene",
+    "prompt": "children kneeling around a young seedling lifted out of dark soil so its roots, stem and leaves are all visible. The composition is filled by the people and the objects they are handling."
   }
 }
