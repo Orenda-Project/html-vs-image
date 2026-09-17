@@ -743,36 +743,158 @@ function cfSteps({ items = [], numbered = true, orient = 'h', wide = false }) {
 
 // Anchor points on each code-drawn object, so a label always points at the right
 // place. Adding an object means adding its drawing and its anchors — nothing else.
+// The plant's greens and browns. Derived from the design system's own CF.good rather
+// than invented, so the diagram sits in the same family as every other figure: a lighter
+// blade, the system green for the body, a deeper tone for shading, and soil browns.
+const CF_PLANT = {
+  leafLight: '#4cae6a', leaf: CF.good, leafDeep: '#14663a',
+  stem: '#2f9b57', stemLight: '#59bd7d',
+  // The soil is kept light ON PURPOSE. It is the backdrop to the one part the lesson
+  // names down there — «الجذور» — and the first attempt drew mid-brown roots on
+  // mid-brown soil, so the labelled part was the least legible thing in the figure.
+  soilTop: '#e3c79b', soil: '#d3ac76', soilDeep: '#b1874f',
+  root: '#5d3c19', rootDeep: '#432a10',
+  petal: '#ef8ba2', petalDeep: '#d96a86', fruit: '#e05b4f', fruitDeep: '#b8392f',
+};
+
+/**
+ * One leaf, drawn from its attachment point outwards, with a midrib and veins.
+ *
+ * A leaf is the part a Grade 1 child is most likely to recognise, and the flat green
+ * almond it used to be gave them nothing to recognise it BY. The blade is two-tone —
+ * the far half a shade deeper, as a leaf turned to the light actually is — and the
+ * veins fan from the midrib, which is what makes it read as a leaf rather than a shape.
+ *
+ * @param {number} x0,y0  where the leaf meets the stem
+ * @param {number} dir    +1 to the right of the stem, -1 to the left
+ * @param {number} len    blade length
+ * @param {number} lift   how far the tip rises above the attachment point
+ */
+function cfLeaf(x0, y0, dir, len, lift, uid) {
+  const s = CF.stroke;
+  const tx = x0 + dir * len, ty = y0 - lift;              // tip
+  const c1x = x0 + dir * len * 0.30, c1y = y0 - lift - 20; // upper bulge
+  const c2x = x0 + dir * len * 0.75, c2y = y0 - lift - 14;
+  const c3x = x0 + dir * len * 0.72, c3y = y0 - lift + 13; // lower bulge
+  const c4x = x0 + dir * len * 0.28, c4y = y0 + 11;
+  const blade = `M ${x0} ${y0} C ${c1x} ${c1y} ${c2x} ${c2y} ${tx} ${ty}`
+    + ` C ${c3x} ${c3y} ${c4x} ${c4y} ${x0} ${y0} Z`;
+  // EVERY MARK INSIDE THE BLADE IS CLIPPED TO IT. Free-drawn veins overshot the outline
+  // and printed as little green ticks in the white space beside each leaf — the kind of
+  // detail that reads as a rendering fault rather than a drawing. A clip path makes
+  // overshoot impossible instead of relying on the curve maths being exactly right.
+  const clip = `cfLeafClip${uid}`;
+  let veins = '';
+  for (let i = 1; i <= 3; i++) {
+    const t = i / 4;
+    const mx = x0 + (tx - x0) * t, my = y0 + (ty - y0) * t;
+    const vx = mx + dir * len * 0.20, vyUp = my - 13 + i * 1.5, vyDn = my + 12 - i * 1.2;
+    veins += `<path d="M ${mx} ${my} Q ${vx} ${(my + vyUp) / 2} ${vx} ${vyUp}" stroke="${CF_PLANT.leafDeep}" stroke-width="1.6" fill="none" opacity="0.8" stroke-linecap="round"/>`
+      + `<path d="M ${mx} ${my} Q ${vx} ${(my + vyDn) / 2} ${vx} ${vyDn}" stroke="${CF_PLANT.leafDeep}" stroke-width="1.6" fill="none" opacity="0.8" stroke-linecap="round"/>`;
+  }
+  return `<defs><clipPath id="${clip}"><path d="${blade}"/></clipPath></defs>`
+    + `<path d="${blade}" fill="${CF_PLANT.leaf}" stroke="${s}" stroke-width="2" stroke-linejoin="round"/>`
+    + `<g clip-path="url(#${clip})">`
+    // the lower half a shade deeper: the blade reads as a surface, not a silhouette
+    + `<path d="M ${x0} ${y0} C ${c3x} ${c3y} ${c4x} ${c4y} ${x0} ${y0} L ${tx} ${ty} Z" fill="${CF_PLANT.leafDeep}" opacity="0.18"/>`
+    + veins
+    + `<path d="M ${x0} ${y0} Q ${(x0 + tx) / 2} ${(y0 + ty) / 2 - 3} ${tx} ${ty}" stroke="${CF_PLANT.leafDeep}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`
+    + `</g>`;
+}
+
+/** A fruit on a short stalk, with a highlight so it reads as round rather than flat. */
+function cfFruit(cx, cy, r, dir) {
+  const s = CF.stroke;
+  return `<path d="M 240 ${cy - 4} Q ${(240 + cx) / 2} ${cy - 9} ${cx} ${cy - r + 1}" stroke="${CF_PLANT.stem}" stroke-width="2.5" fill="none" stroke-linecap="round"/>`
+    + `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${CF_PLANT.fruit}" stroke="${s}" stroke-width="2"/>`
+    + `<path d="M ${cx - r} ${cy} A ${r} ${r} 0 0 0 ${cx} ${cy + r}" fill="none" stroke="${CF_PLANT.fruitDeep}" stroke-width="2.4" opacity="0.5"/>`
+    + `<ellipse cx="${cx - r * 0.32 * dir}" cy="${cy - r * 0.38}" rx="${r * 0.28}" ry="${r * 0.2}" fill="#ffffff" opacity="0.55"/>`;
+}
+
 const CF_OBJECTS = {
   plant: {
     // A part that exists on both sides of the plant carries a mirror anchor, so a
     // chip on the left points at the LEFT leaf instead of dragging a leader line
     // across the whole drawing.
-    anchors: { flower: [240, 38], fruit: [266, 68], leaf: [292, 100], stem: [240, 76], soil: [132, 156], root: [240, 184], seed: [240, 170] },
-    mirror: { leaf: [188, 118], fruit: [216, 68] },
-    draw() {
-      const g = CF.good, s = CF.stroke;
-      // The soil band stops short of the edges so the label chips have clear space
-      // on both sides — a full-width band forces leader lines to cross it.
-      return '<rect x="120" y="150" width="240" height="10" rx="5" fill="#c8a06a" stroke="' + s + '" stroke-width="2"/>'
-        // roots + seed
-        + '<path d="M 240 158 L 240 186 M 240 168 L 216 186 M 240 168 L 264 186 M 240 178 L 228 192 M 240 178 L 252 192" stroke="#8a6a3a" stroke-width="3" stroke-linecap="round" fill="none"/>'
-        + '<ellipse cx="240" cy="170" rx="7" ry="5" fill="#8a6a3a" stroke="' + s + '" stroke-width="1.5"/>'
-        // fruits on short stalks, one each side of the stem
-        + '<path d="M 240 64 L 258 66 M 240 64 L 222 66" stroke="' + g + '" stroke-width="2.5" stroke-linecap="round"/>'
-        + '<circle cx="264" cy="68" r="7" fill="#d9534f" stroke="' + s + '" stroke-width="2"/>'
-        + '<circle cx="216" cy="68" r="7" fill="#d9534f" stroke="' + s + '" stroke-width="2"/>'
-        // stem
-        + '<path d="M 240 152 L 240 52" stroke="' + g + '" stroke-width="6" stroke-linecap="round"/>'
-        // leaves
-        + '<path d="M 240 100 C 262 82 292 84 300 96 C 288 112 258 114 240 100 Z" fill="' + g + '" stroke="' + s + '" stroke-width="2"/>'
-        + '<path d="M 240 116 C 218 98 188 100 180 112 C 192 128 222 130 240 116 Z" fill="' + g + '" stroke="' + s + '" stroke-width="2"/>'
-        // flower
-        + '<circle cx="240" cy="34" r="11" fill="' + CF.fill + '" stroke="' + s + '" stroke-width="2"/>'
-        + '<circle cx="222" cy="42" r="9" fill="#e8778f" stroke="' + s + '" stroke-width="2"/>'
-        + '<circle cx="258" cy="42" r="9" fill="#e8778f" stroke="' + s + '" stroke-width="2"/>'
-        + '<circle cx="240" cy="50" r="9" fill="#e8778f" stroke="' + s + '" stroke-width="2"/>'
-        + '<circle cx="240" cy="42" r="7.5" fill="' + CF.fill + '" stroke="' + s + '" stroke-width="2"/>';
+    //
+    // THE STEM ANCHOR SITS ON BARE STEM. It used to be at y=76, level with the fruit
+    // stalks, so «الساق» appeared to point at a fruit. It now lands on the clear span
+    // between the lower leaf and the soil, where nothing else can be mistaken for it.
+    anchors: { flower: [240, 30], fruit: [268, 66], leaf: [296, 98], stem: [240, 142], soil: [160, 168], root: [240, 186], seed: [240, 176] },
+    mirror: { leaf: [184, 120], fruit: [212, 66] },
+    // THE DRAWING'S OWN EXTENT, stroke included. The figure derives its scale and its
+    // height from this instead of a hardcoded zoom, so the object decides how much room
+    // it needs rather than hoping a fixed number still fits. Measured in a browser, and
+    // `labelled-parts-fit.test.js` re-measures it on every run — a declared box that
+    // silently drifts from the drawing is exactly how the flower got clipped.
+    bbox: { x0: 144, y0: 17, x1: 336, y1: 203 },
+    /**
+     * @param {string} uid unique suffix for gradient ids — SVG ids are document-global,
+     *   and two labelled diagrams on one page would otherwise share (and fight over)
+     *   the same <defs>. Derived from the drawing's own content by the caller, so the
+     *   same figure always renders byte-identically.
+     */
+    draw(uid = 'p') {
+      const s = CF.stroke, P = CF_PLANT;
+      const gSoil = `cfSoil${uid}`, gStem = `cfStem${uid}`;
+      const defs = `<defs>`
+        + `<linearGradient id="${gSoil}" x1="0" y1="0" x2="0" y2="1">`
+        + `<stop offset="0" stop-color="${P.soilTop}"/><stop offset="1" stop-color="${P.soilDeep}"/></linearGradient>`
+        + `<linearGradient id="${gStem}" x1="0" y1="0" x2="1" y2="0">`
+        + `<stop offset="0" stop-color="${P.stem}"/><stop offset="0.45" stop-color="${P.stemLight}"/>`
+        + `<stop offset="1" stop-color="${P.stem}"/></linearGradient>`
+        + `</defs>`;
+
+      // ── SOIL ─────────────────────────────────────────────────────────────────────
+      // The old version drew a flat bar and hung the roots in white space UNDERNEATH
+      // it, which teaches the opposite of the lesson: roots grow INSIDE the soil. It
+      // is now a bed with depth, the roots are drawn within it, and the surface has a
+      // little relief so it reads as ground rather than a plank.
+      const soil = `<path d="M 146 162 Q 240 150 334 162 L 334 190 Q 330 201 314 201 L 166 201 Q 150 201 146 190 Z"`
+        + ` fill="url(#${gSoil})" stroke="${s}" stroke-width="2" stroke-linejoin="round"/>`
+        + `<path d="M 146 162 Q 240 150 334 162 L 334 171 Q 240 158 146 171 Z" fill="${P.soilTop}" opacity="0.9"/>`
+        // a few grains, so the bed is not a flat wash of colour
+        + [[172, 180], [188, 193], [300, 178], [316, 192], [160, 190], [324, 185]]
+          .map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="${P.soilDeep}" opacity="0.45"/>`).join('');
+
+      // ── ROOTS ────────────────────────────────────────────────────────────────────
+      // A tap root with laterals and fine hairs, tapering as it descends — the broom
+      // of five straight sticks it replaced had no sense of a root SYSTEM.
+      const roots = `<path d="M 240 158 C 244 170 238 180 240 192" stroke="${P.root}" stroke-width="8" fill="none" stroke-linecap="round"/>`
+        + `<path d="M 240 166 C 226 170 212 176 196 186 M 240 173 C 254 177 268 183 284 191`
+        + ` M 240 182 C 230 187 222 192 214 199 M 240 187 C 250 191 258 195 266 200"`
+        + ` stroke="${P.root}" stroke-width="4" fill="none" stroke-linecap="round"/>`
+        + `<path d="M 203 181 l -8 3 M 277 186 l 8 3 M 222 191 l -6 4 M 258 193 l 6 3 M 240 191 l 0 5"`
+        + ` stroke="${P.rootDeep}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+
+      // ── STEM ─────────────────────────────────────────────────────────────────────
+      // A filled taper, not a stroked line: thicker where it leaves the ground, finer
+      // at the flower, with a highlight down one side.
+      const stem = `<path d="M 234.5 160 C 235.5 120 236.5 80 237.5 46 L 242.5 46 C 243.5 80 244.5 120 245.5 160 Z"`
+        + ` fill="url(#${gStem})" stroke="${s}" stroke-width="2" stroke-linejoin="round"/>`;
+
+      // ── FLOWER ───────────────────────────────────────────────────────────────────
+      // Five petals on a ring rather than four overlapping circles, so the yellow
+      // centre no longer pokes out of the top of the bloom.
+      let petals = '';
+      for (let i = 0; i < 5; i++) {
+        const a = -Math.PI / 2 + (i * 2 * Math.PI) / 5;
+        const px = 240 + Math.cos(a) * 13, py = 40 + Math.sin(a) * 13;
+        petals += `<ellipse cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" rx="10.5" ry="8.5"`
+          + ` transform="rotate(${((a * 180) / Math.PI + 90).toFixed(1)} ${px.toFixed(1)} ${py.toFixed(1)})"`
+          + ` fill="${P.petal}" stroke="${s}" stroke-width="2"/>`;
+      }
+      const flower = petals
+        + `<circle cx="240" cy="40" r="8.5" fill="${CF.fill}" stroke="${s}" stroke-width="2"/>`
+        + [[-3.5, -3], [3.5, -3], [0, 3.5]]
+          .map(([dx, dy]) => `<circle cx="${240 + dx}" cy="${40 + dy}" r="1.6" fill="${P.fruitDeep}" opacity="0.65"/>`).join('');
+
+      // Painting order is the botany: soil and roots behind, then the stem out of the
+      // ground, then leaves and fruit on top of it, then the bloom.
+      return defs + soil + roots + stem
+        + cfFruit(268, 66, 8, 1) + cfFruit(212, 66, 8, -1)
+        + cfLeaf(242, 104, 1, 56, 16, `${uid}R`) + cfLeaf(238, 126, -1, 56, 16, `${uid}L`)
+        + flower;
     },
   },
 };
@@ -789,10 +911,41 @@ function cfLabeledParts({ object = 'plant', parts = [] }) {
   // the width — the label chips claimed the edges and the plant sat small in the
   // middle. Scale the object up about its own centre and give the figure the height
   // that needs; the anchors scale with it so every leader line still lands correctly.
-  const W = 480, H = 236, K = 1.35, CX = 240, CY = 112;
-  const tf = (pt) => [CX + K * (pt[0] - CX), CY + K * (pt[1] - CY)];
-  let out = `<g transform="translate(${(CX - K * CX).toFixed(2)} ${(CY - K * CY).toFixed(2)}) scale(${K})">`
-    + obj.draw() + '</g>';
+  // FIT THE DRAWING TO THE CANVAS, don't zoom it about a guessed centre and hope.
+  //
+  // This was `K = 1.35` scaling about (240, 112) in a fixed 236-tall viewBox, and the
+  // flower's top petal landed at y = -14.2 — measured, not estimated — so the bloom was
+  // sliced off by the viewBox edge. Nothing in the code connected the drawing's real
+  // extent to the canvas it had to fit in, so enlarging the plant quietly pushed it out
+  // of frame.
+  //
+  // Now the object declares its own bounding box, the figure scales it to the width it
+  // is allowed, and the HEIGHT FOLLOWS THE DRAWING rather than the drawing being cropped
+  // to a fixed height. Padding is explicit on every side, so "nothing is clipped" is a
+  // property of the arithmetic instead of something to re-check by eye after each edit.
+  const W = 480, PAD_X = 12, PAD_TOP = 11, PAD_BOT = 13;
+  const bb = obj.bbox || { x0: 0, y0: 0, x1: W, y1: 236 };
+  const objW = Math.max(1, bb.x1 - bb.x0), objH = Math.max(1, bb.y1 - bb.y0);
+  // As large as it fits between the label chips — measured from THESE labels, not from
+  // the worst case a chip could ever be. Sizing against the 172px maximum made the plant
+  // SMALLER than the version that was clipping, which is the opposite of the ask: these
+  // three words are short, so the clear middle is wide and the drawing can grow into it.
+  const chipW = (label) => {
+    const fit = cfFit(label, 156, 12, 1, 8.5, 800);
+    return Math.min(172, Math.max(58, (fit.lines[0] || '').length * cfAdvance(fit.size, 800) + 22));
+  };
+  const widest = Math.max(...P.map((p) => chipW(p.label)));
+  const K = Math.min(1.45, (W - 2 * (widest + PAD_X + 6)) / objW);
+  const H = Math.round(PAD_TOP + objH * K + PAD_BOT);
+  const ox = (W - objW * K) / 2 - bb.x0 * K;   // centred across the figure
+  const oy = PAD_TOP - bb.y0 * K;              // top-aligned to its own padding
+  const tf = (pt) => [ox + K * pt[0], oy + K * pt[1]];
+  // A gradient id is document-global, so two labelled diagrams on one page would share
+  // one <defs> and the second would inherit the first's. Derived from the figure's own
+  // parts rather than a counter, so an identical figure still renders byte-identically.
+  const uid = P.map((p) => p.part).join('').replace(/[^a-z]/gi, '').slice(0, 12) + P.length;
+  let out = `<g transform="translate(${ox.toFixed(2)} ${oy.toFixed(2)}) scale(${K.toFixed(4)})">`
+    + obj.draw(uid) + '</g>';
   // Top to bottom, and each chip goes on the side its own part already leans to, so
   // a leader line never crosses the drawing. Parts sitting on the centre line
   // alternate; a part that exists on both sides (mirror) moves to the emptier side.
