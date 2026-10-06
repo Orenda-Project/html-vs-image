@@ -1,0 +1,297 @@
+{
+ "meta": {
+  "lessonId": "grade_3_math_ch1_seg1",
+  "grade": 3,
+  "subject": "math",
+  "topic": "Count up to 9999 (4-digit numbers)",
+  "day": 1,
+  "total": 10,
+  "chapterTitle": "Textbook pp.2-3",
+  "journeySoFar": [],
+  "comingUp": [
+   {
+    "day": 2,
+    "topic": "Read and write up to 9999 in numerals",
+    "pages": "4"
+   },
+   {
+    "day": 3,
+    "topic": "Compare numbers",
+    "pages": ""
+   },
+   {
+    "day": 4,
+    "topic": "Compare numbers (p.8-9)",
+    "pages": "8-9"
+   },
+   {
+    "day": 5,
+    "topic": "Round numbers to the nearest tens",
+    "pages": "10-11"
+   },
+   {
+    "day": 6,
+    "topic": "Round numbers to the nearest tens, hundreds and thousands",
+    "pages": ""
+   },
+   {
+    "day": 7,
+    "topic": "Read and write Roman numerals up to 20",
+    "pages": ""
+   },
+   {
+    "day": 8,
+    "topic": "Count up to 9999 (4-digit numbers) and compare numbers",
+    "pages": "19-20"
+   },
+   {
+    "day": 9,
+    "topic": "Chapter assessment (worksheet)",
+    "pages": "1"
+   },
+   {
+    "day": 10,
+    "topic": "Chapter revision day",
+    "pages": ""
+   }
+  ],
+  "materials": [
+   "chalk",
+   "board",
+   "textbook pp.2-3",
+   "notebook",
+   "pencil",
+   "20 paper strips, each divided into 10 equal squares, cut from used notebook paper",
+   "20 paper sheets, each carrying 10 strips of 10 squares, prepared by the teacher from used paper"
+  ],
+  "durationMin": 30,
+  "isUrdu": true,
+  "urduMedium": false,
+  "skillType": "pictorial",
+  "cpaPhase": "abstract",
+  "designNotes": "Concept open (Topic 1). p2-3 Leap and Learn: build 4-digit numbers with place-value (Th/H/T/O) blocks; count on to 9999. G3 pictorial lead. Enrichment ELEMENTS (Stage C adds): cumulative spaced-retrieval warm-up + number-sense warm-up (subitise/number-bonds/place-value) + anxiety-safe fact-fluency drill + mastery-check exit gate with a 'same/different?' variation item + misconception pre-empt + bilingual maths glossary.",
+  "pagesPrinted": [
+   2,
+   3
+  ],
+  "sloDescriptions": [
+   "Count up to 9999 (4-digit numbers).",
+   "Recognise the place value of each digit in 4-digit numbers."
+  ],
+  "minutes": 30,
+  "teacherGender": "woman"
+ },
+ "goal": "Count to 9999 and say what each digit is worth from its place",
+ "sloCode": "M-03-NS-01",
+ "bloom": "understand",
+ "totalMinutes": 30,
+ "warmUpPeerMove": "Tell your partner checks, then swap roles. No hands up, no race.",
+ "exitSuccessCriteria": "You have it if your drawing matches your numeral place by place, AND you wrote the value of the 1, not just the digit.",
+ "exitSelfPredict": "Before you hand it in: thumbs up, sideways or down — will you get it right?",
+ "hook": {
+  "warmUp": {
+   "recallOf": "Grouping in tens: ten ones make one ten tens make 100",
+   "teacherAsks": "Partner A: how many ones make one ten? Partner B checks, then swap. Now show me 7 on your fingers with no talking — partner says the number. Together, count aloud from 995 to 1000. This is careful counting practice, not a race.",
+   "expectedAnswer": "Ten ones make one ten. Seven. 995, 996, 997, 998, 999, 1000.",
+   "nextLine": "1001, 1002, 1003"
+  },
+  "story": "Two photos, two years underneath: 1985 and 2015. Same four digits doing different jobs. Write in your copy which year is older and one reason why — before we look at a single place.",
+  "objects": [
+   "A photo album page with two photographs, the year 1985 printed under the faded one and 2015 under the newer one"
+  ],
+  "keyWords": [
+   {
+    "term": "thousands place",
+    "urdu": "ہزاروں کی جگہ",
+    "def": "The leftmost place in a 4-digit number. A digit there tells how many groups of one thousand there…"
+   },
+   {
+    "term": "hundreds place",
+    "urdu": "سینکڑوں کی جگہ",
+    "def": "The second place from the left in a 4-digit number."
+   },
+   {
+    "term": "tens place",
+    "urdu": "دہائیوں کی جگہ",
+    "def": "The second place from the right in a 4-digit number."
+   },
+   {
+    "term": "ones place",
+    "urdu": "اکائیوں کی جگہ",
+    "def": "The rightmost place in a whole number. A digit there tells how many single ones there are."
+   },
+   {
+    "term": "place value",
+    "urdu": "مقامی قیمت",
+    "def": "The value a digit has because of its position in a number."
+   },
+   {
+    "term": "expanded form",
+    "urdu": "پھیلی ہوئی شکل",
+    "def": "Writing a number as the value from each place added together."
+   }
+  ],
+  "board": {
+   "instruction": "Before class, copy this chart onto the whiteboard. Leave the digit and value rows blank until Guided Practice.",
+   "content": "Thousands | Hundreds | Tens | Ones\n[cube] = 1000 [flat] = 100 [rod] = 10 [dot] = 1\nplace value = worth a digit gets from its place\nexpanded form: 1986 = 1000 + 900 + 80 + 6\nThe digit says how many. The place says how big.\nWORDS: expanded form = پھیلی ہوئی شکل | place value = مقامی قیمت"
+  }
+ },
+ "iDo": {
+  "minutes": 6,
+  "steps": [
+   {
+    "n": 1,
+    "action": "Draw the four place headings. Build 1985 in the chart: 1 cube, 9 flats, 8 rods, 5 dots. Point to each place before naming it.",
+    "say": "I do not read the number first — I count the picture first. One cube in Thousands. Nine flats in Hundreds. Eight rods in Tens. Five dots in Ones. Now I can write 1985.",
+    "sayLocal": "Main pehle number nahin parhta/parhti — pehle picture ginta/ginti hoon. Thousands mein aik cube, Hundreds mein nau flats, Tens mein aath rods, Ones mein paanch dots. Ab main 1985 likh sakta/sakti hoon."
+   },
+   {
+    "n": 2,
+    "action": "Write the value under each digit: 1000, 900, 80, 5. Say each value while pointing at the picture that proves it, not at the digit alone.",
+    "say": "The 8 is not worth eight. It sits in Tens, so it is worth 80 — count the rods and you can see it. The digit tells me how many; the place tells me how big each group is.",
+    "sayLocal": "Yeh 8 aath ka nahin hai. Tens mein hai, is liye 80 ka hai — rods gino aur khud dekh lo. Digit batata hai kitne, aur place batati hai har group kitna bara hai."
+   },
+   {
+    "n": 3,
+    "action": "Count on one from 1985 to 1986 in the chart. Add one dot only, and circle the three places that did not move.",
+    "say": "Watch which place changes. I add one dot, so the ones go from 5 to 6. The cube, the flats and the rods have not moved, so 1000, 900 and 80 all stay exactly as they were.",
+    "sayLocal": "Dekho kaun si place badalti hai. Main aik dot barhata/barhati hoon, to ones 5 se 6 ho gaye. Cube, flats aur rods hile hi nahin, is liye 1000, 900 aur 80 waise ke waise hain."
+   }
+  ],
+  "teacherSays": "Count the picture first, then write the numeral. A digit's worth comes from where it stands, never from how it looks.",
+  "teacherSaysLocal": "Pehle picture gino, phir numeral likho. Digit ki value uski jagah se aati hai, uski shakal se nahin.",
+  "keyFact": "A digit's value = the digit x the size of its place. Thousands, hundreds, tens, ones.",
+  "worked": {
+   "problem": "Build 9999 and write its expanded form",
+   "work": [
+    "9 cubes, 9 flats, 9 rods, 9 dots",
+    "9000 + 900 + 90 + 9",
+    "Same digit, four different values"
+   ],
+   "answer": "9999 = 9000 + 900 + 90 + 9, the largest 4-digit number",
+   "diagram": "9999: [cube][cube][cube][cube] [cube][cube][cube][cube] [cube] / [flat][flat][flat][flat] [flat][flat][flat][flat] [flat] / [rod][rod][rod][rod] [rod][rod][rod][rod] [rod] / [dot][dot][dot][dot] [dot][dot][dot][dot] [dot]"
+  },
+  "cfu": "Ahmed says the 8 in 1985 is worth 8. What should Ahmed draw or say to correct this?",
+  "ifStruggle": "Cover the other columns. Ask the child to count the ten squares in one ━ strip, then repeat: eight strips of ten means 80.",
+  "misconception": {
+   "slip": "Children read every digit at face value and say the 8 in 1985 is worth 8, not 80.",
+   "fix": "Point at the eight rods before saying any number. Ask 'how many single ones is one rod?' The picture proves 80, so the place, not the digit"
+  }
+ },
+ "weDo": {
+  "minutes": 9,
+  "action": "Class and teacher build 1986 together in the chart, then read off each digit's place and value before counting on.",
+  "strategy": "Ask 'which place am I in?' before every count. Have them point to the picture that proves the value, then say it. Check the numeral against the drawing place by place, then count on together to 1989 and name what changed.",
+  "modelled": {
+   "problem": "p.2: build 1986 and give each digit its value",
+   "work": [
+    "1 cube -> 1000",
+    "9 flats -> 900",
+    "8 rods -> 80",
+    "6 dots -> 6"
+   ],
+   "answer": "1986 = 1000 + 900 + 80 + 6",
+   "diagram": "1986: [cube] / [flat][flat][flat][flat] [flat][flat][flat][flat] [flat] / [rod][rod][rod][rod] [rod][rod][rod][rod] / [dot][dot][dot][dot] [dot][dot]"
+  },
+  "partner": {
+   "instruction": "Using the p.2 year 1986, Partner A draws the four places in the copy; Partner B points to each place and says its value. Then swap and count on together to 1989.",
+   "a": "I drew 1 cube, 9 flats, 8 rods and 6 dots. This is 1986.",
+   "b": "I check: 1 is 1000, 9 is 900, 8 is 80, 6 is 6.",
+   "teacherRole": "Rotate all pairs. Listen for a child naming the digit instead of the value. To a stuck pair: 'point at the rods first, then say the number' — never say the value for them."
+  },
+  "cfu": "Where do YOU see a four-digit year at home or in your community, and what could one digit tell you about its place?"
+ },
+ "youDo": {
+  "minutes": 9,
+  "action": "Children work alone in their copies on p.3, drawing each place before writing any digit, then counting on.",
+  "problems": [
+   {
+    "n": 1,
+    "prompt": "Draw 2015 in the Thousands / Hundreds / Tens / Ones chart, using cubes, flats, rods and dots.",
+    "source": "p.3 Practice Q1",
+    "diagram": "2015: [cube][cube] / [rod] / [dot][dot][dot][dot] [dot]",
+    "answer": "2 cubes, no flats, 1 rod, 5 dots",
+    "ref": "p.3 Practice Q1"
+   },
+   {
+    "n": 2,
+    "prompt": "For 2015, write each digit's place and its value.",
+    "source": "p.3 Practice Q2",
+    "diagram": "",
+    "answer": "2 = 2000, 0 = 0 hundreds, 1 = 10, 5 = 5",
+    "ref": "p.3 Practice Q2"
+   },
+   {
+    "n": 3,
+    "prompt": "Count on three times from 2015 and write which place changes each time.",
+    "source": "p.3 Practice Q3",
+    "diagram": "",
+    "answer": "2016, 2017, 2018 — only the ones place changes",
+    "ref": "p.3 Practice Q3"
+   }
+  ],
+  "wordProblem": {
+   "prompt": "A shopkeeper in Raja Bazaar writes Rs 4507 on a receipt. What is the 5 worth, and how do you know?",
+   "answer": "Rs 500 — the 5 stands in the hundreds place"
+  },
+  "behind": {
+   "prompt": "Draw 205 in a Hundreds / Tens / Ones chart, then write what the 2 is worth.",
+   "answer": "2 flats, no rods, 5 dots. The 2 is worth 200.",
+   "coach": "Point at the two flats before she writes. Ask 'how many single ones is one flat?' first, then let her say 200.",
+   "diagram": "20 tens: [flat][flat][flat][flat][flat][flat][flat][flat][flat][flat][flat][flat][flat][flat][flat][flat][flat][flat][flat][flat]\n5 ones: [flat][flat][flat][flat][flat]"
+  },
+  "ahead": {
+   "prompt": "Maryam says 9090 has two zeroes so two places have no value. Draw 9090, write its expanded form",
+   "answer": "9000 + 0 + 90 + 0.",
+   "coach": "Good answers say the zeroes HOLD the places open, so the 9s stay in thousands and tens instead of sliding right."
+  }
+ },
+ "wrap": {
+  "exitOptions": [
+   {
+    "form": "mcq",
+    "prompt": "In the number 4728, what is the digit 7 worth?",
+    "promptLocal": "Number 4728 mein digit 7 kitne ki hai?",
+    "choices": [
+     "7",
+     "70",
+     "700",
+     "7000"
+    ],
+    "correct": "C",
+    "answer": "C — 700",
+    "howToRun": "Whole class, in copies. Read it twice, they write A, B, C or D. Collect at the door, 1 minute.",
+    "diagram": ""
+   },
+   {
+    "form": "do",
+    "prompt": "Kamran sees 2014 on a school certificate. Draw it in the four-place chart and write the value of the 1.",
+    "promptLocal": "Kamran ko certificate par 2014 likha mila. Isay chaar places ke chart mein banao aur 1 ki value likho.",
+    "answer": "2 cubes, no flats, 1 rod, 4 dots. The 1 is worth 10.",
+    "howToRun": "She draws the four empty headings on the board first; children copy the headings and fill them in their copies.",
+    "diagram": "2014: [cube][cube] / [rod] / [dot][dot][dot][dot]"
+   },
+   {
+    "form": "short",
+    "prompt": "In 2014 and in 2015 the digit 1 is worth 10. Same or different? Write SAME or DIFFERENT and one reason.",
+    "promptLocal": "2014 aur 2015 dono mein digit 1 ki value 10 hai. SAME ya DIFFERENT? Aik wajah likho.",
+    "answer": "SAME — in both numbers the 1 stands in the tens place",
+    "howToRun": "Everyone writes one word plus one reason. Read three answers aloud and let the class thumbs-check each.",
+    "diagram": ""
+   }
+  ],
+  "revisionPanels": null,
+  "keyFacts": [
+   "A digit's value comes from its place, not from the digit alone.",
+   "Thousands, hundreds, tens, ones — each place is ten times the one on its right.",
+   "Counting on by one changes the ones place first."
+  ],
+  "homework": [
+   "p.4 Q2 (a, c) — draw each number in the place chart",
+   "p.4 Q4 (b) — write the expanded form"
+  ],
+  "reflection": "Did children count the picture before writing the numeral, or did they still read the digits and guess the values?"
+ },
+ "navLocal": null,
+ "cost": 0
+}

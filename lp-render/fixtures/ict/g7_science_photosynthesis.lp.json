@@ -1,0 +1,415 @@
+{
+  "lesson_id": "PK_G7_GSCI_CH1_PHOTOSYNTHESIS",
+  "schema_version": "2.0",
+  "lint_profile": "full",
+  "provenance": {
+    "book_stem": "grade_7_general_science",
+    "grade": 7,
+    "subject": "General Science",
+    "medium": "en",
+    "chapter": "Ch.1 · Plant Systems",
+    "topic": "Photosynthesis",
+    "printed_pages": "11",
+    "pdf_pages": "13",
+    "page_offset": 2,
+    "publisher": "National Book Foundation",
+    "curriculum": "National Curriculum of Pakistan 2022-23",
+    "source_quality_flags": [
+      "§1.7 prints a Teaching Point but no coded SLO; slo.code is null and objective 2 is marked locally added.",
+      "Objective is locally worded: §1.7 prints a Teaching Point, not a coded SLO."
+    ]
+  },
+  "slo": {
+    "code": null,
+    "text_verbatim": "All life forms depend on the process of photosynthesis for food and oxygen. It is the only source of oxygen on planet Earth.",
+    "source_page": "11",
+    "cognitive_level": "U",
+    "assessment_status": "Internal",
+    "command_word": "explain",
+    "success_criterion": "Name both gases in the right direction, and label a leaf diagram."
+  },
+  "lp_type": "GEN-6-8",
+  "period_minutes": 40,
+  "board_weight": null,
+  "materials": [
+    "Board and coloured chalk",
+    "One green leaf",
+    "Figure 1.11 printed or projected"
+  ],
+  "warmup": {
+    "minutes": 5,
+    "items": [
+      {
+        "q": "Name the green pigment inside a leaf that traps light.",
+        "a": "chlorophyll",
+        "kind": "prerequisite"
+      },
+      {
+        "q": "Which gas do humans breathe out, and which do we breathe in?",
+        "a": "out: carbon dioxide; in: oxygen",
+        "kind": "prerequisite"
+      },
+      {
+        "q": "Earlier in this chapter you met the xylem. What does it carry, and from where?",
+        "a": "water, upward from the roots to the leaves",
+        "kind": "spaced",
+        "from": "§1.4, p.8"
+      }
+    ]
+  },
+  "objectives": [
+    "Explain how a green leaf makes glucose from carbon dioxide and water, and releases oxygen — and label the inputs and outputs on a leaf diagram."
+  ],
+  "sections": [
+    {
+      "id": "introduction",
+      "minutes": 5,
+      "blocks": [
+        {
+          "type": "ask",
+          "hook": true,
+          "closed_by": "answer-priestley",
+          "question": "A candle sealed in a glass jar goes out within a minute. Priestley sealed a living mint plant in with it — and the candle relit. What did the plant put back into the air?",
+          "look_for": "oxygen. Accept “air” or “gas”, then push for the name."
+        },
+        {
+          "type": "watch_out",
+          "text": "Do not confirm any guess yet. Let three or four answers stand on the board, unsorted."
+        }
+      ]
+    },
+    {
+      "id": "development",
+      "minutes": 10,
+      "blocks": [
+        {
+          "type": "split",
+          "ratio": 0.42,
+          "left": [
+            {
+              "type": "textbook_figure",
+              "ref": "grade_7_general_science/p011/f1",
+              "src": "06_Logs & Misc/Reports/Production/Lesson Plan Enhancement - Jan 2026/canva-build/diagram-assets/cropped/fig_1_11_leaf.jpg",
+              "figure_label": "Figure 1.11",
+              "page": "11",
+              "caption": "Point along it as you name each arrow.",
+              "legend": "Sun → light energy · air → carbon dioxide · soil → water · leaf → glucose + oxygen."
+            }
+          ],
+          "right": [
+            {
+              "type": "key_points",
+              "items": [
+                "A leaf makes its own food; it takes none from the soil.",
+                "Carbon dioxide enters through the stomata; water arrives through the xylem.",
+                "Chlorophyll inside the chloroplasts traps the Sun's light energy.",
+                "The leaf makes glucose for the whole plant and releases the spare oxygen."
+              ]
+            },
+            {
+              "type": "watch_out",
+              "misconception": true,
+              "text": "Pupils say plants breathe in oxygen like us. In light a leaf takes **in** carbon dioxide and gives **out** oxygen — the opposite way round."
+            }
+          ]
+        },
+        {
+          "type": "chem",
+          "tex": "6CO2 + 6H2O ->[light][chlorophyll] C6H12O6 + 6O2",
+          "caption": "Write it left to right, saying each term aloud."
+        },
+        {
+          "type": "keywords",
+          "items": [
+            {
+              "word": "photosynthesis",
+              "meaning": "making food from light"
+            },
+            {
+              "word": "chlorophyll",
+              "meaning": "the green light-trap"
+            },
+            {
+              "word": "chloroplast",
+              "meaning": "where chlorophyll sits"
+            },
+            {
+              "word": "stomata",
+              "meaning": "gas holes in the leaf"
+            },
+            {
+              "word": "glucose",
+              "meaning": "the sugar the leaf makes"
+            },
+            {
+              "word": "xylem",
+              "meaning": "the tube carrying water up"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "activity",
+      "minutes": 15,
+      "blocks": [
+        {
+          "type": "worked_example",
+          "title": "Worked example — I do",
+          "prompt": "Trace one water molecule from the soil into a sugar.",
+          "steps": [
+            "Roots absorb it from the soil; the xylem carries it up to the leaf.",
+            "Light falls on the leaf and the chlorophyll traps the energy.",
+            "The leaf joins the water with carbon dioxide from the stomata.",
+            "Glucose travels to the plant; the spare oxygen leaves."
+          ],
+          "result": "Water in from the soil; sugar and oxygen out."
+        },
+        {
+          "type": "faded_example",
+          "title": "Faded example — we do",
+          "prompt": "Now trace a carbon dioxide molecule together. Two steps are blank.",
+          "steps": [
+            "It enters the leaf through the ______.",
+            "It is joined with water using energy trapped by ______.",
+            "It leaves the leaf as part of glucose."
+          ],
+          "answer": "stomata; chlorophyll"
+        },
+        {
+          "type": "practice",
+          "mode": "independent",
+          "title": "Independent practice — you do",
+          "items": [
+            {
+              "q": "Plants make their own food by the process of ______.",
+              "a": "photosynthesis",
+              "level": "K"
+            },
+            {
+              "q": "The green pigment that absorbs light energy is ______.",
+              "a": "chlorophyll",
+              "level": "K"
+            },
+            {
+              "q": "Carbon dioxide enters the leaf through the ______.",
+              "a": "stomata",
+              "level": "K"
+            },
+            {
+              "q": "Name both products of photosynthesis.",
+              "a": "glucose and oxygen",
+              "level": "K"
+            },
+            {
+              "q": "Where does the water come from, and how does it reach the leaf?",
+              "a": "the soil, up through the roots and xylem",
+              "level": "U"
+            },
+            {
+              "q": "Why does a plant kept in a dark cupboard stop making food?",
+              "a": "no light, so chlorophyll traps no energy",
+              "tier": "extension",
+              "level": "A"
+            }
+          ]
+        },
+        {
+          "type": "support_extension",
+          "support": "Give the labelled Figure 1.11; pupils copy the four labels onto a blank leaf.",
+          "extension": "What happens to photosynthesis at night — and does the plant still need oxygen?"
+        }
+      ]
+    },
+    {
+      "id": "conclusion",
+      "minutes": 3,
+      "blocks": [
+        {
+          "type": "ask",
+          "question": "State the gas a green leaf takes in during photosynthesis, and the gas it gives out.",
+          "look_for": "both gases named, and in the right direction. Full mark scheme on the support page."
+        },
+        {
+          "type": "practice",
+          "title": "Exit ticket",
+          "items": [
+            {
+              "q": "Gas taken in?",
+              "a": "carbon dioxide"
+            },
+            {
+              "q": "Gas given out?",
+              "a": "oxygen"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "id": "answer-priestley",
+          "text": "**Close the hook:** the plant put **oxygen** back — that is what relit Priestley's candle. **Re-teach rule:** if more than half reverse the gases, redraw the arrows tomorrow before §1.8."
+        }
+      ]
+    },
+    {
+      "id": "homework",
+      "minutes": 2,
+      "blocks": [
+        {
+          "type": "key_points",
+          "title": "",
+          "items": [
+            "Draw the leaf and label four arrows: sunlight, carbon dioxide, water in, oxygen out.",
+            "Write the word equation from memory, then check it against your book.",
+            "From §1.4: name the tube that carries water up the stem."
+          ]
+        }
+      ]
+    }
+  ],
+  "page2": {
+    "board_final": {
+      "draw_order": [
+        "Write the word equation across the top; box glucose and oxygen.",
+        "Draw one large leaf below it, centred, big enough for six labels.",
+        "Add three arrows in — Sun, air, soil — naming each one as you draw it.",
+        "Add two arrows out — glucose to the plant, oxygen into the air."
+      ],
+      "caption": "The board as it should look at the end of the period."
+    },
+    "model_answers": [
+      {
+        "label": "Worked example",
+        "answer": "Soil → roots → xylem → leaf; joined with $CO_2$ using trapped light; leaves as glucose and oxygen."
+      },
+      {
+        "label": "Faded example",
+        "answer": "Blank 1 = stomata. Blank 2 = chlorophyll."
+      },
+      {
+        "label": "Practice 1–4",
+        "answer": "photosynthesis; chlorophyll; stomata; glucose and oxygen."
+      },
+      {
+        "label": "Practice 5",
+        "answer": "From the soil, up through the roots and the xylem."
+      },
+      {
+        "label": "Practice 6",
+        "answer": "No light, so the chlorophyll traps no energy and no glucose is made.",
+        "marking_note": "Needs the reason, not just “no sunlight”."
+      },
+      {
+        "label": "Extension",
+        "answer": "Photosynthesis stops at night; the plant still respires and still needs oxygen."
+      }
+    ],
+    "mistakes": [
+      {
+        "pupil_says": "Plants take in oxygen and give out carbon dioxide, like us.",
+        "you_ask": "Priestley's candle relit. Which gas must the plant have added to the jar?"
+      },
+      {
+        "pupil_says": "The plant gets its food from the soil.",
+        "you_ask": "If food came from the soil, why does a plant in a dark cupboard still die?"
+      },
+      {
+        "pupil_says": "Chlorophyll is the food the plant makes.",
+        "you_ask": "Which word in our equation is the food, and which one traps the light?"
+      }
+    ],
+    "differentiation": {
+      "stuck": "Give the four labels pre-listed; pupils only place them on the leaf.",
+      "barrier": "If drawing is the barrier, hand out a printed leaf outline to label rather than draw.",
+      "early": "Ask why a sealed jar of pondweed left in sunlight fills with bubbles."
+    },
+    "exam_bank": {
+      "mcq": [
+        {
+          "q": "Which gas does a green leaf take in during photosynthesis?",
+          "options": [
+            "Oxygen",
+            "Carbon dioxide",
+            "Nitrogen",
+            "Hydrogen"
+          ],
+          "answer": "B",
+          "distractor_codes": [
+            "confuses respiration with photosynthesis",
+            "recites air's commonest gas",
+            "guesses from water's formula"
+          ]
+        },
+        {
+          "q": "Where in the leaf is light energy trapped?",
+          "options": [
+            "Xylem",
+            "Stomata",
+            "Chlorophyll in the chloroplasts",
+            "Roots"
+          ],
+          "answer": "C",
+          "distractor_codes": [
+            "names the transport tube",
+            "names the gas hole",
+            "places the process outside the leaf"
+          ]
+        },
+        {
+          "q": "A plant is kept in complete darkness for a week. Why does it stop making food?",
+          "options": [
+            "It runs out of water",
+            "No light is trapped, so no glucose is made",
+            "The stomata close permanently",
+            "It has no chlorophyll left"
+          ],
+          "answer": "B",
+          "distractor_codes": [
+            "swaps the limiting input",
+            "invents a mechanism",
+            "confuses pigment loss with light loss"
+          ]
+        }
+      ],
+      "srq": {
+        "q": "State the gas a green leaf takes in during photosynthesis and the gas it gives out.",
+        "marks": 2,
+        "mark_scheme": [
+          "1 mark: carbon dioxide taken in.",
+          "1 mark: oxygen given out.",
+          "No mark if the two are reversed, even when both gases are named."
+        ]
+      },
+      "how_marked": "Direction carries the mark. Naming both gases the wrong way round scores zero."
+    },
+    "homework_key": [
+      {
+        "item": "Labelled leaf",
+        "answer": "Sunlight from above, carbon dioxide from the air, water from the soil; oxygen out."
+      },
+      {
+        "item": "Word equation",
+        "answer": "carbon dioxide + water → (light, chlorophyll) → glucose + oxygen."
+      },
+      {
+        "item": "§1.4 recall",
+        "answer": "The xylem, starting at the roots."
+      }
+    ],
+    "next_period": "§1.8 Respiration — the reverse direction, and why a plant needs both.",
+    "not_going": "Do not teach the light and dark reactions, or ATP. That is grade 9 and it buries the direction rule.",
+    "coaching_lookfor": "Does she hold the guesses unconfirmed on the board before revealing, and does every pupil write the equation themselves?"
+  },
+  "one_screen": "Today: a green leaf makes its own food. By the end pupils name both gases in the right direction.\n\nWarm-up: which gas do we breathe out? → carbon dioxide.\n\nWorked example — one water molecule into a sugar: (1) roots absorb it and the xylem carries it to the leaf; (2) light falls on the leaf and the chlorophyll traps the energy; (3) the leaf joins the water with carbon dioxide from the stomata; (4) glucose goes to the plant and the spare oxygen leaves.\n\nPractice, answers alongside: plants make food by ______ → photosynthesis. The green pigment is ______ → chlorophyll. Carbon dioxide enters through the ______ → stomata. Name both products → glucose and oxygen.\n\nWatch out: pupils say plants breathe in oxygen like us. In light it is the opposite way round — carbon dioxide in, oxygen out.\n\nExit question: name the gas a leaf takes in, and the gas it gives out. If more than half reverse them, redraw the arrows tomorrow before §1.8.\n\nThe board plan, the full answer key and the exam questions are in the attached PDF.",
+  "revisions": [],
+  "notes": {
+    "supplied": [
+      "Priestley 1771 mint-jar experiment — the book does not mention it (p.11 checked); used as the provocation."
+    ],
+    "defects": [],
+    "gaps": [
+      "§1.7 prints no exercise answer key, so every answer here is supplied."
+    ]
+  },
+  "needs_human_review": false
+}

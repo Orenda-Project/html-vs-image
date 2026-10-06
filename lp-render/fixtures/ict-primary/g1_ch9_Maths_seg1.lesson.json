@@ -1,0 +1,395 @@
+{
+  "kind": "ict-primary-lesson",
+  "version": 1,
+  "lesson_id": "g1_ch9_Maths_seg1",
+  "source": {
+    "from": "NIETE approved lesson plan g1_ch9_Maths_seg1.pdf (lp_html v8.1), shared 2026-10-01",
+    "method": "transcribed field by field from the approved PDF's own text; nothing reworded",
+    "presentation_fixes": [
+      "teacher lines the reference split at 'p.' are joined back ('on p.' + '222.' -> 'on p.222.')",
+      "the leaked key 'model_solution:' is not printed; those answers are marked as sample answers",
+      "the board's text-drawn clock is given as a clock drawing (9 o'clock, 09:00)"
+    ]
+  },
+  "lang": "en",
+  "grade": 1,
+  "subject": "Math",
+  "chapter": "Ch.9 · Tick-Tock Time Travel",
+  "pages": "220",
+  "period_minutes": 40,
+  "title": "Reading Time on Analogue & Digital Clocks (introduction)",
+  "hero_visual": {
+    "type": "clock",
+    "time": "9:00"
+  },
+  "day": {
+    "n": 1,
+    "of": 11
+  },
+  "journey": "Starting fresh today",
+  "coming_up": "Telling Time Maze - reading whole-hour clocks",
+  "outcome": {
+    "code": "M-01-TM-01",
+    "text": "When the minute hand is on 12, the short thick hour hand tells the o'clock time. On a digital clock, the first two digits show hours and the last two digits show minutes."
+  },
+  "prepare": [
+    "chalk",
+    "board",
+    "textbook p.220",
+    "textbook p.221",
+    "textbook p.222",
+    "real or teacher-made demo clock face with movable hands",
+    "slates"
+  ],
+  "video": {
+    "title": "Time",
+    "note": "Reads o'clock times from hour/minute hand positions, matching 'read time in hours (o'clock) from analogue clock' exactly."
+  },
+  "keywords": [
+    {
+      "word": "time",
+      "meaning": "What a clock shows."
+    },
+    {
+      "word": "analogue clock",
+      "meaning": "A clock with numbers from 1 to 12 and two hands."
+    },
+    {
+      "word": "digital clock",
+      "meaning": "A clock that shows digits such as 09:00."
+    },
+    {
+      "word": "minute hand",
+      "meaning": "The long and thin hand."
+    },
+    {
+      "word": "hour hand",
+      "meaning": "The short and thick hand."
+    },
+    {
+      "word": "o'clock",
+      "meaning": "The time when the minute hand is on 12."
+    },
+    {
+      "word": "hours",
+      "meaning": "The first two digits on a digital clock."
+    },
+    {
+      "word": "minutes",
+      "meaning": "The last two digits on a digital clock."
+    }
+  ],
+  "board": [
+    {
+      "title": "Analogue clock · Digital clock",
+      "visual": {
+        "type": "clock_pair",
+        "time": "9:00",
+        "digital": "09:00",
+        "hour_label": "short thick hour hand",
+        "minute_label": "long thin minute hand",
+        "digital_label": "Hours | Minutes"
+      },
+      "lines": [
+        "Minute hand on 12 + hour hand on 9 = 9 o'clock = 09:00"
+      ]
+    }
+  ],
+  "stages": [
+    {
+      "id": "opening",
+      "label": "Opening",
+      "letter": "I",
+      "minutes": 4,
+      "blocks": [
+        {
+          "type": "warmup",
+          "items": [
+            {
+              "q": "Complete the day order aloud: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.",
+              "a": "Tuesday, Wednesday, Friday are the missing days in the p.220 order.",
+              "tag": "scaffold for today"
+            },
+            {
+              "q": "Complete the month order aloud: January, February, March, April.",
+              "a": "January and March are the missing months in the p.220 order.",
+              "tag": "prerequisite"
+            },
+            {
+              "q": "Count the clock numbers together from 1 to 12.",
+              "a": "1 to 12 in order.",
+              "tag": "prerequisite"
+            }
+          ]
+        },
+        {
+          "type": "setup",
+          "lines": [
+            "Open textbook p.221.",
+            "Expected answers."
+          ]
+        },
+        {
+          "type": "hook",
+          "text": "Everybody is planning to go to the fair. Bunty says, ‘Babloo we have to be punctual if we want to attend all these shows.’ Look at Bunty’s wall clock and the digital clock on the table. Both show 9 o'clock: the digital clock reads 09:00. Today we will learn how the two clocks tell the same time. Where do YOU see time in Bunty’s home or at the Fun Fair?",
+          "visual": {
+            "type": "scene",
+            "scene": "bunty_home",
+            "time": "9:00",
+            "digital": "09:00"
+          }
+        },
+        {
+          "type": "read_aloud",
+          "label": "Then read aloud",
+          "lines": [
+            "On Bunty’s wall clock.",
+            "On the digital clock or the Fun Fair poster."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "explanation",
+      "label": "Explanation",
+      "letter": "D",
+      "minutes": 5,
+      "mode": "I DO",
+      "blocks": [
+        {
+          "type": "teacher_models",
+          "instruction": "Use the real or teacher-made demo clock and textbook p.222 to model 9 o'clock. Place the long thin minute hand on 12 and the short thick hour hand on 9. Then point to the p.222 digital clock reading 09:00 and match it to the analogue clock.",
+          "script": [
+            "I am reading the analogue clock on p.222.",
+            "First, I look at the long and thin minute hand.",
+            "It is on 12, so this is an o'clock time.",
+            "Next, I look at the short and thick hour hand.",
+            "It is on 9.",
+            "Therefore, I say and write 9 o'clock.",
+            "Now I check the digital clock.",
+            "The first two digits, 09, show the hours.",
+            "The last two digits, 00, show the minutes.",
+            "So 09:00 means 9 o'clock.",
+            "Both clocks show the same time."
+          ]
+        },
+        {
+          "type": "worked",
+          "steps": [
+            "Textbook p.222 analogue clock:",
+            "Look at the long and thin hand: it is the minute hand.",
+            "Look at the short and thick hand: it is the hour hand.",
+            "The hour hand is on 9.",
+            "Look at the p.222 digital clock: 09:00.",
+            "First two digits: 09 = hours.",
+            "Last two digits: 00 = minutes.",
+            "Write: 09:00 means 9 o'clock.",
+            "Textbook p.222 Puppet Show clock:",
+            "The p.221 Fun Fair poster confirms: PUPPET SHOW 11:00 o'clock."
+          ],
+          "visual": {
+            "type": "clock_pair",
+            "time": "11:00",
+            "digital": "11:00",
+            "caption": "Puppet Show · 11 o'clock"
+          }
+        },
+        {
+          "type": "ask_this",
+          "text": "Listen for an explanation, not only a number: students must name the minute hand on 12 and the hour hand on the hour number for analogue time, or identify the first two and last two digits for digital time."
+        },
+        {
+          "type": "mistakes",
+          "items": [
+            {
+              "you_ask": "Pre-empt hand reversal: explicitly contrast the long thin minute hand with the short thick hour hand on p.222 and physically trace each hand before reading the time."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "we_do",
+      "label": "We Do",
+      "letter": "A",
+      "minutes": 8,
+      "blocks": [
+        {
+          "type": "halfway",
+          "text": "Halfway check · minute 13. By now the class should be starting WE DO."
+        },
+        {
+          "type": "together",
+          "lines": [
+            "Pairs use the Fun Fair poster on p.221. Partner A points and reads an event-time line. Partner B explains the time, then partners swap roles. Use the Puppet Show and Fireworks lines for checking.",
+            "Circulate prompts: “Which hand is long and thin?” “Where is the minute hand?” “Which digits show the hours?” “Read the exact time on the poster.”"
+          ]
+        },
+        {
+          "type": "teacher_models",
+          "instruction": "Read the Puppet Show exercise on p.222 together. Students use one finger to trace the minute hand and one finger to trace the hour hand in the textbook illustration. Complete the three answers orally and on slates. Then conduct a two-minute anxiety-safe fluency drill with the Fun Fair times from p.221: partners take turns pointing to one listed time and saying it; each pair tries to improve its own number of correct readings, without comparison with other pairs.",
+          "script": [
+            "Let us solve the p.222 Puppet Show clock together.",
+            "I see the minute hand pointing to 12.",
+            "Say it with me: the minute hand is on 12.",
+            "Now I see the hour hand pointing to 11.",
+            "Say it with me: the hour hand is on 11.",
+            "Therefore, the clock shows 11 o'clock.",
+            "On p.221, the Fun Fair poster says ‘PUPPET SHOW 11:00 o'clock.’",
+            "The poster and the clock match."
+          ],
+          "visual": {
+            "type": "poster",
+            "title": "FUN FAIR",
+            "items": [
+              {
+                "text": "PUPPET SHOW",
+                "time": "11:00",
+                "icon": "puppet"
+              },
+              {
+                "text": "FIREWORKS",
+                "time": "6:00",
+                "icon": "fireworks"
+              },
+              {
+                "text": "MAGIC SHOW",
+                "time": "12:00",
+                "icon": "magic"
+              }
+            ]
+          }
+        },
+        {
+          "type": "frames",
+          "lines": [
+            "I point to the Puppet Show. The poster says 11:00 o'clock.",
+            "The Puppet Show starts at 11 o'clock. The minute hand is on 12 and the hour hand is on 11."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "you_do",
+      "label": "You Do",
+      "letter": "A",
+      "minutes": 9,
+      "blocks": [
+        {
+          "type": "set_task",
+          "lines": [
+            "Partners use p.221.",
+            "Partner A points to an event and reads its printed time. Partner B says whether it is written as an o'clock time or as a digital time, then writes the matching form on a slate when shown in the lesson: 9 o'clock and 09:00; Puppet Show 11:00 o'clock and 11 o'clock.",
+            "Students then answer the p.221 Adventure Begins questions orally with their partner. Bring the class together to check answers."
+          ],
+          "say": "Partner A, point to one item on the Fun Fair poster and read exactly what it says. Partner B, explain the time. For Bunty’s home, both clocks show 9 o'clock and 09:00. For the Puppet Show, the poster says 11:00 o'clock and the clock on p.222 shows 11 o'clock. Listen carefully to your partner, then help each other correct the answer."
+        },
+        {
+          "type": "alone",
+          "items": [
+            {
+              "q": "Complete the day order: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.",
+              "ref": "p.220",
+              "answer": "The missing days are Tuesday, Wednesday, and Friday."
+            },
+            {
+              "q": "Complete the month order: January, February, March, April.",
+              "ref": "p.220",
+              "answer": "The missing months are January and March."
+            },
+            {
+              "q": "What day is it today? Circle it from Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.",
+              "ref": "p.220",
+              "answer": "Circle the name of the actual day on which the student completes the page.",
+              "sample": true
+            },
+            {
+              "q": "Which one is your birthday month? Circle it from January to December.",
+              "ref": "p.220",
+              "answer": "Circle the month in which the student's birthday occurs.",
+              "sample": true
+            },
+            {
+              "q": "What time is it now at Bunty's home?",
+              "ref": "p.221",
+              "answer": "The wall clock has its minute hand on 12 and hour hand on 9, and the digital clock reads 09:00. The time is 9:00, or 9 o'clock.",
+              "visual": {
+                "type": "clock",
+                "time": "9:00"
+              }
+            },
+            {
+              "q": "What time does the Puppet Show start?",
+              "ref": "p.221",
+              "answer": "The Fun Fair poster says PUPPET SHOW 11:00 o'clock. The Puppet Show starts at 11:00 o'clock."
+            },
+            {
+              "q": "What kind of competitions are there at the fair?",
+              "ref": "p.221",
+              "answer": "The competitions are Painting Competition and Sack Race."
+            },
+            {
+              "q": "What time will they watch the fireworks?",
+              "ref": "p.221",
+              "answer": "The Fun Fair poster says FIREWORKS 6:00 o'clock. They will watch the fireworks at 6:00 o'clock.",
+              "visual": {
+                "type": "clock",
+                "time": "6:00"
+              }
+            },
+            {
+              "q": "The Puppet Show clock has its minute hand on 12 and its hour hand on 11. Complete the time.",
+              "ref": "p.222",
+              "answer": "The minute hand is on 12. The hour hand is on 11. The clock shows 11 o'clock.",
+              "visual": {
+                "type": "clock",
+                "time": "11:00"
+              }
+            }
+          ]
+        },
+        {
+          "type": "differentiation",
+          "stuck": "Named strategy: Hand-First Concrete Routine. Give the student the demo clock and use the same three spoken steps each time: “Find the long thin minute hand; put it on 12; find the short thick hour hand.” Then point to the hour number and say the complete time together before the student writes it.",
+          "early": "Ask students to compare the two p.222 forms and explain: “9 o'clock” and “09:00” show the same time because the analogue hour hand is on 9 while the digital clock's first two digits are 09 and its last two digits are 00."
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "label": "Check",
+      "letter": "C",
+      "blocks": [
+        {
+          "type": "exit",
+          "items": [
+            {
+              "q": "NEW-context question: Use the p.221 Fun Fair line “MAGIC SHOW 12:00 o'clock.” On a slate, write “12 o'clock” and “12:00.” Then explain where the minute hand and hour hand would be on an analogue clock at 12 o'clock.",
+              "criterion": "Correct if the student writes 12 o'clock and 12:00, and explains that the minute hand is on 12 and the hour hand is on 12.",
+              "visual": {
+                "type": "clock",
+                "time": "12:00"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "homework",
+      "label": "Homework",
+      "letter": "H",
+      "blocks": [
+        {
+          "type": "homework",
+          "lines": [
+            "Use the Fun Fair poster on textbook p.221. Read aloud: “Puppet Show 11:00 o'clock” and “Fireworks 6:00 o'clock.” Then write on a slate: “11 o'clock” and “6 o'clock.”"
+          ]
+        }
+      ]
+    }
+  ],
+  "coaching": {
+    "ask_yourself": "Check whether students treated the long thin hand as the minute hand and the short thick hand as the hour hand. Record which students can explain 9 o'clock and 11 o'clock with the concrete clock and which need the Hand-First Concrete Routine again."
+  }
+}

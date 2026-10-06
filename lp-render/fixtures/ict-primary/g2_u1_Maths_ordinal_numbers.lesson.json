@@ -1,0 +1,111 @@
+{
+  "kind": "ict-primary-lesson",
+  "version": 1,
+  "lesson_id": "g2_u1_Maths_ordinal_numbers",
+  "source": {
+    "from": "Punjab Textbook Board, Mathematics Grade 2 (Single National Curriculum 2020), Unit 1 'Whole Numbers', 'Ordinal Numbers' and Exercise 1, pp. 2–3 — public textbook PDF",
+    "method": "written for design testing by the Design lane from the textbook pages, in the approved lesson-plan structure. The textbook's own words (the honey bees, the ordinal words first to twentieth, 'Ordinal numbers are used to represent the position of objects', Exercise 1, the teaching point about a queue) are kept word for word; the teaching steps around them are written for this test. Not a NIETE lesson.",
+    "presentation_fixes": []
+  },
+  "lang": "en",
+  "grade": 2,
+  "subject": "Math",
+  "chapter": "Unit 1 · Whole Numbers",
+  "pages": "2-3",
+  "period_minutes": 40,
+  "title": "Ordinal Numbers: first to twentieth",
+  "hero_visual": { "type": "scene", "scene": "bee_line" },
+  "day": { "n": 1, "of": 12 },
+  "journey": "Starting fresh today",
+  "coming_up": "Counting up to 100 in words",
+  "outcome": {
+    "code": "",
+    "text": "Students write ordinal numbers from first to twentieth, and use them to tell the position of objects: ordinal numbers are used to represent the position of objects."
+  },
+  "prepare": ["chalk", "board", "textbook p.2", "textbook p.3", "slates", "five volunteers for a queue"],
+  "keywords": [
+    { "word": "ordinal number", "meaning": "a number that tells the position of something: first, second, third …" },
+    { "word": "position", "meaning": "the place of something in a line or in an order" },
+    { "word": "queue", "meaning": "a line of people waiting one behind the other" },
+    { "word": "1st, 2nd, 3rd", "meaning": "first, second, third: the endings are st, nd and rd" },
+    { "word": "4th to 20th", "meaning": "fourth to twentieth: most ordinal numbers end in th" }
+  ],
+  "board": [
+    { "title": "Ordinal numbers",
+      "visual": { "type": "ordinal_row", "items": [ { "ord": "1st", "word": "first" }, { "ord": "2nd", "word": "second" }, { "ord": "3rd", "word": "third" }, { "ord": "4th", "word": "fourth" }, { "ord": "5th", "word": "fifth" } ] },
+      "lines": ["Ordinal numbers are used to represent the position of objects."] },
+    { "title": "Sixth to twentieth",
+      "lines": ["6th sixth · 7th seventh · 8th eighth · 9th ninth · 10th tenth", "11th eleventh · 12th twelfth · 13th thirteenth · 14th fourteenth · 15th fifteenth", "16th sixteenth · 17th seventeenth · 18th eighteenth · 19th nineteenth · 20th twentieth"] }
+  ],
+  "stages": [
+    {
+      "id": "opening", "label": "Opening", "letter": "I", "minutes": 4,
+      "blocks": [
+        { "type": "warmup", "items": [
+          { "q": "Count together from 1 to 20.", "a": "1, 2, 3 … 20 in order.", "tag": "prerequisite" },
+          { "q": "Which number comes just after 9? Just after 19?", "a": "10; 20.", "tag": "prerequisite" },
+          { "q": "Who came to school first today — you or your friend?", "a": "Students answer with 'first' or 'after'.", "tag": "scaffold for today" }
+        ] },
+        { "type": "hook", "text": "Let us look at the honey bees and their positions. On page 2, twenty bees fly in a line towards their hive. The bee nearest the hive is first, the next one is second, then third, fourth, fifth … all the way to the twentieth bee. Which bee would you like to be?",
+          "visual": { "type": "scene", "scene": "bee_line" } },
+        { "type": "read_aloud", "label": "Then read aloud", "lines": ["First, second, third, fourth, fifth.", "Ordinal numbers are used to represent the position of objects."] }
+      ]
+    },
+    {
+      "id": "explanation", "label": "Explanation", "letter": "D", "minutes": 6, "mode": "I DO",
+      "blocks": [
+        { "type": "teacher_models", "instruction": "Ask five students to stand in a queue at the front (the textbook's teaching point). The teacher walks along the queue and names each position, writing 1st to 5th on the board under each child.",
+          "script": ["Look at our queue. Amna is at the front, so Amna is first.", "I write 1 and a small st: 1st — first.", "The next child is second: 2nd. The next is third: 3rd.", "After that, most numbers just add th: 4th fourth, 5th fifth.", "A cardinal number tells how many: there are 5 children.", "An ordinal number tells the position: Hassan is 5th, the fifth child."],
+          "visual": { "type": "ordinal_row", "object": "child", "items": [ { "ord": "1st" }, { "ord": "2nd" }, { "ord": "3rd" }, { "ord": "4th" }, { "ord": "5th" } ] } },
+        { "type": "worked", "steps": ["1 → 1st → first", "2 → 2nd → second", "3 → 3rd → third", "4 → 4th → fourth", "5 → 5th → fifth", "12 → 12th → twelfth", "20 → 20th → twentieth"] },
+        { "type": "ask_this", "text": "Ask: 'How many children are in the queue? What is the position of the last child?' Listen for the difference: 5 children (how many) and the 5th child (position)." },
+        { "type": "mistakes", "items": [ { "you_ask": "Pre-empt 'oneth, twoth, threeth': point to the board and ask 'Which three positions have their own endings?' (1st first, 2nd second, 3rd third). Also check the spellings fifth and twelfth (not fiveth, twelveth)." } ] }
+      ]
+    },
+    {
+      "id": "we_do", "label": "We Do", "letter": "A", "minutes": 9,
+      "blocks": [
+        { "type": "halfway", "text": "Halfway check · minute 13. By now the class should be starting WE DO." },
+        { "type": "together", "lines": ["Read the bees on page 2 together: the teacher points, the class says the ordinal word (first … twentieth).", "Circulate asking: 'Which bee is 7th?' and 'What is the position of this bee?'"] },
+        { "type": "teacher_models", "instruction": "Play 'Who is …?': ten students stand in a queue. The teacher calls a position and the class points and answers in a full sentence.",
+          "lead": ["Who is 3rd in the queue?"],
+          "script": ["(class: 'Sana is third.')", "Who is 10th?", "(class: 'Usman is tenth.')", "What is the position of Ali?", "(class: 'Ali is sixth.')"] },
+        { "type": "frames", "lines": ["___ is ___ in the queue.", "The ___ bee is near the hive."] }
+      ]
+    },
+    {
+      "id": "you_do", "label": "You Do", "letter": "A", "minutes": 10,
+      "blocks": [
+        { "type": "set_task", "lines": ["Exercise 1 (page 3): write the position of the first 20 English alphabet. A, B, C, J, O and T are done for you."],
+          "say": "Look at the cars on the road. A is 1st, B is 2nd, C is 3rd. Write the position of every other letter on your slate." },
+        { "type": "alone", "items": [
+          { "q": "Write the position of the letters on the road (Exercise 1).", "answer": "D 4th, E 5th, F 6th, G 7th, H 8th, I 9th, K 11th, L 12th, M 13th, N 14th, P 16th, Q 17th, R 18th, S 19th.",
+            "visual": { "type": "car_road", "letters": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"], "show": { "A": "1st", "B": "2nd", "C": "3rd", "J": "10th", "O": "15th", "T": "20th" } } },
+          { "q": "What is the position of the letter H? Write it in words.", "answer": "8th — eighth." },
+          { "q": "Which letter is twelfth?", "answer": "L." },
+          { "q": "Write 2nd, 3rd and 20th in words.", "answer": "second, third, twentieth." }
+        ] },
+        { "type": "differentiation",
+          "stuck": "Count-and-Touch strategy: the student touches each car from A, saying the ordinal word aloud (first, second, third …) until the letter is reached, then writes it with the ending shown on the board (st, nd, rd, th).",
+          "early": "Students who finish early write the positions of the next five letters, U to Y (21st to 25th), and check with a partner which ones end in st or nd." }
+      ]
+    },
+    {
+      "id": "check", "label": "Check", "letter": "C",
+      "blocks": [
+        { "type": "exit", "items": [ { "q": "New context: In a race, Ali came 1st, Sara came 2nd and Bilal came 3rd. Write their positions in words.",
+          "criterion": "Correct if the student writes first, second and third, spelled correctly, each next to the right name.",
+          "visual": { "type": "podium", "places": [ { "place": 1, "name": "Ali" }, { "place": 2, "name": "Sara", "hair": "long" }, { "place": 3, "name": "Bilal" } ] } } ] }
+      ]
+    },
+    {
+      "id": "homework", "label": "Homework", "letter": "H",
+      "blocks": [
+        { "type": "homework", "lines": ["At home, put five things in a line (shoes, cups or books). Write their positions in your notebook: 1st first, 2nd second, 3rd third, 4th fourth, 5th fifth."] }
+      ]
+    }
+  ],
+  "coaching": {
+    "ask_yourself": "Listen for students who mix 'how many' with 'which position'. Note who still says 'twoth' or 'threeth', and give them the Count-and-Touch strategy with the cars again tomorrow."
+  }
+}

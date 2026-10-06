@@ -13,6 +13,9 @@ const { renderMath, richText, katexCss, cleanHeading } = require('../math/math')
 // see cfText for why arithmetic is not special-cased.
 const lbl = (v) => esc(cleanHeading(v == null ? '' : v));
 
+// Class names a producer asked for, reduced to characters a class may safely carry.
+const safeCls = (v) => String(v).toLowerCase().replace(/[^a-z0-9_\- ]/g, '').replace(/\s+/g, ' ').trim();
+
 const ALPHA = 'abcdefghijklmnopqrstuvwxyz';
 const mark = (kind, i) => (kind === 'alpha' ? ALPHA[i] + ')' : kind === 'num' ? String(i + 1) : '•');
 
@@ -162,6 +165,18 @@ function renderBody(section, accent, images) {
     }
     case 'fields':
       return `<div class="d-fields">${(section.items || []).map((f) => `<div class="d-field"><b>${esc(cleanHeading(f.label))}</b>${esc(f.value || '')}</div>`).join('')}</div>`;
+    case 'split': {
+      // TWO COLUMNS INSIDE ONE CARD — a figure beside the points it illustrates. Each side is
+      // a list of ordinary bodies drawn by this same function. It is one card and not two
+      // side-by-side sections because the PDF composer breaks pages only at card edges: two
+      // sections of different heights would give it a cut point through the taller one.
+      const r = Number(section.ratio) > 0 && Number(section.ratio) < 1 ? Number(section.ratio) : 0.5;
+      const col = (list) => (list || []).map((sub) => (sub
+        ? `<div class="d-sub${sub.cls ? ` ${safeCls(sub.cls)}` : ''}">${renderBody({ engine: section.engine, ...sub }, accent, images)}</div>`
+        : '')).join('');
+      return `<div class="d-split" style="display:grid;grid-template-columns:minmax(0,${r}fr) minmax(0,${+(1 - r).toFixed(3)}fr);gap:14px;align-items:start">`
+        + `<div class="d-split-l">${col(section.left)}</div><div class="d-split-r">${col(section.right)}</div></div>`;
+    }
     case 'images': {
       const cards = (section.imageIds || [])
         .map((id) => images[id])
@@ -1770,6 +1785,14 @@ function renderDecorativeLesson(content, images = {}, cast = {}) {
   const referenced = new Set();
   if (meta.banner) referenced.add(meta.banner); // shown in the hero, not as a card
   for (const s of (content.sections || [])) if (s && s.type === 'images' && Array.isArray(s.imageIds)) s.imageIds.forEach((id) => referenced.add(id));
+  // …and so are the images inside a split card's columns.
+  for (const s of (content.sections || [])) {
+    if (s && s.type === 'split') {
+      for (const sub of [...(s.left || []), ...(s.right || [])]) {
+        if (sub && sub.type === 'images' && Array.isArray(sub.imageIds)) sub.imageIds.forEach((id) => referenced.add(id));
+      }
+    }
+  }
   for (const s of (content.sections || [])) if (s && s.image) referenced.add(s.image); // in-panel figures (see below)
   // …and an illustration placed in an exercise grid's spare slot is referenced too. Without
   // this it counted as leftover, so the same picture was drawn twice: once in the grid cell
@@ -1799,7 +1822,10 @@ function renderDecorativeLesson(content, images = {}, cast = {}) {
     const accent = section.type === 'fields' ? '--c-slate' : accentFor(i);
     // A section's id becomes a class (sec-<id>) so region packs can style specific
     // template roles order-independently. Additive: nothing targets these by default.
-    const idCls = section.id ? ` sec-${String(section.id).toLowerCase().replace(/[^a-z0-9_-]/g, '')}` : '';
+    // `cls` is the same hook for a producer that knows more than one role per section (the
+    // ICT adapter tags every card with its stage AND its block type). Nothing else sets it.
+    const idCls = (section.id ? ` sec-${String(section.id).toLowerCase().replace(/[^a-z0-9_-]/g, '')}` : '')
+      + (section.cls ? ` ${safeCls(section.cls)}` : '');
     let body = renderBody(section, accent, images);
     // SUB-ELEMENTS OF THIS CARD, not cards of their own. «دعم» and «تحد» are the
     // differentiation notes for the activity above them; as full-width cards they tripled

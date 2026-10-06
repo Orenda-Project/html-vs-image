@@ -1,0 +1,482 @@
+{
+ "lesson_id": "PK_G7_GSCI_CH1_PHOTOSYNTHESIS",
+ "schema_version": "2.0",
+ "lint_profile": "full",
+ "provenance": {
+  "book_stem": "grade_7_general_science",
+  "grade": 7,
+  "subject": "General Science",
+  "medium": "en",
+  "chapter": "Ch. 1 · Plant System",
+  "topic": "Photosynthesis — how a leaf makes food",
+  "printed_pages": "11-12",
+  "pdf_pages": "11-12",
+  "page_offset": 0,
+  "publisher": "NBF",
+  "curriculum": "National Curriculum 2022",
+  "source_quality_flags": [
+   "Activity 1.1's answer key is printed as a note appended after the activity, not beside the numbered questions — keep the (a)/(b)/(c) mapping when quoting it",
+   "no printed learning outcome exists for §1.7 Photosynthesis itself; the only outcome-shaped list on these pages belongs to §1.8"
+  ]
+ },
+ "notes": {
+  "supplied": [
+   "the exact earlier page/section where xylem (water transport) was first taught is not in this extract — warmup item 3 and homework item 3 cite it only as 'earlier in Ch.1'; the fact itself is grounded in p.11's own sentence 'water comes from xylem to the leaf cells'",
+   "MCQ distractor rationale (why each wrong option is chosen) is authored classroom diagnosis, not printed in the book — the book prints no MCQs for this topic",
+   "the coaching-corner look-for and the differentiation notes are authored teaching practice, not textbook content"
+  ],
+  "defects": [
+   "no printed SLO/learning outcome exists for §1.7 Photosynthesis; the p.12 list quoted into slo.text_verbatim belongs to §1.8 (leaf adaptations) but names the chloroplast, which is this lesson's 'site' content, so it is used as the closest printed outcome",
+   "the book's word-equation figure and Figure 1.11 both box 'glucose + oxygen' together without distinguishing that oxygen leaves immediately while glucose is transported — this lesson's board diagram separates the two outputs for clarity"
+  ],
+  "gaps": [
+   "sections 1.1–1.6 of this chapter (where xylem/water transport was presumably introduced) were not included in the page-truth given to this lesson",
+   "no FBISE-style question bank exists for Grade 7 General Science; the exam bank below is an authored exam-style shape only, per the Grade 6–8 no-board gate"
+  ]
+ },
+ "needs_human_review": false,
+ "human_review_reason": null,
+ "slo": {
+  "code": null,
+  "text_verbatim": "Large number of chloroplasts in photosynthetic cells",
+  "source_page": "12",
+  "cognitive_level": "U",
+  "assessment_status": "Formative",
+  "command_word": "explain",
+  "success_criterion": "By the end you can label the inputs, outputs and site (chloroplast) of photosynthesis, and explain why photosynthetic cells contain large numbers of chloroplasts."
+ },
+ "lp_type": "GEN-6-8",
+ "period_minutes": 40,
+ "board_weight": null,
+ "materials": [
+  "board marker",
+  "textbook p.11-12 (Figure 1.11)",
+  "notebook or scrap paper for quick leaf sketches"
+ ],
+ "warmup": {
+  "minutes": 5,
+  "items": [
+   {
+    "q": "Why did cobalt-chloride paper turn pink (Activity 1.1)?",
+    "a": "Absorbed water vapour.",
+    "kind": "prerequisite"
+   },
+   {
+    "q": "Which surface changed first?",
+    "a": "Lower surface, more stomata, faster transpiration.",
+    "kind": "prerequisite"
+   },
+   {
+    "q": "What does xylem carry?",
+    "a": "Water, from roots.",
+    "kind": "spaced",
+    "from": "Ch.1, earlier section on water transport (page not shown in this extract)"
+   }
+  ],
+  "layout": "half"
+ },
+ "objectives": [
+  "I can name photosynthesis's inputs and outputs.",
+  "I can say where photosynthesis happens.",
+  "I can explain why life depends on it."
+ ],
+ "sections": [
+  {
+   "id": "introduction",
+   "minutes": 5,
+   "blocks": [
+    {
+     "type": "ask",
+     "question": "Cobalt-chloride paper turned pink: water left the leaf. Where's its food from?",
+     "look_for": "Guesses: sun, air, water.",
+     "hook": true,
+     "closed_by": "hook_answer"
+    },
+    {
+     "type": "say",
+     "text": "Today: leaf inputs, outputs, and location."
+    },
+    {
+     "type": "watch_out",
+     "text": "Don't correct 'plants eat soil' yet.",
+     "misconception": false
+    },
+    {
+     "type": "board",
+     "text": "Leaf: CO2, water, sunlight in; glucose + oxygen out."
+    }
+   ],
+   "layout": "half"
+  },
+  {
+   "id": "development",
+   "minutes": 10,
+   "blocks": [
+    {
+     "type": "key_points",
+     "items": [
+      "Photosynthesis: plant makes its own food.",
+      "Needs CO2, water, light.",
+      "Produces glucose, oxygen.",
+      "Chlorophyll absorbs light energy.",
+      "Glucose feeds plant; O2 exits via stomata."
+     ]
+    },
+    {
+     "type": "keywords",
+     "items": [
+      {
+       "word": "chlorophyll",
+       "meaning": "pigment absorbing light"
+      },
+      {
+       "word": "chloroplast",
+       "meaning": "cell part; process site"
+      },
+      {
+       "word": "stomata",
+       "meaning": "leaf pores, gas exchange"
+      },
+      {
+       "word": "glucose",
+       "meaning": "sugar made"
+      },
+      {
+       "word": "raw material",
+       "meaning": "substance to make something"
+      },
+      {
+       "word": "xylem",
+       "meaning": "carries water to leaf"
+      }
+     ]
+    },
+    {
+     "type": "diagram",
+     "spec": {
+      "type": "leaf_cross_section",
+      "gasArrows": true,
+      "caption": "CO2 in, O2 out; light powers reaction.",
+      "alt": "Leaf cross-section: stomata, gas arrows, chlorophyll cells."
+     }
+    },
+    {
+     "type": "watch_out",
+     "text": "Plants don't only release O2: photosynthesis (day) makes it; respiration (always) uses it.",
+     "misconception": true
+    },
+    {
+     "type": "ask",
+     "question": "If photosynthesis needs light, what powers the plant at night?",
+     "look_for": "Respiration continues using stored glucose and oxygen; photosynthesis pauses without light."
+    }
+   ]
+  },
+  {
+   "id": "activity",
+   "minutes": 15,
+   "blocks": [
+    {
+     "type": "textbook_figure",
+     "ref": "grade_7_general_science/p011/fig_1_11_leaf",
+     "src": "06_Logs & Misc/Reports/Production/Lesson Plan Enhancement - Jan 2026/canva-build/diagram-assets/cropped/fig_1_11_leaf.jpg",
+     "caption": "as in your book, Figure 1.11, p.11",
+     "figure_label": "Figure 1.11",
+     "page": "11",
+     "legend": "Sun · light · carbon dioxide · chlorophyll · water · glucose · oxygen"
+    },
+    {
+     "type": "practice",
+     "title": "Independent: use Figure 1.11, check Page 2.",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "Name 3 raw materials of photosynthesis.",
+       "a": "Carbon dioxide, water and light energy.",
+       "tier": "support"
+      },
+      {
+       "q": "2 products of photosynthesis?",
+       "a": "Glucose and oxygen.",
+       "tier": "support"
+      },
+      {
+       "q": "Where in cell does photosynthesis happen, what pigment?",
+       "a": "In the chloroplast, using chlorophyll.",
+       "tier": "core"
+      },
+      {
+       "q": "Which gas enters stomata, which leaves?",
+       "a": "Carbon dioxide enters; oxygen leaves.",
+       "tier": "core"
+      },
+      {
+       "q": "Activity 1.1: paper turned pink (water vapour). Which raw material?",
+       "a": "Water taken up by roots, used for photosynthesis.",
+       "tier": "core"
+      },
+      {
+       "q": "What happens to glucose made in photosynthesis?",
+       "a": "Carried to all parts for food.",
+       "tier": "support"
+      },
+      {
+       "q": "Why does life on Earth depend on photosynthesis?",
+       "a": "Only source of oxygen; base of food chains.",
+       "tier": "extension"
+      },
+      {
+       "q": "Plant kept dark 2 days. Predict, why?",
+       "a": "Photosynthesis nearly stops; light missing, chlorophyll can't combine CO2 and water.",
+       "tier": "extension"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "conclusion",
+   "minutes": 5,
+   "blocks": [
+    {
+     "type": "paragraph",
+     "id": "hook_answer",
+     "text": "Uses CO2, water, light to make glucose, oxygen."
+    },
+    {
+     "type": "say",
+     "text": "Leaf's inputs and outputs?"
+    },
+    {
+     "type": "key_points",
+     "items": [
+      "States 3 raw materials.",
+      "States both products.",
+      "Names chloroplast/chlorophyll."
+     ]
+    },
+    {
+     "type": "practice",
+     "title": "Exit Ticket",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "1 input, 1 output?",
+       "a": "water (input), oxygen (output).",
+       "tier": "core"
+      },
+      {
+       "q": "Cell part for photosynthesis?",
+       "a": "Chloroplast.",
+       "tier": "core"
+      }
+     ]
+    },
+    {
+     "type": "paragraph",
+     "text": "If most miss, redraw diagram before §1.8."
+    }
+   ]
+  },
+  {
+   "id": "homework",
+   "minutes": 0,
+   "blocks": [
+    {
+     "type": "practice",
+     "title": "Homework",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "Label: in/site/out.",
+       "a": "CO2/\\ce{H2O}/light→chloroplast→glucose/O2.",
+       "tier": "core"
+      },
+      {
+       "q": "Word equation?",
+       "a": "carbon dioxide + water --(light, chlorophyll)--> glucose + oxygen.",
+       "tier": "core"
+      },
+      {
+       "q": "Xylem's role?",
+       "a": "Water: roots→leaf.",
+       "tier": "core"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "page2": {
+  "board_final": {
+   "draw_order": [
+    "1. Leaf outline.",
+    "2. IN: CO2, water.",
+    "3. Down: sunlight.",
+    "4. Ovals: chloroplasts.",
+    "5. OUT: glucose, oxygen."
+   ],
+   "diagram": {
+    "type": "flow",
+    "direction": "lr",
+    "title": "PHOTOSYNTHESIS",
+    "steps": [
+     {
+      "title": "INPUTS",
+      "lines": [
+       "CO2",
+       "water",
+       "light"
+      ],
+      "color": "var(--navy)"
+     },
+     {
+      "title": "CHLOROPLAST",
+      "lines": [
+       "absorbs light"
+      ],
+      "color": "var(--leaf)"
+     },
+     {
+      "title": "OUTPUTS",
+      "lines": [
+       "glucose",
+       "oxygen"
+      ],
+      "color": "var(--amber)"
+     }
+    ],
+    "caption": "Copy onto board."
+   },
+   "caption": "Board."
+  },
+  "model_answers": [
+   {
+    "label": "Practice Q5",
+    "answer": "Xylem: water to leaf cells; excess=vapour.",
+    "marking_note": "Links to photosynthesis."
+   },
+   {
+    "label": "Practice Q8",
+    "answer": "Nearly stops: light missing.",
+    "marking_note": "Names light as missing raw material."
+   }
+  ],
+  "mistakes": [
+   {
+    "pupil_says": "Eats soil for food.",
+    "you_ask": "Find 'soil'?"
+   },
+   {
+    "pupil_says": "Only releases O2, never absorbs.",
+    "you_ask": "Happens at night?"
+   },
+   {
+    "pupil_says": "Chlorophyll=chloroplast?",
+    "you_ask": "Pigment or holder?"
+   }
+  ],
+  "differentiation": {
+   "stuck": "Pupil names arrow.",
+   "barrier": "Answer Urdu first, English.",
+   "early": "Why not moonlight?"
+  },
+  "exam_bank": {
+   "mcq": [
+    {
+     "q": "RAW MATERIAL?",
+     "options": [
+      "Oxygen",
+      "CO2",
+      "Nitrogen",
+      "Hydrogen"
+     ],
+     "answer": "B",
+     "distractor_codes": [
+      "waste",
+      "direct N",
+      "unrelated"
+     ]
+    },
+    {
+     "q": "Site in cell?",
+     "options": [
+      "Nucleus",
+      "Vacuole",
+      "Chloroplast",
+      "Cell wall"
+     ],
+     "answer": "C",
+     "distractor_codes": [
+      "centre",
+      "sac",
+      "layer"
+     ]
+    },
+    {
+     "q": "Products?",
+     "options": [
+      "CO2 & \\ce{H2O}",
+      "Glucose & O2",
+      "\\ce{H2O} & O2",
+      "Glucose & CO2"
+     ],
+     "answer": "B",
+     "distractor_codes": [
+      "materials",
+      "mixed",
+      "wrong"
+     ]
+    }
+   ],
+   "srq": {
+    "q": "Leaf needs & makes?",
+    "marks": 3,
+    "mark_scheme": [
+     "3 raw materials",
+     "both products",
+     "site: chloroplast/chlorophyll"
+    ]
+   },
+   "erq_skeleton": {
+    "q": "Explain process & importance.",
+    "parts": [
+     {
+      "heading": "Materials & products.",
+      "marks": 2,
+      "note": "materials+products (1 each)"
+     },
+     {
+      "heading": "Where & why.",
+      "marks": 2,
+      "note": "chloroplast absorbs light"
+     },
+     {
+      "heading": "Beyond plant?",
+      "marks": 2,
+      "note": "O2 source; food base"
+     }
+    ]
+   },
+   "how_marked": "Right keyword, column scores."
+  },
+  "homework_key": [
+   {
+    "item": "Diagram.",
+    "answer": "CO2, water, light in; chloroplast site; glucose, O2 out."
+   },
+   {
+    "item": "Eq?",
+    "answer": "CO2 + water --(light, chlorophyll)--> glucose + O2."
+   },
+   {
+    "item": "Xylem role?",
+    "answer": "Carries water to leaf cells."
+   }
+  ],
+  "next_period": "§1.8: leaf→photosynthesis.",
+  "not_going": "Not today: stomata/transpiration (§1.8).",
+  "coaching_lookfor": "Pupils separate chlorophyll/chloroplast."
+ },
+ "one_screen": "Objective: know photosynthesis's inputs (CO2, water, light), outputs (glucose, oxygen) and site (chloroplast/chlorophyll). Prerequisite: Activity 1.1 showed water vapour leaving a leaf (cobalt-chloride paper, blue→pink) — that water links to photosynthesis's raw materials. Worked example: a leaf takes in CO2 (air) and water (soil); chlorophyll in the chloroplast absorbs sunlight; the reaction produces glucose (transported to the plant) and oxygen (released through stomata). Practice: name the 3 raw materials (CO2, water, light); name the 2 products (glucose, oxygen); state the site (chloroplast/chlorophyll); explain why almost all life depends on photosynthesis (only natural O2 source). Misconception: pupils think plants only release oxygen and never use it — remind them respiration (all the time) uses oxygen just as photosynthesis (daytime, light) makes it. Exit question: what does a leaf need to make food, and what does it produce? Answer: carbon dioxide, water and light in; glucose and oxygen out, at the chloroplast."
+}

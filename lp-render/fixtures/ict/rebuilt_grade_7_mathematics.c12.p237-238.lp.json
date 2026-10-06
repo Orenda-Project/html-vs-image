@@ -1,0 +1,421 @@
+{
+ "lesson_id": "grade_7_mathematics.c12.p237-238",
+ "schema_version": "3.0",
+ "template_version": "v9",
+ "lint_profile": "full",
+ "provenance": {
+  "book_stem": "grade_7_mathematics",
+  "grade": 7,
+  "subject": "Mathematics",
+  "medium": "en",
+  "chapter": "Ch. 12 · Data Handling",
+  "chapter_title": "Data Handling",
+  "topic": "Mean (arithmetic mean)",
+  "printed_pages": "237-238",
+  "pdf_pages": "237-238",
+  "page_offset": 0,
+  "brand": {
+   "name": "NIETE Teaching Assistant"
+  },
+  "version": "2026-09-01",
+  "source_quality_flags": [
+   "REBUILT from ICT's production PDF (lesson_id grade_7_mathematics.c12.p237-238, v2026-09-01): the served lp_doc is not reachable from here. Every printed word is copied from that PDF; fields the page does not print (pdf_pages, page_offset, slo.text_verbatim, objectives.items, next_period, not_going, one_screen) are placeholders."
+  ]
+ },
+ "slo": {
+  "code": null,
+  "text_verbatim": "Not printed on the production page (rebuilt from the PDF).",
+  "source_page": "237",
+  "cognitive_level": "A"
+ },
+ "lp_type": "STEM-2",
+ "period_minutes": 40,
+ "board_weight": null,
+ "materials": [
+  "board marker",
+  "textbook p.237-238"
+ ],
+ "sequence": {
+  "previous": "Frequency distribution tables and class intervals",
+  "this": "The arithmetic mean of ungrouped data (p.237-238)",
+  "next": null,
+  "checkpoint": "Ch. 12 assessment, day 92"
+ },
+ "objectives": {
+  "outcome": "You can calculate the mean of a set of ungrouped values.",
+  "by_the_end": "You can answer a 3-mark question asking you to find the mean of up to 6 values.",
+  "items": [
+   {
+    "text": "You can calculate the mean of a set of ungrouped values.",
+    "slo_code": null
+   }
+  ]
+ },
+ "sections": [
+  {
+   "id": "introduction",
+   "minutes": 8,
+   "warmup": {
+    "items": [
+     {
+      "ref": "W1",
+      "kind": "scaffold",
+      "q": "Add these five numbers: $50 + 48 + 49 + 51 + 52$.",
+      "a": "$250$"
+     },
+     {
+      "ref": "W2",
+      "kind": "prerequisite",
+      "q": "What do you get when you divide $250$ by $5$? Write it as $250 \\div 5$.",
+      "a": "$50$"
+     },
+     {
+      "ref": "W3",
+      "kind": "spaced",
+      "from": "p.233-236, frequency distribution",
+      "q": "In a frequency table, what does the frequency column tell you?",
+      "a": "How many times each value or class occurs."
+     }
+    ]
+   },
+   "blocks": [
+    {
+     "type": "ask",
+     "id": "hook",
+     "hook": true,
+     "question": "Mr. Furqan scored 70, 62, 55, 94, 79 and 86 marks in his six subjects. He wants ONE number that fairly sums up how well he did overall. What single number would you give him, and how would you get it?",
+     "look_for": "Add all six marks together, then divide by 6 — pupils may say 'average' without yet knowing the word or the formula.",
+     "closed_by": "close-hook"
+    },
+    {
+     "type": "keywords",
+     "page": "237",
+     "items": [
+      {
+       "word": "mean (arithmetic mean)",
+       "meaning": "$\\Sigma x \\div n$ — the sum of all values divided by the number of values"
+      },
+      {
+       "word": "$\\Sigma$ (sigma)",
+       "meaning": "means 'summation' — add up everything that follows"
+      }
+     ]
+    },
+    {
+     "type": "board",
+     "text": "$\\bar{X} = \\dfrac{\\Sigma x}{n}$ — sum of values over number of values."
+    }
+   ]
+  },
+  {
+   "id": "development",
+   "minutes": 10,
+   "textbook_page": "237",
+   "video": {
+    "url": "https://www.youtube.com/watch?v=dGDk6E8iz4g",
+    "title": "What is Arithmetic Mean? || Data Handling || C.B.S.E. Grade 7 Mathematics",
+    "channel": "Pocket Classroom"
+   },
+   "blocks": [
+    {
+     "type": "paragraph",
+     "id": "close-hook",
+     "closes_hook": true,
+     "text": "Add Mr. Furqan's six marks and divide by 6 — that single number is called the mean, and p.237-238 gives it a formula."
+    },
+    {
+     "type": "key_points",
+     "items": [
+      "The mean is one of three measures of central tendency, alongside median and mode (p.237).",
+      "Mean = Sum of values $\\div$ Number of values.",
+      "In symbols, $\\bar{X} = \\dfrac{\\Sigma x}{n}$, where $\\Sigma x = x_1 + x_2 + \\cdots + x_n$ and $n$ is the total number of observations (p.238)."
+     ]
+    },
+    {
+     "type": "worked_example",
+     "id": "ido",
+     "title": "I do — p.237, Mr. Furqan's scores",
+     "prompt": "Find the mean of Mr. Furqan's six scores: $70, 62, 55, 94, 79, 86$.",
+     "steps": [
+      "Count the values: $n = 6$.",
+      "Add them: $70 + 62 + 55 + 94 + 79 + 86 = 446$.",
+      "Divide the sum by $n$: $\\bar{X} = \\dfrac{446}{6}$."
+     ],
+     "result": "$\\bar{X} = 74.33$ (to 2 d.p.)"
+    },
+    {
+     "type": "watch_out",
+     "misconception": true,
+     "text": "A pupil who writes $446 \\div 6 = 74$ and stops has rounded down instead of carrying the decimal — say the answer is $74.33$, not $74$."
+    }
+   ]
+  },
+  {
+   "id": "activity",
+   "minutes": 15,
+   "blocks": [
+    {
+     "type": "faded_example",
+     "id": "wedo",
+     "title": "We do — together on the board, p.238 weights",
+     "prompt": "Find the mean weight (kg) of 5 students of Class 8: $50, 48, 49, 51, 52$.",
+     "steps": [
+      "Count the values: $n = 5$.",
+      "Add them: $50 + 48 + 49 + 51 + 52 = 250$.",
+      "Divide by $n$: you fill this in — $\\bar{X} = \\dfrac{250}{5}$."
+     ],
+     "answer": "$\\bar{X} = 50$ kg"
+    },
+    {
+     "type": "diagram",
+     "id": "dia-q5-row",
+     "spec": {
+      "type": "grid",
+      "rows": 1,
+      "cols": 10,
+      "majorEvery": 5,
+      "title": "Q5 — COMPUTER MARKS, FIRST ROW OF 80 GRADE 10 STUDENTS",
+      "caption": "The row of 10 marks P2 asks you to average (Ex 12.1 Q5, p.237).",
+      "cellText": [
+       [
+        0,
+        0,
+        "68"
+       ],
+       [
+        0,
+        1,
+        "84"
+       ],
+       [
+        0,
+        2,
+        "75"
+       ],
+       [
+        0,
+        3,
+        "82"
+       ],
+       [
+        0,
+        4,
+        "68"
+       ],
+       [
+        0,
+        5,
+        "90"
+       ],
+       [
+        0,
+        6,
+        "62"
+       ],
+       [
+        0,
+        7,
+        "88"
+       ],
+       [
+        0,
+        8,
+        "76"
+       ],
+       [
+        0,
+        9,
+        "93"
+       ]
+      ]
+     }
+    },
+    {
+     "type": "practice",
+     "id": "youdo",
+     "mode": "independent",
+     "items": [
+      {
+       "ref": "P1",
+       "tier": "support",
+       "q": "The weight 70 kg is now added to the 5 students' weights: $50, 48, 49, 51, 52, 70$. Find the new mean weight.",
+       "a": "$\\bar{X} = \\dfrac{320}{6} = 53.33$ kg"
+      },
+      {
+       "ref": "P2",
+       "tier": "core",
+       "q": "Using the grid above (Q5's first row of 10 students), find the mean mark: $68, 84, 75, 82, 68, 90, 62, 88, 76, 93$.",
+       "a": "Sum $= 786$, $n = 10$, $\\bar{X} = 78.6$"
+      },
+      {
+       "ref": "P3",
+       "tier": "extension",
+       "q": "From Q6's table (marks of 20 students in mathematics, Grade VII), find the mean mark of the first row of 10 students: $109, 118, 99, 126, 132, 89, 123, 90, 85, 92$.",
+       "a": "Sum $= 1063$, $n = 10$, $\\bar{X} = 106.3$"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "conclusion",
+   "minutes": 4,
+   "checkpoint": {
+    "ref": "C1",
+    "question": "Calculate the mean of the values $60, 75, 90, 45, 80$.",
+    "marks": 3,
+    "mark_scheme": [
+     "1 mark: correctly adds the values ($350$)",
+     "1 mark: identifies $n = 5$",
+     "1 mark: correct final mean ($70$)"
+    ]
+   },
+   "exit_ticket": [
+    {
+     "ref": "X1",
+     "q": "State the formula for the mean in symbols.",
+     "a": "$\\bar{X} = \\dfrac{\\Sigma x}{n}$"
+    },
+    {
+     "ref": "X2",
+     "q": "Find the mean of $10, 20, 30$.",
+     "a": "$\\bar{X} = 20$"
+    }
+   ],
+   "reteach_rule": "If more than a third of the class divides by the wrong count of values, redo the Mr. Furqan worked example on p.237 before the next period.",
+   "blocks": [
+    {
+     "type": "board",
+     "text": "$\\bar{X} = \\dfrac{\\Sigma x}{n}$ — count the values, add them, then divide."
+    }
+   ]
+  },
+  {
+   "id": "homework",
+   "minutes": 3,
+   "homework": {
+    "items": [
+     {
+      "ref": "H1",
+      "format": "mcq",
+      "level": "K",
+      "marks": 1,
+      "text": "State how the mean of a data set is found: (A) adding all values and multiplying by the count (B) adding all values and dividing by the count (C) taking the largest value (D) taking the middle value",
+      "slo_code": "not printed"
+     },
+     {
+      "ref": "H2",
+      "format": "mcq",
+      "level": "U",
+      "marks": 1,
+      "text": "Find $\\Sigma x$ for the values $4, 6, 8, 10$: (A) $18$ (B) $24$ (C) $28$ (D) $4$",
+      "slo_code": "not printed"
+     },
+     {
+      "ref": "H3",
+      "format": "short",
+      "level": "A",
+      "marks": 3,
+      "source": {
+       "page": "237",
+       "questions": "Ex 12.1 Q5 (second row of table)"
+      },
+      "text": "Find the mean mark of the second row of 10 students in Q5's table: $73, 79, 88, 73, 60, 93, 71, 59, 85, 75$.",
+      "slo_code": "not printed"
+     }
+    ]
+   },
+   "blocks": [
+    {
+     "type": "key_points",
+     "title": "",
+     "items": [
+      "Answers are checked at the start of the next period."
+     ]
+    }
+   ]
+  }
+ ],
+ "page2": {
+  "board_final": {
+   "draw_order": [
+    "Write $\\bar{X} = \\dfrac{\\Sigma x}{n}$ at the top of the board.",
+    "Show Mr. Furqan's sum: $\\dfrac{446}{6} = 74.33$.",
+    "Show the weights we-do: $\\dfrac{250}{5} = 50$ kg."
+   ],
+   "diagram": {
+    "type": "grid",
+    "rows": 4,
+    "cols": 5,
+    "shaded": 5,
+    "title": "5 STUDENTS' WEIGHTS (kg)",
+    "caption": "The five weights we averaged together on the board.",
+    "cellText": [
+     [
+      0,
+      0,
+      "50"
+     ],
+     [
+      0,
+      1,
+      "48"
+     ],
+     [
+      0,
+      2,
+      "49"
+     ],
+     [
+      0,
+      3,
+      "51"
+     ],
+     [
+      0,
+      4,
+      "52"
+     ]
+    ]
+   }
+  },
+  "mistakes": [
+   {
+    "pupil_says": "The mean of 70, 62, 55, 94, 79, 86 is 446.",
+    "you_ask": "Is 446 the total of all six marks, or is it the mean? What do you still need to do to that number?"
+   },
+   {
+    "pupil_says": "I divided 250 by 6 to get the mean weight of the 5 students.",
+    "you_ask": "How many students' weights did you actually add together? Does your divisor match that count?"
+   },
+   {
+    "pupil_says": "The mean must be a whole number.",
+    "you_ask": "When we added 70 kg to the five weights and divided by 6, what did we get — was it whole?"
+   }
+  ],
+  "differentiation": {
+   "stuck": "Let them tally the sum on the board with you, one value at a time, before dividing.",
+   "barrier": "Long division with larger totals — allow a written column method or a times-table chart.",
+   "early": "Ask them to find the mean of the full row of 10 marks from Q5's table by hand, showing all steps."
+  },
+  "homework_key": [
+   {
+    "ref": "H1",
+    "answer": "(B) — adding all values and dividing by the count is the definition of the mean."
+   },
+   {
+    "ref": "H2",
+    "answer": "(C) $28$ — $4 + 6 + 8 + 10 = 28$."
+   },
+   {
+    "ref": "H3",
+    "answer": "Sum $= 73 + 79 + 88 + 73 + 60 + 93 + 71 + 59 + 85 + 75 = 756$, $n = 10$, $\\bar{X} = 75.6$"
+   }
+  ],
+  "next_period": "Not printed on the production page (rebuilt from the PDF).",
+  "not_going": "Not printed on the production page (rebuilt from the PDF).",
+  "coaching_lookfor": "Watch whether pupils count the number of values BEFORE they divide, or guess the divisor from habit.",
+  "coaching_reflection": "Which of my pupils divided by the wrong count today, and do I need to re-teach that step to them tomorrow?"
+ },
+ "one_screen": "Not printed on the production page (rebuilt from the PDF)."
+}

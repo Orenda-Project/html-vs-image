@@ -1,0 +1,418 @@
+{
+  "kind": "ict-primary-lesson",
+  "version": 1,
+  "lesson_id": "g1_ch10_English_seg1",
+  "source": {
+    "from": "NIETE approved lesson plan g1_ch10_English_seg1.pdf (lp_html v8.1), shared 2026-10-01",
+    "method": "transcribed field by field from the approved PDF's own text; nothing reworded",
+    "presentation_fixes": [
+      "sound-by-sound teacher lines the reference printed one fragment per line ('s...' / 'u...') are kept as one line each",
+      "the leaked key 'model_solution:' is not printed; those answers are marked as sample answers",
+      "the board's bracketed sketch notes ('[TITLE + PICTURE: tree + bird sketch]') are given as drawings"
+    ]
+  },
+  "lang": "en",
+  "grade": 1,
+  "subject": "English",
+  "chapter": "Ch.10 · Pinky's Garden of Wonders!",
+  "pages": "124",
+  "period_minutes": 40,
+  "title": "Predict + Word Blender + Using a Dictionary (Memory Lane)",
+  "hero_visual": {
+    "type": "scene",
+    "scene": "songbird"
+  },
+  "speakers": {
+    "Pinky": "girl_scarf"
+  },
+  "day": {
+    "n": 1,
+    "of": 10
+  },
+  "journey": "Starting fresh today",
+  "coming_up": "Reading 'Pinky and the Songbird' + Story Emotions & Following Along",
+  "outcome": {
+    "code": "E-01-RD-28",
+    "text": "Looking closely at the title and the picture BEFORE reading helps us predict what a story will be about; saying sounds slowly and then pushing them together smoothly (blending) helps us read new words."
+  },
+  "prepare": [
+    "chalk",
+    "blackboard",
+    "textbook p.124-126 (Chapter 10, Pinky's Garden of Wonders)",
+    "student slates",
+    "one classroom picture dictionary/wordbook (if available)"
+  ],
+  "video": {
+    "title": "Miss Craig's reading lesson: Predicting - …",
+    "note": "Same predicting-from-picture-and-title strategy recurs a third time (Ch.10); content-neutral transferable skill, reused rather than re-searched."
+  },
+  "keywords": [
+    {
+      "word": "predict",
+      "meaning": "to make a smart guess about what will happen using clues you can see"
+    },
+    {
+      "word": "blend",
+      "meaning": "to push sounds together smoothly so they make one word"
+    },
+    {
+      "word": "songbird",
+      "meaning": "a small bird that sings sweet sounds"
+    },
+    {
+      "word": "peeking",
+      "meaning": "looking quickly and quietly at something, like the title and picture before reading"
+    },
+    {
+      "word": "dictionary",
+      "meaning": "a special book that tells us what a word means and how to say it"
+    }
+  ],
+  "board": [
+    {
+      "title": "",
+      "visual": {
+        "type": "predict",
+        "title": "Pinky and the Songbird",
+        "prompt": "MY PREDICTION: ______"
+      },
+      "lines": [
+        "[TITLE + PICTURE: tree + bird sketch] — (THOUGHT BUBBLE) MY PREDICTION: ______"
+      ],
+      "drawn": true
+    },
+    {
+      "title": "Word Blender",
+      "visual": {
+        "type": "blender_list",
+        "words": [
+          [
+            "s",
+            "u",
+            "nn",
+            "y"
+          ],
+          [
+            "gr",
+            "ou",
+            "nd"
+          ],
+          [
+            "h",
+            "ur",
+            "t"
+          ],
+          [
+            "l",
+            "ea",
+            "ve"
+          ],
+          [
+            "c",
+            "are"
+          ]
+        ]
+      },
+      "lines": [
+        "s-u-nn-y ____",
+        "gr-ou-nd ____",
+        "h-ur-t ____",
+        "l-ea-ve ____",
+        "c-are ____"
+      ],
+      "drawn": true
+    }
+  ],
+  "stages": [
+    {
+      "id": "opening",
+      "label": "Opening",
+      "letter": "I",
+      "minutes": 4,
+      "blocks": [
+        {
+          "type": "warmup",
+          "items": [
+            {
+              "q": "m-a-t",
+              "a": "mat",
+              "tag": "scaffold for today"
+            },
+            {
+              "q": "c-u-p",
+              "a": "cup",
+              "tag": "prerequisite"
+            },
+            {
+              "q": "r-u-n",
+              "a": "run",
+              "tag": "prerequisite"
+            }
+          ]
+        },
+        {
+          "type": "hook",
+          "text": "On page 124, the elderly narrator looks out from his speech bubble and greets the class: 'Hi, kids! After peeking at the title and the colourful picture, can you guess what our story is about?' Beside him is a wide sunny scene: Pinky, wearing her pink headscarf and purple top, stands with her mouth open in surprise, looking up at a yellow songbird perched on a tree branch. A small child in an orange top and glasses stands near her, and the elderly man points toward the bird as if inviting the children to notice it too. A little further down the page, Pinky appears again, this time holding a light-blue kitchen blender up to her mouth, announcing that it is no ordinary blender — it is a special 'blender for words' that the class will use to blend sounds into whole words.",
+          "visual": {
+            "type": "scene",
+            "scene": "songbird"
+          }
+        },
+        {
+          "type": "read_aloud",
+          "label": "On the page · read aloud",
+          "lines": [
+            "Pinky: “I just bought a new blender. But this blender is special! It's a blender for words!”"
+          ],
+          "visual": {
+            "type": "blender",
+            "parts": [
+              "s",
+              "u",
+              "nn",
+              "y"
+            ],
+            "word": "sunny"
+          }
+        }
+      ]
+    },
+    {
+      "id": "explanation",
+      "label": "Explanation",
+      "letter": "D",
+      "minutes": 4,
+      "mode": "I DO",
+      "blocks": [
+        {
+          "type": "teacher_models",
+          "instruction": "Teacher points to the title 'Pinky and the Songbird' and the outdoor illustration on page 124, modelling the prediction strategy aloud, then models blending the first Word Blender word (s-u-nn-y) on the board.",
+          "script": [
+            "Look at the title with me: 'Pinky and the Songbird.'",
+            "Hmm — the word 'Songbird' tells me there will be a bird that sings in this story.",
+            "Now let's look at the big picture: I see Pinky with her mouth wide open, looking up, and there's a little yellow bird sitting on a branch, and the storyteller is pointing at it.",
+            "I am thinking to myself: maybe Pinky is surprised to see the songbird, and something exciting might happen between them.",
+            "That is my prediction!",
+            "Now watch me blend a word from the Word Blender: s... u... nn... y.",
+            "I say each sound slowly, then push them together faster: sunny.",
+            "The word is SUNNY!"
+          ]
+        },
+        {
+          "type": "worked",
+          "steps": [
+            "Word: s-u-nn-y. Step 1: say each sound slowly, pointing under each part: /s/ ... /u/ ... /nn/ (as 'n') ... /y/ (as 'ee'). Step 2: blend the first two sounds: 's' + 'u' = 'su'. Step 3: add the next sound: 'su' + 'nn' = 'sun'. Step 4: add the last sound: 'sun' + 'y' = 'sunny'. Final blended word: SUNNY. The same method applies to gr-ou-nd → ground, h-ur-t → hurt, l-ea-ve → leave, c-are → care."
+          ],
+          "visual": {
+            "type": "blend_steps",
+            "steps": [
+              [
+                "s",
+                "u",
+                "su"
+              ],
+              [
+                "su",
+                "nn",
+                "sun"
+              ],
+              [
+                "sun",
+                "y",
+                "sunny"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "ask_this",
+          "text": "Ask 2-3 students to explain in their own words: 'How do you make a prediction about a story?' and 'How do you blend sounds to read a new word?' Listen for mention of title/picture clues and sound-by-sound blending."
+        }
+      ]
+    },
+    {
+      "id": "we_do",
+      "label": "We Do",
+      "letter": "A",
+      "minutes": 9,
+      "blocks": [
+        {
+          "type": "halfway",
+          "text": "Halfway check · minute 13. By now the class should be starting WE DO."
+        },
+        {
+          "type": "together",
+          "lines": [
+            "Think-Pair-Share for the prediction question, then Pair-Check for the Word Blender words.",
+            "Circulate asking 'What clue helped you?' and 'Can you blend that word again for me, sound by sound?'"
+          ]
+        },
+        {
+          "type": "teacher_models",
+          "instruction": "Class reads the two Helpful Questions from page 124 chorally, discusses in pairs, then the whole class blends the next two Word Blender words together on the board (gr-ou-nd, h-ur-t) sound-by-sound before blending.",
+          "lead": [
+            "Everyone, repeat after me: 'Have you ever seen a songbird?'"
+          ],
+          "script": [
+            "Now turn to your partner and tell them where — maybe near your house, or at your grandmother's village."
+          ],
+          "lead2": [
+            "Question two: 'What do you think Pinky might do with the songbird?'"
+          ],
+          "script2": [
+            "Whisper your idea to your partner.",
+            "Now let's blend together — say the sounds with me: g... r... ou... n... d.",
+            "Blend it fast, everyone together!",
+            "(class: 'ground') One more: h... ur... t.",
+            "Blend it together!",
+            "(class: 'hurt')"
+          ]
+        },
+        {
+          "type": "frames",
+          "lines": [
+            "I think the story is about ___ because I see ___ and the title says ___.",
+            "I agree because ___ / I think differently because ___."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "you_do",
+      "label": "You Do",
+      "letter": "A",
+      "minutes": 9,
+      "blocks": [
+        {
+          "type": "set_task",
+          "lines": [
+            "In pairs, students blend the remaining two Word Blender words (l-ea-ve, c-are) on their slates, then write one sentence prediction using the dialogue frames while the teacher circulates."
+          ],
+          "say": "Now you and your partner finish the Word Blender alone. Sound out l-ea-ve and c-are, then write the whole word on your slate. Together, write your best guess using: 'I think the story is about ___ because I see ___ and the title says ___.'"
+        },
+        {
+          "type": "alone",
+          "items": [
+            {
+              "q": "Blend: s-u-nn-y",
+              "answer": "s + u + nn + y → say each sound then push together → 'sunny'",
+              "visual": {
+                "type": "tiles",
+                "parts": [
+                  "s",
+                  "u",
+                  "nn",
+                  "y"
+                ]
+              }
+            },
+            {
+              "q": "Blend: gr-ou-nd",
+              "answer": "gr + ou + n + d → say each sound then push together → 'ground'",
+              "visual": {
+                "type": "tiles",
+                "parts": [
+                  "gr",
+                  "ou",
+                  "nd"
+                ]
+              }
+            },
+            {
+              "q": "Blend: h-ur-t",
+              "answer": "h + ur + t → say each sound then push together → 'hurt'",
+              "visual": {
+                "type": "tiles",
+                "parts": [
+                  "h",
+                  "ur",
+                  "t"
+                ]
+              }
+            },
+            {
+              "q": "Blend: l-ea-ve",
+              "answer": "l + ea + ve → say each sound then push together → 'leave'",
+              "visual": {
+                "type": "tiles",
+                "parts": [
+                  "l",
+                  "ea",
+                  "ve"
+                ]
+              }
+            },
+            {
+              "q": "Blend: c-are",
+              "answer": "c + are → say each sound then push together → 'care'",
+              "visual": {
+                "type": "tiles",
+                "parts": [
+                  "c",
+                  "are"
+                ]
+              }
+            },
+            {
+              "q": "Have you ever seen a songbird? If yes, where?",
+              "answer": "'Yes, I saw a small yellow songbird on a tree near my house in Multan. It was singing early in the morning.'",
+              "sample": true
+            },
+            {
+              "q": "What do you think Pinky might do with the songbird in the story?",
+              "answer": "'I think Pinky will listen to the songbird sing in her garden and become its friend.'",
+              "sample": true
+            }
+          ]
+        },
+        {
+          "type": "differentiation",
+          "stuck": "Echo Blending strategy: teacher says each sound-part of the word slowly while tapping under the letters on the board or slate (e.g., h...ur...t), the struggling student echoes each sound exactly, THEN blends only after echoing all parts correctly at least twice. For prediction, use the Picture-Point strategy: cover the title, point to one object at a time in the illustration (the bird, Pinky's face, the tree) and ask 'what do you see?' before revealing the title word.",
+          "early": "Students who finish early try the Bonus Question dictionary mini-lesson from pages 125-126: using the word 'sunny' as the model, they (1) find the first letter 's', (2) flip to the 'S' section, (3) find the second letter 'u', (4) flip to the 'su-' words, (5) scan for 'sunny', (6) read its full entry: 'sunny, /ˈsʌni/, adjective. bright with sunlight. \"It is a sunny day.\"' They then try the same six steps to guess where the word 'ground' would appear in a dictionary (which letter section it would be under).",
+          "early_visual": {
+            "type": "dictionary",
+            "word": "sunny",
+            "entry": "sunny, /ˈsʌni/, adjective. bright with sunlight.",
+            "picture": "sun"
+          }
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "label": "Check",
+      "letter": "C",
+      "blocks": [
+        {
+          "type": "exit",
+          "items": [
+            {
+              "q": "New context: The teacher shows a NEW title, 'Ali and the Lost Kite', and describes a NEW picture: a boy looking up at a kite stuck high in a tree. Part A: 'What do you predict this story is about?' Part B: Blend this NEW word using the same sound patterns you learned today: sh-are.",
+              "criterion": "Correct if the student states a reasonable prediction naming at least one clue from the title or the described picture (e.g., 'a boy', 'a kite', 'stuck in a tree'), AND correctly blends 'sh-are' to say 'share'.",
+              "visual": {
+                "type": "scene",
+                "scene": "kite_tree"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "homework",
+      "label": "Homework",
+      "letter": "H",
+      "blocks": [
+        {
+          "type": "homework",
+          "lines": [
+            "Show your family the pictures on page 124. Ask them to guess what the story is about from the title and picture, just like we practised. Then practice blending the five Word Blender words (sunny, ground, hurt, leave, care) for a family member without looking at the answer key."
+          ]
+        }
+      ]
+    }
+  ],
+  "coaching": {
+    "ask_yourself": "Watch whether students name the picture AND the title as separate clues (not just one) — many first-graders default to only the picture. During We-Do blending, listen for students rushing to guess the whole word from the first letter instead of blending all sound-parts; slow the choral pace if this happens."
+  }
+}

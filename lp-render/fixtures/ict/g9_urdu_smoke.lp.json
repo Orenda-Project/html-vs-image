@@ -1,0 +1,191 @@
+{
+  "lesson_id": "PK_G9_GSCI_UR_SMOKE",
+  "schema_version": "2.0",
+  "lint_profile": "smoke",
+  "provenance": {
+    "book_stem": "grade_9_general_science_ur",
+    "grade": 9,
+    "subject": "جنرل سائنس",
+    "medium": "ur",
+    "chapter": "باب ۲ · کیمیائی تعاملات",
+    "topic": "کیمیائی مساوات",
+    "printed_pages": "۲۴",
+    "pdf_pages": "26",
+    "page_offset": 2
+  },
+  "slo": {
+    "code": "C-09-B-04",
+    "text_verbatim": "طلبہ کیمیائی مساوات کو متوازن کرنا اور تعامل کنندہ و پیداوار کی شناخت کرنا سیکھیں گے۔",
+    "source_page": "۲۴",
+    "cognitive_level": "A",
+    "assessment_status": "Summative",
+    "success_criterion": "آپ ایک مساوات متوازن کر سکیں گے۔"
+  },
+  "lp_type": "STEM-2",
+  "period_minutes": 40,
+  "board_weight": "FBISE SSC-I · تقریباً ۶ نمبر",
+  "materials": [
+    "تختۂ سیاہ اور چاک"
+  ],
+  "warmup": {
+    "minutes": 5,
+    "layout": "half",
+    "items": [
+      {
+        "q": "آکسیجن کی علامت کیا ہے؟",
+        "a": "O",
+        "kind": "prerequisite"
+      },
+      {
+        "q": "پانی کا کیمیائی فارمولا لکھیے۔",
+        "a": "H₂O",
+        "kind": "prerequisite"
+      }
+    ]
+  },
+  "objectives": [
+    "کیمیائی مساوات کو متوازن کرنا اور تعامل کنندہ و پیداوار میں فرق کرنا۔"
+  ],
+  "sections": [
+    {
+      "id": "introduction",
+      "minutes": 5,
+      "layout": "half",
+      "blocks": [
+        {
+          "type": "ask",
+          "hook": true,
+          "question": "لکڑی جل کر راکھ بنتی ہے۔ راکھ کا وزن کم کیوں ہوتا ہے؟",
+          "look_for": "گیسیں ہوا میں چلی گئیں۔ ابھی تصدیق نہ کریں۔"
+        }
+      ]
+    },
+    {
+      "id": "development",
+      "minutes": 15,
+      "blocks": [
+        {
+          "type": "split",
+          "ratio": 0.42,
+          "left": [
+            {
+              "type": "diagram",
+              "spec": {
+                "type": "grid",
+                "rows": 10,
+                "cols": 10,
+                "shaded": 44,
+                "majorEvery": 5,
+                "title": "۴۴ فیصد",
+                "caption": "ہر چھوٹا خانہ ایک فیصد ہے۔"
+              }
+            }
+          ],
+          "right": [
+            {
+              "type": "key_points",
+              "items": [
+                "تعامل میں ایٹم نہ بنتے ہیں نہ ختم ہوتے ہیں۔",
+                "دونوں طرف ہر عنصر کے ایٹم برابر ہوں۔",
+                "$A = x^2$ کی طرح مساوات بھی توازن ہے۔"
+              ]
+            },
+            {
+              "type": "watch_out",
+              "misconception": true,
+              "text": "طلبہ فارمولے کے اندر کا ہندسہ بدلتے ہیں۔ صرف سامنے کا عدد بدلیے۔"
+            }
+          ]
+        },
+        {
+          "type": "chem",
+          "tex": "C + O2 -> CO2",
+          "caption": "کاربن اور آکسیجن سے کاربن ڈائی آکسائیڈ بنتی ہے۔"
+        }
+      ]
+    },
+    {
+      "id": "activity",
+      "minutes": 15,
+      "blocks": [
+        {
+          "type": "worked_example",
+          "title": "حل شدہ مثال",
+          "steps": [
+            "دونوں طرف ایٹم گنیے۔",
+            "سامنے عدد لگا کر برابر کیجیے۔"
+          ],
+          "result": "\\ce{CH4 + 2O2 -> CO2 + 2H2O}"
+        },
+        {
+          "type": "practice",
+          "mode": "independent",
+          "items": [
+            {
+              "q": "\\ce{H2 + O2 -> H2O} کو متوازن کیجیے۔",
+              "a": "\\ce{2H2 + O2 -> 2H2O}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "page2": {
+    "board_final": {
+      "caption": "سبق کے اختتام پر تختۂ سیاہ",
+      "draw_order": [
+        "متوازن مساوات اوپر لکھیے۔",
+        "نیچے دونوں طرف ایٹموں کی گنتی کا جدول بنائیے۔"
+      ]
+    },
+    "model_answers": [
+      {
+        "label": "مشق ۱",
+        "answer": "\\ce{2H2 + O2 -> 2H2O}"
+      },
+      {
+        "label": "مشق ۲",
+        "answer": "جی ہاں — $x^2 + x^2 = 2x^2$۔"
+      }
+    ],
+    "mistakes": [
+      {
+        "pupil_says": "\\ce{H2O} کو \\ce{H2O2} لکھ دیتے ہیں۔",
+        "you_ask": "فارمولا بدلنے سے مادہ ہی بدل جاتا ہے — کون سا؟"
+      }
+    ],
+    "differentiation": {
+      "stuck": "ایٹموں کی گنتی کا جدول پہلے سے بنا کر دیجیے۔",
+      "barrier": "اگر گنتی مشکل ہو تو ایک عنصر سے شروع کروائیے۔",
+      "early": "\\ce{Fe + O2 -> Fe2O3} متوازن کروائیے۔"
+    },
+    "exam_bank": {
+      "mcq": [
+        {
+          "q": "\\ce{H2 + O2 -> H2O} میں آکسیجن کا coefficient کیا ہوگا؟",
+          "options": [
+            "1",
+            "2",
+            "3"
+          ],
+          "answer": "A",
+          "distractor_codes": [
+            "ہائیڈروجن کا عدد دہراتا ہے",
+            "اندرونی ہندسہ بدلتا ہے"
+          ]
+        }
+      ],
+      "how_marked": "متوازن مساوات ہی نمبر دلاتی ہے۔"
+    },
+    "homework_key": [
+      {
+        "item": "مشق ۲.۱",
+        "answer": "\\ce{2Mg + O2 -> 2MgO}"
+      }
+    ],
+    "next_period": "۲.۵ تعاملات کی اقسام۔",
+    "not_going": "ابھی رد عمل کی رفتار نہیں پڑھانی۔",
+    "coaching_lookfor": "کیا ہر طالبِ علم نے خود گنتی کی؟"
+  },
+  "one_screen": "آج کا مقصد: کیمیائی مساوات کو متوازن کرنا۔ دونوں طرف ہر عنصر کے ایٹم برابر ہونے چاہییں۔ حل شدہ مثال: \\ce{CH4 + 2O2 -> CO2 + 2H2O}۔ مشق: \\ce{H2 + O2 -> H2O} کو متوازن کیجیے — جواب \\ce{2H2 + O2 -> 2H2O}۔ خیال رکھیے: فارمولے کے اندر کا ہندسہ نہ بدلیں، صرف سامنے کا عدد بدلیں۔"
+}

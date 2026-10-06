@@ -1,0 +1,501 @@
+{
+ "lesson_id": "PK_G8_ENG_CH6_THE_BELLS_CLOSE_READING",
+ "schema_version": "2.0",
+ "lint_profile": "full",
+ "provenance": {
+  "book_stem": "grade_8_english",
+  "grade": 8,
+  "subject": "English",
+  "medium": "en",
+  "chapter": "Unit 6 — Short Stories, Poetry & Plays",
+  "topic": "Close reading 'The Bells' — how sound words build terror",
+  "printed_pages": "127-129",
+  "pdf_pages": "127-129",
+  "page_offset": 0,
+  "publisher": "NBF",
+  "curriculum": "National Curriculum 2022",
+  "source_quality_flags": [
+   "the onomatopoeia table on p.129 is ragged — columns of different lengths with blank cells, reproduced as printed and not treated as an error"
+  ],
+  "version": "2026-08-30",
+  "chapter_title": "Unit 6 — Short Stories, Poetry & Plays"
+ },
+ "notes": {
+  "supplied": [
+   "supplied: the learning objective — no outcome is printed on pp.127-129 or the chapter opener",
+   "supplied: the warm-up's spaced-recall item on simile/metaphor — no earlier-chapter page was provided in this brief, so a standard prior lesson is assumed, not a specific printed page"
+  ],
+  "defects": [
+   "the book prints no answer key for the Comprehension Checkpoint on p.128",
+   "the book prints no answer key for the vocabulary exercise on p.128"
+  ],
+  "gaps": [
+   "no printed SLO/learning outcome anywhere on pp.127-129",
+   "the poem's other three stanzas (childhood, wedding, funeral bells) are not printed and are not taught in this lesson"
+  ]
+ },
+ "needs_human_review": false,
+ "human_review_reason": null,
+ "slo": {
+  "code": null,
+  "text_verbatim": "Identify examples of onomatopoeia and alliteration in a poem and explain how each device builds the poet's intended feeling.",
+  "source_page": "authored — no printed outcome found on pp.127-129 or the chapter opener",
+  "cognitive_level": "U",
+  "assessment_status": "Formative",
+  "command_word": "explain",
+  "success_criterion": "By the end you can find one onomatopoeia and one alliteration example in 'The Bells' and explain in a sentence how each builds terror."
+ },
+ "lp_type": "LL-2",
+ "period_minutes": 40,
+ "board_weight": null,
+ "materials": [
+  "board marker",
+  "textbook pp.127-129"
+ ],
+ "warmup": {
+  "minutes": 5,
+  "items": [
+   {
+    "q": "p.128: 'clanging' mean?",
+    "a": "ringing loudly, like a fire engine's bell (option a)",
+    "kind": "prerequisite"
+   },
+   {
+    "q": "p.128: 'shriek' meaning?",
+    "a": "a loud, sudden cry (option a)",
+    "kind": "prerequisite"
+   },
+   {
+    "q": "'The bells sounded like screams in the night.' Simile or metaphor? Why?",
+    "a": "a simile — compares using 'like'",
+    "kind": "spaced",
+    "from": "earlier lesson (simile/metaphor)"
+   }
+  ],
+  "layout": "half"
+ },
+ "objectives": [
+  "I can spot examples of onomatopoeia in 'The Bells' and say what sound each word imitates.",
+  "I can spot examples of alliteration in 'The Bells' and explain how the repeated sound builds panic.",
+  "I can use NOTICE, NAME, EXPLAIN EFFECT to analyse one line of the poem on my own."
+ ],
+ "sections": [
+  {
+   "id": "introduction",
+   "minutes": 5,
+   "blocks": [
+    {
+     "type": "ask",
+     "question": "Read this aloud: 'They can only, shriek, shriek, shriek.' Why does Poe write 'shriek' three times instead of just once?",
+     "look_for": "the repeated sound word imitates and builds rising panic/alarm",
+     "hook": true,
+     "closed_by": "close_hook"
+    },
+    {
+     "type": "say",
+     "text": "That word 'shriek' doesn't just tell us about a sound — it tries to BE the sound."
+    },
+    {
+     "type": "board",
+     "text": "THE BELLS — Poe, pp.127-129 — how SOUND WORDS build TERROR"
+    }
+   ],
+   "layout": "half"
+  },
+  {
+   "id": "development",
+   "minutes": 10,
+   "blocks": [
+    {
+     "type": "key_points",
+     "items": [
+      "Onomatopoeia is a word that sounds like what it means, printed on p.129.",
+      "The Bells uses onomatopoeia like 'clang', 'clash', 'roar' and 'twanging' to make the bell-noise leap off the page.",
+      "Alliteration repeats a starting sound across nearby words, as in 'clamor...clangor' on p.127.",
+      "Repeating these sounds does not just describe the bells — it makes the reader feel the panic rising.",
+      "The routine is: NOTICE the device, NAME it, then EXPLAIN its effect on the reader."
+     ]
+    },
+    {
+     "type": "diagram",
+     "spec": {
+      "type": "flow",
+      "direction": "lr",
+      "title": "NOTICE → NAME → EXPLAIN EFFECT",
+      "steps": [
+       {
+        "title": "NOTICE",
+        "lines": [
+         "read the line aloud",
+         "spot the sound-word or repeated sound"
+        ]
+       },
+       {
+        "title": "NAME",
+        "lines": [
+         "onomatopoeia?",
+         "alliteration?"
+        ],
+        "color": "var(--navy)"
+       },
+       {
+        "title": "EXPLAIN EFFECT",
+        "lines": [
+         "what does it make the reader FEEL?"
+        ],
+        "color": "var(--warn)"
+       }
+      ],
+      "caption": "The 3-step routine used on every line of 'The Bells', p.127."
+     }
+    },
+    {
+     "type": "watch_out",
+     "text": "Pupils often stop at 'I found alliteration' — that is only NOTICE. Ask: 'now NAME the device, then tell me what it DOES to the reader' before you accept the answer.",
+     "misconception": true
+    }
+   ]
+  },
+  {
+   "id": "activity",
+   "minutes": 15,
+   "blocks": [
+    {
+     "type": "diagram",
+     "spec": {
+      "type": "mindmap",
+      "centre": {
+       "label": "SOUND DEVICES"
+      },
+      "branches": [
+       {
+        "label": "ONOMATOPOEIA",
+        "leaves": [
+         "clang, clash, roar",
+         "twanging, clanging",
+         "the word sounds like it"
+        ]
+       },
+       {
+        "label": "ALLITERATION",
+        "leaves": [
+         "clang … clash",
+         "clamor … clangor",
+         "same starting sound"
+        ]
+       }
+      ],
+      "caption": "Both devices are on p.127. Notice it, name it, then say what it does."
+     }
+    },
+    {
+     "type": "worked_example",
+     "title": "I DO — 'How they clang, and clash, and roar!' (p.127)",
+     "prompt": "How they clang, and clash, and roar!",
+     "steps": [
+      "NOTICE: clang/clash/roar sound like crashing; clang/clash start 'cl'.",
+      "NAME: clang/clash/roar = onomatopoeia; clang...clash = alliteration.",
+      "EFFECT: 'cl' sounds = bells feel violent, panicked."
+     ],
+     "result": "Onomatopoeia+alliteration make reader HEAR the alarm."
+    },
+    {
+     "type": "faded_example",
+     "title": "WE DO — 'By the twanging, / And the clanging' (p.127)",
+     "prompt": "By the twanging, / And the clanging",
+     "steps": [
+      "NOTICE: 'twanging'/'clanging' both ___ (ring like metal).",
+      "NAME: device = ___.",
+      "EFFECT: ringing words show danger ___ ('ebbs and flows')."
+     ],
+     "answer": "twanging/clanging = ringing metal; onomatopoeia; danger rises/falls like sound wave."
+    },
+    {
+     "type": "practice",
+     "title": "YOU DO — annotate unaided",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "'In the jangling, and the wrangling' (p.127) — NAME device.",
+       "a": "onomatopoeia — 'jangling' = clashing metal sound.",
+       "tier": "support"
+      },
+      {
+       "q": "Same line: name device linking 'jangling'/'wrangling'.",
+       "a": "repeated '-angling' = alliteration; noise feels non-stop.",
+       "tier": "core"
+      },
+      {
+       "q": "'In the clamor and the clangor of the bells!' (p.127) — NAME.",
+       "a": "'clamor'/'clangor' = alliteration+onomatopoeia (loud, confused).",
+       "tier": "core"
+      },
+      {
+       "q": "EFFECT of repeating 'cl-' in the line above?",
+       "a": "harsh piles up; ending feels chaotic/endless.",
+       "tier": "core"
+      },
+      {
+       "q": "True/false: 'shriek, shriek, shriek' (p.127) = alliteration?",
+       "a": "False — onomatopoeia repeated; no shared sound.",
+       "tier": "support"
+      },
+      {
+       "q": "Find one unused onomatopoeia word and alliteration pair; explain effect.",
+       "a": "e.g. 'roar' (onomatopoeia); 'sinking...swelling' (alliteration, soft 's').",
+       "tier": "extension"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "conclusion",
+   "minutes": 5,
+   "blocks": [
+    {
+     "type": "paragraph",
+     "id": "close_hook",
+     "text": "'shriek, shriek, shriek' = onomatopoeia, raises panic. NOTICE, NAME, EXPLAIN EFFECT."
+    },
+    {
+     "type": "board",
+     "text": "SRQ: 'How they clang, and clash, and roar!' Find ONE onomatopoeia and ONE alliteration; explain effect. [4 marks]"
+    },
+    {
+     "type": "key_points",
+     "items": [
+      "1 mark: onomatopoeia word.",
+      "1 mark: alliteration pair.",
+      "1 mark: onomatopoeia effect explained.",
+      "1 mark: alliteration effect explained."
+     ]
+    },
+    {
+     "type": "practice",
+     "title": "Exit ticket",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "Onomatopoeia in 'shriek, shriek, shriek'?",
+       "a": "'shriek' builds panic.",
+       "tier": "core"
+      },
+      {
+       "q": "Alliteration in 'clamor and clangor'?",
+       "a": "'cl' sound: chaotic.",
+       "tier": "core"
+      }
+     ]
+    },
+    {
+     "type": "paragraph",
+     "text": "Re-teach: if half can't explain, repeat We-do next lesson."
+    }
+   ]
+  },
+  {
+   "id": "homework",
+   "minutes": 0,
+   "blocks": [
+    {
+     "type": "practice",
+     "title": "Homework",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "Onomatopoeia word after 'Of Despair!'?",
+       "a": "e.g. 'roar' — alarm bells' noise.",
+       "tier": "core"
+      },
+      {
+       "q": "Alliteration example, p.127? Name sound.",
+       "a": "e.g. 'sinking or the swelling' — 's' sound.",
+       "tier": "core"
+      },
+      {
+       "q": "Simile or metaphor: 'bells screamed like a siren'?",
+       "a": "Simile — uses 'like'.",
+       "tier": "core"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "page2": {
+  "board_final": {
+   "draw_order": [
+    "THE BELLS, Poe pp.127-129",
+    "Draw NOTICE→NAME→EFFECT",
+    "Devices: onomatopoeia, alliteration",
+    "Exit line: 'clang, and clash, and roar!'"
+   ],
+   "diagram": {
+    "type": "flow",
+    "direction": "lr",
+    "title": "NOTICE→NAME→EFFECT",
+    "steps": [
+     {
+      "title": "NOTICE",
+      "lines": [
+       "read",
+       "spot"
+      ]
+     },
+     {
+      "title": "NAME",
+      "lines": [
+       "onomatopoeia?",
+       "alliteration?"
+      ],
+      "color": "var(--navy)"
+     },
+     {
+      "title": "EFFECT",
+      "lines": [
+       "feel?"
+      ],
+      "color": "var(--warn)"
+     }
+    ],
+    "caption": "3-step routine"
+   },
+   "caption": "Copy into notebook."
+  },
+  "model_answers": [
+   {
+    "label": "We-do",
+    "answer": "twanging=onomatopoeia; shows danger.",
+    "marking_note": "accept 'ringing'"
+   },
+   {
+    "label": "Q1",
+    "answer": "'shriek' x3 = panic.",
+    "marking_note": "1pt word/effect"
+   },
+   {
+    "label": "Q2",
+    "answer": "'cl' alliteration; chaotic.",
+    "marking_note": "1pt pair/effect"
+   }
+  ],
+  "mistakes": [
+   {
+    "pupil_says": "Alliteration: 'shriek, shriek, shriek'.",
+    "you_ask": "Repeated or different?"
+   },
+   {
+    "pupil_says": "Onomatopoeia=word.",
+    "you_ask": "Does 'clang' sound like its meaning?"
+   },
+   {
+    "pupil_says": "Named it—done.",
+    "you_ask": "Now EXPLAIN the feeling."
+   }
+  ],
+  "differentiation": {
+   "stuck": "Device underlined; state the feeling.",
+   "barrier": "Read aloud twice first.",
+   "early": "Why isn't 'bells, bells, bells' a device?"
+  },
+  "exam_bank": {
+   "mcq": [
+    {
+     "q": "'How they clang, and clash, and roar!': device?",
+     "options": [
+      "Alliteration",
+      "Onomatopoeia",
+      "Simile",
+      "Metaphor"
+     ],
+     "answer": "A",
+     "distractor_codes": [
+      "misses 'cl'",
+      "→simile confusion",
+      "→metaphor confusion"
+     ]
+    },
+    {
+     "q": "'They can only, shriek, shriek, shriek': onomatopoeia word?",
+     "options": [
+      "shriek",
+      "only",
+      "can",
+      "they"
+     ],
+     "answer": "A",
+     "distractor_codes": [
+      "filler word",
+      "wrong verb",
+      "wrong pronoun"
+     ]
+    },
+    {
+     "q": "'clamor'/'clangor' repeat: effect?",
+     "options": [
+      "Calm",
+      "Chaotic",
+      "Rhyme",
+      "Silence"
+     ],
+     "answer": "B",
+     "distractor_codes": [
+      "misreads calm",
+      "missed purpose",
+      "opposite pick"
+     ]
+    }
+   ],
+   "srq": {
+    "q": "Name onomatopoeia+alliteration in 'How they clang, and clash, and roar!'; explain effect.",
+    "marks": 4,
+    "mark_scheme": [
+     "word: clang/clash/roar",
+     "pair: clang...clash",
+     "effect: vivid",
+     "effect: panic"
+    ]
+   },
+   "erq_skeleton": {
+    "q": "5-6 sentences: devices build terror (p.127).",
+    "parts": [
+     {
+      "heading": "1 example each+line",
+      "marks": 2,
+      "note": "1 quote/device"
+     },
+     {
+      "heading": "Explain effect",
+      "marks": 2,
+      "note": "link sound→feeling"
+     },
+     {
+      "heading": "How both build terror",
+      "marks": 2,
+      "note": "reward linking"
+     }
+    ]
+   },
+   "how_marked": "Name+explain = full marks."
+  },
+  "homework_key": [
+   {
+    "item": "2nd onomatopoeia word",
+    "answer": "'roar'—alarm noise."
+   },
+   {
+    "item": "2nd alliteration pair",
+    "answer": "'sinking...swelling'."
+   },
+   {
+    "item": "Simile or metaphor?",
+    "answer": "Simile."
+   }
+  ],
+  "next_period": "Other stanzas + p.128 checkpoint.",
+  "not_going": "Not today: stanza structure, other devices.",
+  "coaching_lookfor": "Teacher requires full NOTICE-NAME-EFFECT aloud?"
+ },
+ "one_screen": "Objective: Spot onomatopoeia and alliteration in 'The Bells' (p.127) and explain their effect on the reader.\n\nPrerequisite: 'clanging' means ringing loudly (p.128).\n\nWorked example: 'How they clang, and clash, and roar!'\n1. NOTICE sound-words: clang, clash, roar.\n2. NOTICE repeated 'cl' sound.\n3. NAME: onomatopoeia (clang, clash, roar) + alliteration ('cl').\n4. EXPLAIN: sound-words mimic the noise; repetition builds intensity.\n5. EFFECT: bells feel violent and out of control.\n\nPractice:\n1. (Support) 'jangling, wrangling' — device? Onomatopoeia; effect = harsh, chaotic sound.\n2. (Support) Repeated letter in 'jangling, wrangling'? 'ng' — alliteration-like repetition; effect = clashing noise.\n3. (Core) 'clamor and clangor' — device? Onomatopoeia + alliteration ('cl'); effect = loud, overwhelming chaos.\n4. (Core) Why 'clangor' not just 'noise'? Sound-word makes reader hear the harshness directly.\n5. (Extension) Find one more onomatopoeia/alliteration pair in the stanza. Answer varies — must name device + effect.\n6. (Extension) Explain why poets stack devices together. Answer: stacking intensifies the sensory/emotional effect.\n\nMisconception: Naming a device is not enough — pupils must explain the effect on the reader.\n\nExit question: Find one onomatopoeia and one alliteration pair in the stanza and explain what each does to the reader."
+}

@@ -165,7 +165,24 @@ async function htmlToPixelPdf(html, opts = {}) {
         });
         inner.forEach((v) => { if (!illegal(v)) cuts.push(v); });
 
-        const fig = sec.querySelector('.d-inline-img, .char-fig');
+        // A LIST LAID OUT AS A GRID OF CARDS (.lp-grid-rows, the ICT adapter's three-across
+        // cards) breaks between ROWS only: one card's bottom is mid-card for its neighbours.
+        if (sec.classList.contains('lp-grid-rows')) {
+          const byRow = new Map();
+          sec.querySelectorAll('.d-bullets > li').forEach((li) => {
+            const t = Math.round(li.getBoundingClientRect().top);
+            byRow.set(t, Math.max(byRow.get(t) || 0, y(li, 'bottom')));
+          });
+          [...byRow.entries()].sort((a, b) => a[0] - b[0]).slice(0, -1).forEach(([, b]) => cuts.push(b));
+          return;
+        }
+        // A CARD MARKED .lp-atomic IS NEVER OPENED: its only legal boundary is its own edge. A
+        // note's bottom sits a padding's width above its card's, so a cut there only moves a
+        // sliver of border overleaf — the broken-card look the whole-card rule exists to stop.
+        if (sec.classList.contains('lp-atomic')) return;
+        // A two-column split (.d-split) counts as the figure: a list item's bottom in one
+        // column is mid-card in the other, so no cut may land inside it.
+        const fig = sec.querySelector('.d-inline-img, .char-fig, .d-split');
         // A card holding a CODE-drawn figure is atomic: its figure is followed by a
         // value label and caption, so a cut 'below the figure' would slice the card
         // and orphan that text. Only the card's own bottom is a legal boundary.
@@ -270,14 +287,27 @@ async function htmlToPixelPdf(html, opts = {}) {
           }
         });
       });
+      // PAGE STRUCTURE A PRODUCER ASKED FOR — inert unless it did. A section marked
+      // .lp-break-before starts a new page (ICT's support pages), and every section bar is
+      // recorded so a continuation page can say which section it continues.
+      const forced = [...document.querySelectorAll('.body > .section.lp-break-before')].map((s) => y(s, 'top'));
+      const heads = [...document.querySelectorAll('.body > .section > .s-head')]
+        .map((h) => ({ top: y(h.parentElement, 'top'), title: ((h.querySelector('.s-title') || h).textContent || '').trim() }));
       return { cuts, safe, overflow, height: document.documentElement.scrollHeight, width: document.documentElement.scrollWidth,
-        bg: getComputedStyle(document.body).backgroundColor || '#ffffff' };
+        bg: getComputedStyle(document.body).backgroundColor || '#ffffff', forced, heads };
     });
     shot = await page.screenshot({ fullPage: true });
     // Hand the overflow findings to the caller BEFORE the PDF exists, so a page that
     // clips a label is reported rather than quietly shipped.
     if (typeof opts.onFindings === 'function' && geom && Array.isArray(geom.overflow)) opts.onFindings(geom.overflow);
   } finally { await browser.close(); }
+
+  // compose_pdf.py knows neither page styles nor forced breaks, so a page that asks for
+  // either is composed here, on every machine alike. Only the ICT pack asks today; every
+  // other page takes the path below exactly as before.
+  if (opts.pageStyle === 'foot-band' || (geom && Array.isArray(geom.forced) && geom.forced.length)) {
+    return composeWithChromium(shot, geom, opts);
+  }
 
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lppdf-'));
   const png = path.join(dir, 'full.png'); const gj = path.join(dir, 'geom.json'); const out = path.join(dir, 'out.pdf');
@@ -391,59 +421,73 @@ function balancePages(greedyN, height, usable, safeCuts, allCuts) {
 }
 
 async function composeWithChromium(shotBuf, geom, opts = {}) {
-  const PAGE_H = 1123; const TOP = 28; const BOT = opts.pageStyle === 'ar-bottom' ? 36 : 12;
+  const PAGE_H = 1123; const TOP = 28; const BOT = opts.pageStyle === 'ar-bottom' ? 36 : (opts.pageStyle === 'foot-band' ? 34 : 12);
   const usable = PAGE_H - TOP - BOT;
   const height = Math.ceil(geom.height);
   const cuts = [...new Set((geom.cuts || []).map((c) => Math.round(c)))].sort((a, b) => a - b)
     .filter((c) => c > 0 && c <= height + 1);
   const safeCuts = [...new Set((geom.safe || geom.cuts || []).map((c) => Math.round(c)))]
     .sort((a, b) => a - b).filter((c) => c > 0 && c <= height + 1);
+  // A span of the strip, paginated on its own: greedy, then balanced. The whole document is
+  // ONE span, [0, height] — which is exactly what this code did before spans existed. A
+  // forced break (a section marked .lp-break-before) divides the strip into more than one,
+  // and no page may cross it.
+  const span = (a, b) => {
+    const sub = (list) => list.filter((c) => c > a && c <= b + 1).map((c) => c - a);
+    const H = b - a; const C = sub(cuts); const SC = sub(safeCuts);
+    const pages = [];
+    let start = 0;
+    while (start < H - 1) {
+      const limit = start + usable;
+      // A WHOLE-CARD BOUNDARY WINS WHENEVER ONE FITS. Taking the last legal cut fills the page
+      // as far as possible, and a grid-row gap is legal — but choosing one when a card boundary
+      // was available splits a card that would have fitted whole on the next page. Measured:
+      // the fractions lesson's assessment is 879px and a page holds 1059, so it had no need to
+      // be cut at all, yet the composer opened it to gain 300px on the page before. The rule
+      // the reviewer set is that a card is never split and whole rows move instead — so a row
+      // gap is now the FALLBACK, used only when no card boundary fits, which is the case a card
+      // taller than a page genuinely needs.
+      const within = C.filter((c) => c > start + 40 && c <= limit);
+      const withinSafe = SC.filter((c) => c > start + 40 && c <= limit);
+      let end = withinSafe.length ? withinSafe[withinSafe.length - 1]
+        : (within.length ? within[within.length - 1] : Math.min(limit, H));
+      // Absorb a small trailing remainder so a few px of padding does not earn its own
+      // page — but ONLY when the page still fits. The clip is a fixed `usable` box with
+      // overflow:hidden, so extending it past that silently CUT the content off (a
+      // homework card lost half its instructions this way, while the render still
+      // reported two pages, which is also why the fit loop never noticed).
+      if (H - end < 48 && H - start <= usable) end = H;
+      pages.push([start, Math.min(end, H)]);
+      start = end;
+    }
+    // ── BALANCE EVERY PAGE, NOT JUST THE LAST TWO ────────────────────────────────────────
+    //
+    // The loop above is greedy: each page takes the last cut that fits, which fills THAT page
+    // as far as it can. Greedy is optimal per page and poor across a document — when a tall
+    // card will not fit, the page simply ends, and the slack all lands wherever the awkward
+    // card happens to fall. Measured on the six live lessons: 3,798px of blank across 14
+    // pages, and the fractions lesson came out 67% / 41% / 75% / 52% — a half-empty page in
+    // the MIDDLE, which the old rule never looked at because it only ever rebalanced the tail.
+    //
+    // So: keep the page COUNT greedy found (that is the minimum, and the reviewer's rule is
+    // that page count follows the content), then re-choose the boundaries so the slack is
+    // shared out. Formally — partition the strip into exactly N pages, at existing cut
+    // points, maximising the SHORTEST page. Maximising the shortest page is the same thing as
+    // minimising the largest blank area, which is the defect being reported.
+    //
+    // Only cut points the composer already trusts are used, so this cannot introduce a split
+    // card: whole-card boundaries are tried first and a row gap is the fallback, exactly as
+    // above. And every page still has to fit inside `usable` — the clip is a fixed box with
+    // overflow:hidden, so a page longer than that silently loses content.
+    const balanced = balancePages(pages.length, H, usable, SC, C);
+    if (balanced) pages.splice(0, pages.length, ...balanced);
+    return pages.map(([x, z]) => [x + a, z + a]);
+  };
+  const forced = [...new Set((geom.forced || []).map((c) => Math.round(c)))]
+    .filter((c) => c > 40 && c < height - 40).sort((x, z) => x - z);
+  const bounds = [0, ...forced, height];
   const pages = [];
-  let start = 0;
-  while (start < height - 1) {
-    const limit = start + usable;
-    // A WHOLE-CARD BOUNDARY WINS WHENEVER ONE FITS. Taking the last legal cut fills the page
-    // as far as possible, and a grid-row gap is legal — but choosing one when a card boundary
-    // was available splits a card that would have fitted whole on the next page. Measured:
-    // the fractions lesson's assessment is 879px and a page holds 1059, so it had no need to
-    // be cut at all, yet the composer opened it to gain 300px on the page before. The rule
-    // the reviewer set is that a card is never split and whole rows move instead — so a row
-    // gap is now the FALLBACK, used only when no card boundary fits, which is the case a card
-    // taller than a page genuinely needs.
-    const within = cuts.filter((c) => c > start + 40 && c <= limit);
-    const withinSafe = safeCuts.filter((c) => c > start + 40 && c <= limit);
-    let end = withinSafe.length ? withinSafe[withinSafe.length - 1]
-      : (within.length ? within[within.length - 1] : Math.min(limit, height));
-    // Absorb a small trailing remainder so a few px of padding does not earn its own
-    // page — but ONLY when the page still fits. The clip is a fixed `usable` box with
-    // overflow:hidden, so extending it past that silently CUT the content off (a
-    // homework card lost half its instructions this way, while the render still
-    // reported two pages, which is also why the fit loop never noticed).
-    if (height - end < 48 && height - start <= usable) end = height;
-    pages.push([start, Math.min(end, height)]);
-    start = end;
-  }
-  // ── BALANCE EVERY PAGE, NOT JUST THE LAST TWO ────────────────────────────────────────
-  //
-  // The loop above is greedy: each page takes the last cut that fits, which fills THAT page
-  // as far as it can. Greedy is optimal per page and poor across a document — when a tall
-  // card will not fit, the page simply ends, and the slack all lands wherever the awkward
-  // card happens to fall. Measured on the six live lessons: 3,798px of blank across 14
-  // pages, and the fractions lesson came out 67% / 41% / 75% / 52% — a half-empty page in
-  // the MIDDLE, which the old rule never looked at because it only ever rebalanced the tail.
-  //
-  // So: keep the page COUNT greedy found (that is the minimum, and the reviewer's rule is
-  // that page count follows the content), then re-choose the boundaries so the slack is
-  // shared out. Formally — partition the strip into exactly N pages, at existing cut
-  // points, maximising the SHORTEST page. Maximising the shortest page is the same thing as
-  // minimising the largest blank area, which is the defect being reported.
-  //
-  // Only cut points the composer already trusts are used, so this cannot introduce a split
-  // card: whole-card boundaries are tried first and a row gap is the fallback, exactly as
-  // above. And every page still has to fit inside `usable` — the clip is a fixed box with
-  // overflow:hidden, so a page longer than that silently loses content.
-  const balanced = balancePages(pages.length, height, usable, safeCuts, cuts);
-  if (balanced) pages.splice(0, pages.length, ...balanced);
+  for (let k = 0; k < bounds.length - 1; k++) pages.push(...span(bounds[k], bounds[k + 1]));
   if (process.env.LP_DEBUG_PAGES === '1') {
     console.log('[pages] height=' + height + ' usable=' + usable
       + ' safe=' + JSON.stringify(safeCuts) + ' cuts=' + JSON.stringify(cuts.slice(0, 60))
@@ -454,11 +498,30 @@ async function composeWithChromium(shotBuf, geom, opts = {}) {
   // «الصفحة ن من م» at the bottom start edge; default keeps the classic top num.
   const arDigits = (v) => String(v).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
   const escText = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  const numFor = (i, n) => opts.pageStyle === 'ar-bottom'
+  // 'foot-band' (the ICT pack): the lesson's locator and "page N of M" in a footer band, and
+  // on every later page a running head — the lesson title, plus "<section> · continued" when
+  // the page opens partway through a section. Labels come from the document (ICT's own
+  // strings), so the band speaks the lesson's language.
+  const dirAttr = opts.dir === 'rtl' ? 'rtl' : 'ltr';
+  const footBand = (i, n, s) => {
+    const label = String(opts.pageLabel || '{n} / {m}').replace('{n}', i + 1).replace('{m}', n);
+    let head = '';
+    if (i > 0 && !forced.some((f) => Math.abs(f - s) < 4)) {
+      const heads = geom.heads || [];
+      const fresh = heads.some((h) => h.top >= s - 4 && h.top <= s + 40);
+      const prev = heads.filter((h) => h.top < s - 4).pop();
+      const bits = [opts.runTitle, !fresh && prev && prev.title ? `${prev.title} · ${opts.continuedLabel || 'continued'}` : '']
+        .filter(Boolean);
+      if (bits.length) head = `<div class="rh" dir="${dirAttr}">${bits.map(escText).join(' · ')}</div>`;
+    }
+    return head + `<div class="fb" dir="${dirAttr}"><span>${escText(opts.footerText)}</span><span>${escText(label)}</span></div>`;
+  };
+  const numFor = (i, n, s) => opts.pageStyle === 'ar-bottom'
     ? `<div class="band" dir="rtl"><span class="bn">الصفحة ${arDigits(i + 1)} من ${arDigits(n)}</span><span class="bc">${escText(opts.footerText)}</span></div>`
-    : `<div class="num">${i + 1} / ${n}</div>`;
+    : opts.pageStyle === 'foot-band' ? footBand(i, n, s)
+      : `<div class="num">${i + 1} / ${n}</div>`;
   const divs = pages.map(([s, e], i) =>
-    `<div class="pg">${numFor(i, pages.length)}`
+    `<div class="pg">${numFor(i, pages.length, s)}`
     + `<div class="clip" style="height:${e - s}px"><img src="data:image/png;base64,${b64}" style="top:${-s}px"></div></div>`).join('');
   const html = `<!doctype html><html><head><style>
   @page{size:794px 1123px;margin:0}
@@ -470,7 +533,11 @@ async function composeWithChromium(shotBuf, geom, opts = {}) {
     font:700 11.5px 'Noto Naskh Arabic',system-ui,sans-serif;color:#182448}
   .band .bn{position:absolute;left:0;top:5px}
   .clip{position:relative;overflow:hidden;margin-top:${TOP}px;width:794px}
-  .clip img{position:absolute;left:0;width:794px}
+  .clip img{position:absolute;left:0;width:794px}${opts.pageStyle === 'foot-band' ? `
+  .fb{position:absolute;left:24px;right:24px;bottom:8px;border-top:1px solid #e5e9f0;padding-top:6px;display:flex;justify-content:space-between;gap:14px;z-index:2;
+    font:500 11.5px 'Noto Sans','Noto Nastaliq Urdu',system-ui,sans-serif;color:#5b6472}
+  .rh{position:absolute;top:7px;left:24px;right:24px;z-index:2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    font:700 12px 'Noto Sans','Noto Nastaliq Urdu',system-ui,sans-serif;color:#0B2545}` : ''}
   </style></head><body>${divs}</body></html>`;
   const browser = await chromium.launch({ executablePath: chromePath(), args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu'] });
   try {

@@ -1,0 +1,308 @@
+{
+ "meta": {
+  "lessonId": "grade_2_math_ch1_seg1",
+  "grade": 2,
+  "subject": "math",
+  "topic": "Recognise the place value of each digit",
+  "day": 1,
+  "total": 12,
+  "chapterTitle": "Textbook pp.2-4",
+  "journeySoFar": [],
+  "comingUp": [
+   {
+    "day": 2,
+    "topic": "Read and write numbers up to 999 in numerals",
+    "pages": "5"
+   },
+   {
+    "day": 3,
+    "topic": "Apply place value to represent, read",
+    "pages": ""
+   },
+   {
+    "day": 4,
+    "topic": "Compare and order numbers up to 999",
+    "pages": "10-11"
+   },
+   {
+    "day": 5,
+    "topic": "Compare and order numbers up to 999 (p.12)",
+    "pages": "12"
+   },
+   {
+    "day": 6,
+    "topic": "Round numbers to the nearest tens",
+    "pages": "14-16"
+   },
+   {
+    "day": 7,
+    "topic": "Round numbers to the nearest tens (p.17-19)",
+    "pages": "17-19"
+   },
+   {
+    "day": 8,
+    "topic": "Recognise the position of an object in a line",
+    "pages": "19-22"
+   },
+   {
+    "day": 9,
+    "topic": "Recognise the position of objects and write it",
+    "pages": "23-24"
+   },
+   {
+    "day": 10,
+    "topic": "Read and write roman numbers up to 12",
+    "pages": "25-27"
+   },
+   {
+    "day": 11,
+    "topic": "Chapter assessment (worksheet)",
+    "pages": "2-27"
+   },
+   {
+    "day": 12,
+    "topic": "Chapter revision day",
+    "pages": "2-27"
+   }
+  ],
+  "materials": [
+   "chalk",
+   "board",
+   "textbook pp.2-4",
+   "notebook",
+   "sticks or twigs the class gathers (for bundles)",
+   "rubber bands (to tie ten sticks into one bundle, and ten bundles into one big hundred-bundle)"
+  ],
+  "durationMin": 30,
+  "isUrdu": true,
+  "urduMedium": false,
+  "skillType": "pictorial",
+  "cpaPhase": "pictorial",
+  "designNotes": "Topic 1 opener. p2 Adventure Begins hook (Taleemabad library is 999 days old). p3-4 place-value walkthrough: 123 = 1 hundred, 2 tens, 3 ones; expanded form 123=100+20+3; 342 place/value; count forward 123->126 and backward 342->337 (verified). p4 Practice Questions on 602 (H/T/O, expanded form, place & value of each digit). Model with a place-value chart / base-10 blocks. [Stage-C ELEMENTS: cumulative spaced-retrieval warm-up (prior lessons); topic-fit number-sense warm-up (subitise/number-bonds",
+  "pagesPrinted": [
+   2,
+   3,
+   4
+  ],
+  "sloDescriptions": [
+   "I can recognise the place value of each digit in 3-digit numbers (hundreds, tens, ones/units).",
+   "I can count numbers up to and across 999 (3-digit numbers) forwards and backwards, beginning from zero or one, or from any given number."
+  ],
+  "minutes": 30,
+  "teacherGender": "woman"
+ },
+ "goal": "Learn that a digit's value depends on its place -- hundreds, tens or ones.",
+ "sloFull": "By the end of the lesson, students will recognise the place value of each digit in a 3-digit number (hundreds, tens, ones) and count forward and backward across 3-digit numbers.",
+ "sloCode": "M-02-NS-03",
+ "bloom": "understand",
+ "totalMinutes": 30,
+ "warmUpPeerMove": "Choral count by tens together, then partner-check on '10 tens = 100'.",
+ "exitSuccessCriteria": "Correct if the student says DIFFERENT and explains the 7 and 0 sit in different places, worth 70 vs 7.",
+ "exitSelfPredict": "Draw a smiley or sad face predicting whether 470 and 407 are the same number.",
+ "hook": {
+  "warmUp": {
+   "recallOf": "General prior knowledge: counting by tens (Day 1",
+   "teacherAsks": "Count by tens together from 10 to 100. Now tell your partner: how many tens make 100?",
+   "expectedAnswer": "10, 20, 30 ... 100. 10 tens make 100."
+  },
+  "story": "Taleemabad's library is 999 days old! Look at these big numbers: 531, 342, 123. Have YOU seen a number this big -- on a bus, a price tag, a house number?",
+  "objects": [
+   "A hundred-bundle made of ten bundles-of-ten sticks taped together, to show what '100' looks like."
+  ],
+  "conversation": [
+   {
+    "teacherAsks": "Have YOU ever seen a number this big before? Where?",
+    "listenFor": "Names a real place (bus number, price tag, house number)."
+   }
+  ],
+  "keyWords": [
+   {
+    "term": "hundreds",
+    "urdu": "سینکڑے",
+    "syllables": "hun-dreds (2 syllables)",
+    "def": "a group of 100."
+   },
+   {
+    "term": "tens",
+    "urdu": "دہائیاں",
+    "syllables": "tens (1 syllable)",
+    "def": "a group of 10."
+   },
+   {
+    "term": "ones",
+    "urdu": "اکائیاں",
+    "syllables": "ones (1 syllable)",
+    "def": "single units, fewer than a bundle."
+   },
+   {
+    "term": "place value",
+    "urdu": "پوزیشن کی قیمت",
+    "syllables": "place val-ue (3 syllables)",
+    "def": "what a digit is worth because of WHERE it sits in the number."
+   },
+   {
+    "term": "expanded form",
+    "urdu": "پھیلی ہوئی شکل",
+    "syllables": "ex-pand-ed form (4 syllables)",
+    "def": "writing a number as the sum of its hundreds, tens and ones."
+   },
+   {
+    "term": "digit",
+    "urdu": "ہندسہ",
+    "syllables": "dig-it (2 syllables)",
+    "def": "one single number symbol (0-9) inside a bigger number."
+   }
+  ],
+  "board": {
+   "instruction": "Before class, draw a 3-column Hundreds | Tens | Ones chart. Draw bundles/sticks for each example -- never a bare digit alone.",
+   "content": "Hundreds | Tens | Ones\n10 tens = 1 hundred-bundle\n123 = 1 hundred + 2 tens + 3 ones\nWORDS: digit = ہندسہ | expanded form = پھیلی ہوئی شکل | place value = پوزیشن کی قیمت"
+  }
+ },
+ "iDo": {
+  "minutes": 7,
+  "steps": [
+   {
+    "n": 1,
+    "action": "Draw 1 hundred-bundle, 2 bundles, 3 sticks for 123 in the chart. Count each column aloud before writing any digit.",
+    "say": "One hundred-bundle, two bundles, three sticks. That's 1 hundred, 2 tens, 3 ones -- we write 123.",
+    "sayLocal": "Ek hundred-bundle, do bundles, teen sticks. Yeh 1 hundred, 2 tens, 3 ones hai -- hum 123 likhte hain."
+   }
+  ],
+  "teacherSays": "The digit's VALUE depends on which column it sits in, not just its name.",
+  "teacherSaysLocal": "Digit ki VALUE us column par depend karti hai jahan woh baitha hai, sirf naam par nahi.",
+  "keyFact": "The same digit is worth a different amount in a different place.",
+  "worked": {
+   "problem": "342 -- a different number from 123.",
+   "work": [
+    "3 hundred-bundles = 300",
+    "4 bundles = 40",
+    "2 sticks = 2",
+    "342 = 300 + 40 + 2"
+   ],
+   "answer": "342 = 300 + 40 + 2",
+   "diagram": "342 —\n3 hundreds: [bundle][bundle][bundle]\n4 tens: [bundle][bundle][bundle][bundle]\n2 ones: [bundle][bundle]\n123 —\n1 hundred: [bundle]\n2 tens: [bundle][bundle]\n3 ones: [bundle][bundle][bundle]"
+  },
+  "cfu": "What is the value of the digit 2 in 123?",
+  "cfuPassSignal": "Says 40, pointing to the four bundles.",
+  "ifStruggle": "Cover the digit 2 with your hand and ask: how many bundles are still there? Count them: 2 bundles = 20.",
+  "misconception": {
+   "slip": "Children say the digit's name instead of its value (say '2' for the tens digit instead of '20').",
+   "why": "The digit looks the same whether it sits in tens or ones, so naming feels like enough.",
+   "fix": "Cover the digit and count the bundles in that column out loud before saying the value."
+  }
+ },
+ "weDo": {
+  "minutes": 10,
+  "action": "Help Zainab build 256 with bundles together.",
+  "strategy": "Ask how many hundred-bundles, bundles and sticks are needed; fill the chart together before writing any digit.",
+  "modelled": {
+   "problem": "256",
+   "work": [
+    "2 hundred-bundles = 200",
+    "5 bundles = 50",
+    "6 sticks = 6",
+    "256 = 200 + 50 + 6"
+   ],
+   "answer": "256 = 200 + 50 + 6",
+   "diagram": "2 hundreds: [bundle][bundle]\n5 tens: [bundle][bundle][bundle][bundle][bundle]\n6 ones: [bundle][bundle][bundle][bundle][bundle][bundle]"
+  },
+  "partner": {
+   "instruction": "Digit Detective: Partner A names a 3-digit number, Partner B says its hundreds/tens/ones VALUES.",
+   "a": "My number is ___. What are its hundreds, tens and ones?",
+   "b": "Hundreds: ___. Tens: ___. Ones: ___.",
+   "teacherRole": "circulate, listening for VALUE not just digit-naming; reset a pair's streak with encouragement, never a penalty."
+  },
+  "cfu": "Which digit in 256 tells us the TENS, and what is its value?"
+ },
+ "youDo": {
+  "minutes": 9,
+  "action": "Complete p.4's Practice Questions on 602 independently.",
+  "problems": [
+   {
+    "n": 1,
+    "prompt": "602 = ___ hundreds, ___ tens, ___ ones.",
+    "source": "p.4 Practice Questions",
+    "diagram": "6 hundreds: [bundle][bundle][bundle][bundle][bundle][bundle]\n2 ones: [bundle][bundle]",
+    "answer": "6 hundreds, 0 tens, 2 ones",
+    "ref": "p.4 Practice Questions"
+   },
+   {
+    "n": 2,
+    "prompt": "In expanded form, 602 = ___ + ___ + ___.",
+    "source": "p.4 Practice Questions",
+    "diagram": "",
+    "answer": "600 + 0 + 2",
+    "ref": "p.4 Practice Questions"
+   },
+   {
+    "n": 3,
+    "prompt": "Count backwards from 602: ___, ___, ___, 598.",
+    "source": "p.4 Practice Questions",
+    "diagram": "",
+    "answer": "601, 600, 599",
+    "ref": "p.4 Practice Questions"
+   }
+  ],
+  "wordProblem": {
+   "prompt": "Ali has 602 rupees saved. Write 602 in expanded form to show hundreds, tens, ones.",
+   "answer": "600 + 0 + 2"
+  },
+  "behind": {
+   "prompt": "Build 130 with bundles: how many hundred-bundles, bundles and sticks?",
+   "answer": "1 hundred-bundle, 3 bundles, 0 sticks",
+   "coach": "Let the child lay out the bundles first, then count each column before writing the digit.",
+   "diagram": "13 tens: [bigbundle][bigbundle][bigbundle][bigbundle][bigbundle][bigbundle][bigbundle][bigbundle][bigbundle][bigbundle][bigbundle][bigbundle][bigbundle]\n13 tens: [bundle][bundle][bundle][bundle][bundle][bundle][bundle][bundle][bundle][bundle][bundle][bundle][bundle]\n130 ones: 0 sticks (empty column)"
+  },
+  "ahead": {
+   "prompt": "Write 602 and 620 in expanded form. Which digit moved, and what happened to its value?",
+   "answer": "602=600+0+2; 620=600+20+0 -- the 2 moved from ones to tens",
+   "coach": "Push the child to say WHY the value changed, not just which number looks bigger."
+  }
+ },
+ "wrap": {
+  "exitOptions": [
+   {
+    "form": "short",
+    "prompt": "Is 470 the same as 407? Explain using place value.",
+    "promptLocal": "Kya 470, 407 kay barabar hai? Place value se batao.",
+    "answer": "No -- different; the 7 and 0 sit in different places (tens vs ones)",
+    "howToRun": "Each child writes their answer; ask 2-3 to explain aloud.",
+    "diagram": ""
+   },
+   {
+    "form": "mcq",
+    "prompt": "Which number has a 5 in the TENS place?",
+    "promptLocal": "Konsay number mein 5, TENS jagah par hai?",
+    "choices": [
+     "156",
+     "165",
+     "516",
+     "615"
+    ],
+    "correct": "A",
+    "answer": "A — 156",
+    "howToRun": "Read all 4 aloud; children circle one; thumbs up when done.",
+    "diagram": ""
+   },
+   {
+    "form": "short",
+    "prompt": "Write 235 in expanded form.",
+    "promptLocal": "235 ko expanded form mein likho.",
+    "answer": "200 + 30 + 5",
+    "howToRun": "Each child writes in notebook; glance-check as they finish.",
+    "diagram": ""
+   }
+  ],
+  "revisionPanels": null,
+  "keyFacts": [
+   "The same digit is worth a different amount in a different place.",
+   "Ten tens make one hundred; ten ones make one ten."
+  ],
+  "homework": [
+   "p.4-style: Bilal's number 385 -- write H/T/O, expanded form"
+  ],
+  "reflection": "Could children state a digit's VALUE, not just its name, without prompting?"
+ },
+ "navLocal": null,
+ "cost": 0
+}

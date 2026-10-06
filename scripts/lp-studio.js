@@ -14,6 +14,7 @@ const { condenseToGuide, addFiguresToGuide } = require('../lp-render/condense');
 const { validateFigures } = require('../lp-render/figures/validate');
 const { checkVerbatim } = require('../lp-render/text/verbatim');
 const { buildGuideFromMarkdown, GUIDE_SECTION_IDS } = require('../lp-render/guide/from-markdown');
+const { buildGuideFromLpDoc, isLpDoc } = require('../lp-render/guide/from-lpdoc');
 
 const ROOT = path.resolve(__dirname, '..');
 // Load the kie.ai key from the git-ignored .env-api if it isn't already in the env.
@@ -88,6 +89,18 @@ function handler(req, res) {
         // First, try to read the paste as a ready content JSON.
         if (typeof content !== 'string') parsed = content;
         else { try { parsed = JSON.parse(content); } catch (_) { parsed = null; } }
+        // AN ICT (NIETE) lp_doc is converted here, in code, by the ICT adapter. Read as a guide it
+        // would render as blank cards (its sections carry blocks, not types). A converted guide is
+        // already in its final shape, so the 2-page structure passes below — which can call a paid
+        // model to add pictures — are skipped for it (see looksLikeGuide).
+        let fromLpDoc = false;
+        if (isLpDoc(parsed)) {
+          const { guide, report } = buildGuideFromLpDoc(parsed, parsedBody.locale ? { lang: parsedBody.locale } : {});
+          parsed = guide; fromLpDoc = true; structured = JSON.stringify(guide, null, 2);
+          log(`ICT lp_doc → guide, mapped in code by the ICT adapter (no model call, no credits): ${guide.sections.length} card(s), ${guide.images.length} diagram(s), language ${report.lang}.`);
+          for (const u of report.unrendered) log(`  ⚠ not drawn yet: ${u.type}${u.spec ? ` (${u.spec})` : ''} — ${u.why}`);
+          for (const w of report.warnings) log(`  ⚠ ${w}`);
+        }
         // Raw lesson TEXT (markdown, as the lesson artifacts carry it) is mapped by code.
         if (!parsed && typeof content === 'string' && guideMode === 'code') {
           log('Raw lesson text → guide template, mapped in code (no model call, no credits).');
@@ -134,7 +147,7 @@ function handler(req, res) {
         // i.e. does it look YEMENI — so a Kenyan guide was never recognised as a guide and
         // got sent back through the structurer. Any section id any region profile can
         // emit counts, and a stage id of any profile is the real signal.
-        const looksLikeGuide = Array.isArray(parsed.sections)
+        const looksLikeGuide = fromLpDoc || Array.isArray(parsed.sections)
           && parsed.sections.filter((x) => x && GUIDE_SECTION_IDS.has(x.id)).length >= 3;
         if (guide2p && !looksLikeGuide && guideMode === 'llm') {
           if (!process.env.KIE_API_KEY) throw new Error('The guide structure needs a kie.ai key for the condense step.');

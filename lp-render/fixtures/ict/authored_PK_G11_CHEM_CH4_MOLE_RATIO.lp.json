@@ -1,0 +1,527 @@
+{
+ "lesson_id": "PK_G11_CHEM_CH4_MOLE_RATIO",
+ "schema_version": "2.0",
+ "lint_profile": "full",
+ "provenance": {
+  "book_stem": "grade_11_chemistry",
+  "grade": 11,
+  "subject": "Chemistry",
+  "medium": "en",
+  "chapter": "Ch. 4 · Stoichiometry",
+  "topic": "Stoichiometric calculations — the mole ratio from a balanced equation",
+  "printed_pages": "82-84",
+  "pdf_pages": "82-84",
+  "page_offset": 0,
+  "publisher": "Unspecified (not printed on pp.82-84)",
+  "curriculum": "Unspecified (not printed on pp.82-84)",
+  "source_quality_flags": [
+   "Example 4.2 (p.82) labels its answer '32.032 amu' — the unit for a molar mass found this way is g/mol, not amu",
+   "the book writes ion charges as '\\ce{Na1}+' / '\\ce{Cl1}-' (p.83) instead of the standard 'Na+' / 'Cl-'",
+   "Concept Assessment Exercises 4.1-4.3 (pp.82-84) print no answer key"
+  ]
+ },
+ "notes": {
+  "supplied": [
+   "publisher and curriculum framework — not stated on pp.82-84, left as unspecified",
+   "atomic masses used (Mg=24, O=16, K=39, Cl=35.5, N=14, H=1, Na=23, Fe=56, C=12) are standard values not reprinted on these pages",
+   "molar mass of \\ce{Zn} (65 g/mol), needed for Practice Q7 / Exercise 4.2 Q3 (p.83), is not given on these pages"
+  ],
+  "defects": [
+   "Example 4.2 mislabels a molar-mass answer as 'amu' instead of 'g/mol' — this LP does not repeat the unit error",
+   "Concept Assessment Exercises 4.1, 4.2, 4.3 print no answer key — page2.model_answers and page2.homework_key supply one",
+   "the book's non-standard ion notation '\\ce{Na1}+'/'\\ce{Cl1}-' is corrected to standard notation in this LP"
+  ],
+  "gaps": [
+   "no printed SLO code anywhere in Chapter 4; the chapter opener (p.80) lists 10 numbered outcomes with no codes",
+   "Ch.4 §4.1.1 (mole and Avogadro's number) was not included in the given page-truth; the warm-up's spaced item cites it by topic only"
+  ]
+ },
+ "needs_human_review": false,
+ "human_review_reason": null,
+ "slo": {
+  "code": null,
+  "text_verbatim": "Express balanced chemical equations in terms of moles, representative particles, masses, and volumes of gases at STP.",
+  "source_page": "80",
+  "cognitive_level": "A",
+  "assessment_status": "Summative",
+  "command_word": "calculate",
+  "success_criterion": "By the end you can read a mole ratio from a balanced equation's coefficients and calculate a matching mass or mole quantity for a 4-mark SRQ."
+ },
+ "lp_type": "STEM-2",
+ "period_minutes": 40,
+ "board_weight": "FBISE HSSC-I · ~6 marks",
+ "materials": [
+  "board marker",
+  "textbook pp.82-84"
+ ],
+ "warmup": {
+  "minutes": 5,
+  "items": [
+   {
+    "q": "In \\ce{2H2 + O2 -> 2H2O}, what does the front '2' on \\ce{H2} mean?",
+    "a": "2 moles of \\ce{H2} — a coefficient, not a subscript.",
+    "kind": "prerequisite"
+   },
+   {
+    "q": "Molar mass of \\ce{O2}? (O = 16)",
+    "a": "32 g/mol.",
+    "kind": "prerequisite"
+   },
+   {
+    "q": "How many particles are in one mole of any substance?",
+    "a": "$6.02\\times10^{23}$ (Avogadro's number).",
+    "kind": "spaced",
+    "from": "Ch.4 §4.1.1, p.79 (mole & Avogadro's number)"
+   }
+  ],
+  "layout": "half"
+ },
+ "objectives": [
+  "I can read the mole ratio from the coefficients of a balanced equation.",
+  "I can use that ratio to calculate moles or mass of a reactant or product."
+ ],
+ "sections": [
+  {
+   "id": "introduction",
+   "minutes": 5,
+   "blocks": [
+    {
+     "type": "ask",
+     "question": "A plant has 6 kg \\ce{H2} to react with \\ce{N2} for ammonia. How many kg \\ce{N2} needed, without testing?",
+     "look_for": "mass-based guesses, not mole ratio",
+     "hook": true,
+     "closed_by": "dev_open"
+    },
+    {
+     "type": "say",
+     "id": "intro_say1",
+     "text": "Balanced equation: \\ce{N2 + 3H2 -> 2NH3}."
+    },
+    {
+     "type": "watch_out",
+     "text": "Don't guess — use exact method.",
+     "misconception": false
+    },
+    {
+     "type": "board",
+     "text": "\\ce{N2(g) + 3H2(g) -> 2NH3(g)}"
+    }
+   ],
+   "layout": "half"
+  },
+  {
+   "id": "development",
+   "minutes": 10,
+   "blocks": [
+    {
+     "type": "paragraph",
+     "id": "dev_open",
+     "text": "Mole-ratio steps are convention: watch one, try one, alone. Fertilizer: 1 mol \\ce{N2} : 3 mol \\ce{H2} means 6 kg \\ce{H2} ($3000$ mol) needs $1000$ mol (28 kg) \\ce{N2}."
+    },
+    {
+     "type": "diagram",
+     "spec": {
+      "type": "chem_equation",
+      "equation": "N2 + 3H2 -> 2NH3",
+      "caption": "1:3:2 = mole ratio"
+     }
+    },
+    {
+     "type": "diagram",
+     "spec": {
+      "type": "molecule",
+      "smiles": "N",
+      "formula": "NH3",
+      "name": "ammonia",
+      "caption": "ammonia, 2 mol formed"
+     }
+    },
+    {
+     "type": "key_points",
+     "items": [
+      "Coefficients = mole ratio.",
+      "Ratio comes from coefficients, not subscripts.",
+      "Same ratio fixes particles, mass, STP volume."
+     ]
+    },
+    {
+     "type": "keywords",
+     "items": [
+      {
+       "word": "mole ratio",
+       "meaning": "ratio of moles from coefficients"
+      },
+      {
+       "word": "coefficient",
+       "meaning": "number in front of a formula"
+      },
+      {
+       "word": "STP",
+       "meaning": "1 mole of gas = $22.4$ dm³"
+      }
+     ]
+    },
+    {
+     "type": "latex",
+     "tex": "\\dfrac{n(\\text{N}_2)}{n(\\text{H}_2)} = \\dfrac{1}{3}",
+     "caption": "mole ratio, from equation"
+    },
+    {
+     "type": "watch_out",
+     "text": "Ratio comes from the SUBSCRIPT (e.g. 2 in \\ce{H2O}), not the COEFFICIENT.",
+     "misconception": true
+    },
+    {
+     "type": "ask",
+     "question": "Does the 2 in \\ce{H2O} give a mole ratio, or count atoms?",
+     "look_for": "identifies coefficients, not subscripts"
+    }
+   ]
+  },
+  {
+   "id": "activity",
+   "minutes": 15,
+   "blocks": [
+    {
+     "type": "worked_example",
+     "title": "Mole ratio (Ex. 4.3)",
+     "prompt": "$100$ g \\ce{Mg} + \\ce{HCl} -> ? dm³ \\ce{H2}, STP. \\ce{Mg + 2HCl -> MgCl2 + H2}",
+     "steps": [
+      "$100/24 = 4.17$ mol \\ce{Mg}",
+      "\\ce{Mg}:\\ce{H2} = 1:1",
+      "$4.17$ mol \\ce{H2}",
+      "$4.17 \\times 22.4 = 93.4$ dm³"
+     ],
+     "result": "$93.4$ dm³ \\ce{H2}"
+    },
+    {
+     "type": "diagram",
+     "spec": {
+      "type": "panels",
+      "panels": [
+       {
+        "title": "Mg",
+        "sub": "1 mol",
+        "glyph": "Mg",
+        "lines": [
+         "24 g/mol"
+        ],
+        "foot": "100 g = 4.17 mol"
+       },
+       {
+        "title": "H2",
+        "sub": "1 mol",
+        "glyph": "H–H",
+        "lines": [
+         "2 g/mol"
+        ],
+        "foot": "4.17 mol = 8.34 g",
+        "color": "var(--navy)"
+       }
+      ],
+      "caption": "same mol, diff mass"
+     }
+    },
+    {
+     "type": "latex",
+     "tex": "n(\\text{Mg}) = \\dfrac{100\\ \\text{g}}{24\\ \\text{g mol}^{-1}} = 4.17\\ \\text{mol}",
+     "caption": "mass to moles"
+    },
+    {
+     "type": "faded_example",
+     "title": "Mole-mass (Ex. 4.6)",
+     "prompt": "$12.25$ g \\ce{KClO3}: \\ce{2KClO3 -> 2KCl + 3O2}. \\ce{O2} mass=?",
+     "steps": [
+      "\\ce{KClO3}: $39+35.5+16\\times3=122.5$ g/mol",
+      "$12.25/122.5 =$ ___ mol",
+      "2:3 -> \\ce{O2} = ___ mol",
+      "___ $\\times 32$ = ___ g \\ce{O2}"
+     ],
+     "answer": "$0.1$ mol \\ce{KClO3} -> $0.15$ mol \\ce{O2} -> $4.8$ g \\ce{O2}"
+    },
+    {
+     "type": "practice",
+     "title": "Practice",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "\\ce{2Mg + O2 -> 2MgO}: \\ce{Mg}:\\ce{O2}?",
+       "a": "2:1",
+       "tier": "support"
+      },
+      {
+       "q": "\\ce{C3H8 + 5O2 -> 3CO2 + 4H2O}: \\ce{O2}:\\ce{CO2}?",
+       "a": "5:3",
+       "tier": "support"
+      },
+      {
+       "q": "$6$ mol \\ce{C3H8}: \\ce{CO2}=? mol",
+       "a": "$18$ mol (ratio 1:3)",
+       "tier": "core"
+      },
+      {
+       "q": "\\ce{Fe2O3 + 3CO -> 2Fe + 3CO2}: \\ce{CO}, $5$ mol \\ce{Fe2O3}?",
+       "a": "$15$ mol ($5\\times3$)",
+       "tier": "core"
+      },
+      {
+       "q": "\\ce{N2 + 3H2 -> 2NH3}: \\ce{N2}, $6$ mol \\ce{H2}?",
+       "a": "$2$ mol (ratio 1:3)",
+       "tier": "core"
+      },
+      {
+       "q": "$4$ g \\ce{H2} + $32$ g \\ce{O2}: mole ratio $4:32$?",
+       "a": "No — $2$ mol \\ce{H2} : $1$ mol \\ce{O2} $=2:1$.",
+       "tier": "extension"
+      },
+      {
+       "q": "$100$ cm³ ($0.1$ dm³) \\ce{H2}, STP: mass \\ce{Zn}? \\ce{Zn + 2HCl -> ZnCl2 + H2}",
+       "a": "moles \\ce{H2}$=0.1/22.4=0.00446$; mass \\ce{Zn}$=0.00446\\times65=0.29$ g",
+       "tier": "extension"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "conclusion",
+   "minutes": 5,
+   "blocks": [
+    {
+     "type": "board",
+     "text": "\\ce{2Al + 3Cl2 -> 2AlCl3}. Ratio \\ce{Al}:\\ce{Cl2}? Mol \\ce{AlCl3} from $4$ mol \\ce{Al}?"
+    },
+    {
+     "type": "key_points",
+     "items": [
+      "\\ce{Al}:\\ce{Cl2} 2:3 (1 mark)",
+      "\\ce{Al}:\\ce{AlCl3} 1:1 (1 mark)",
+      "$4$ mol \\ce{AlCl3}, shown (2 marks)"
+     ]
+    },
+    {
+     "type": "practice",
+     "title": "Exit ticket",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "\\ce{2K + Cl2 -> 2KCl}. \\ce{K}:\\ce{Cl2}?",
+       "a": "2:1",
+       "tier": "core"
+      },
+      {
+       "q": "$3$ mol \\ce{Cl2}: mol \\ce{KCl}?",
+       "a": "$6$ mol",
+       "tier": "core"
+      }
+     ]
+    },
+    {
+     "type": "paragraph",
+     "id": "reteach_para",
+     "text": "If most miss it, re-teach with \\ce{N2 + 3H2 -> 2NH3}."
+    }
+   ]
+  },
+  {
+   "id": "homework",
+   "minutes": 0,
+   "blocks": [
+    {
+     "type": "practice",
+     "title": "Homework",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "\\ce{2Na + Cl2 -> 2NaCl} \\ce{Na}:\\ce{Cl2}?",
+       "a": "2:1",
+       "tier": "core"
+      },
+      {
+       "q": "\\ce{Fe2O3 + 3CO -> 2Fe + 3CO2} \\ce{CO}? $5$ mol \\ce{Fe2O3}",
+       "a": "$15$ mol",
+       "tier": "core"
+      },
+      {
+       "q": "$12.04\\times10^{23}$ \\ce{CO2}?",
+       "a": "$2$ mol",
+       "tier": "core"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "page2": {
+  "board_final": {
+   "draw_order": [
+    "1. Write balanced equation.",
+    "2. Circle coefficients.",
+    "3. Convert mass to moles.",
+    "4. Apply mole ratio.",
+    "5. Give unit asked."
+   ],
+   "diagram": {
+    "type": "flow",
+    "direction": "lr",
+    "title": "THE MOLE-RATIO METHOD",
+    "steps": [
+     {
+      "title": "BALANCED EQUATION",
+      "lines": [
+       "write"
+      ]
+     },
+     {
+      "title": "COEFFICIENTS",
+      "lines": [
+       "= mole ratio"
+      ],
+      "color": "var(--navy)"
+     },
+     {
+      "title": "CONVERT & SCALE",
+      "lines": [
+       "in -> out -> unit"
+      ],
+      "color": "var(--leaf)"
+     }
+    ]
+   },
+   "caption": "spine"
+  },
+  "model_answers": [
+   {
+    "label": "Worked",
+    "answer": "$4.17$ mol \\ce{Mg} -> $4.17$ mol \\ce{H2} -> $93.4$ dm³",
+    "marking_note": "ratio step"
+   },
+   {
+    "label": "Faded",
+    "answer": "$0.1$ mol \\ce{KClO3} -> $0.15$ mol \\ce{O2} -> $4.8$ g \\ce{O2}",
+    "marking_note": "ratio step"
+   },
+   {
+    "label": "Practice Q6",
+    "answer": "$2$ mol \\ce{H2} : $1$ mol \\ce{O2} $=2:1$",
+    "marking_note": "ratio step"
+   }
+  ],
+  "mistakes": [
+   {
+    "pupil_says": "2:1: \\ce{H2O} has 2H, 1O.",
+    "you_ask": "Front, or inside?"
+   },
+   {
+    "pupil_says": "4 g, 32 g: ratio 4:32?",
+    "you_ask": "Grams or moles?"
+   },
+   {
+    "pupil_says": "Scale numbers to grams?",
+    "you_ask": "Moles or grams?"
+   }
+  ],
+  "differentiation": {
+   "stuck": "Circle ratio; scale out.",
+   "barrier": "Give molar masses.",
+   "early": "Add STP conversion."
+  },
+  "exam_bank": {
+   "mcq": [
+    {
+     "q": "\\ce{2H2 + O2 -> 2H2O}: \\ce{H2}:\\ce{O2}?",
+     "options": [
+      "1:2",
+      "2:1",
+      "1:1",
+      "2:2"
+     ],
+     "answer": "B",
+     "distractor_codes": [
+      "subscript, not coefficient",
+      "assumes 1:1",
+      "doubles coefficients"
+     ]
+    },
+    {
+     "q": "$4$ g \\ce{H2}, $32$ g \\ce{O2}, \\ce{2H2 + O2 -> 2H2O}: mole ratio \\ce{H2}:\\ce{O2}?",
+     "options": [
+      "1:8",
+      "4:32",
+      "2:1",
+      "1:2"
+     ],
+     "answer": "C",
+     "distractor_codes": [
+      "mass, not mole",
+      "copies masses",
+      "inverts ratio"
+     ]
+    },
+    {
+     "q": "\\ce{Fe2O3 + 3CO -> 2Fe + 3CO2}: \\ce{CO}:\\ce{CO2}?",
+     "options": [
+      "2:3",
+      "1:1",
+      "1:3",
+      "3:2"
+     ],
+     "answer": "B",
+     "distractor_codes": [
+      "\\ce{Fe2O3} subscript, not CO",
+      "confuses CO:\\ce{Fe2O3} with CO:CO2",
+      "swaps numerator/denominator"
+     ]
+    }
+   ],
+   "srq": {
+    "q": "\\ce{2Al + 3Cl2 -> 2AlCl3}. \\ce{Al}:\\ce{Cl2}? \\ce{AlCl3} moles from $4$ mol \\ce{Al}?",
+    "marks": 4,
+    "mark_scheme": [
+     "1 mark: \\ce{Al}:\\ce{Cl2} = 2:3",
+     "1 mark: \\ce{Al}:\\ce{AlCl3} = 1:1",
+     "2 marks: $4$ mol \\ce{AlCl3}"
+    ]
+   },
+   "erq_skeleton": {
+    "q": "\\ce{2Na + Cl2 -> 2NaCl}.",
+    "parts": [
+     {
+      "heading": "\\ce{Na}:\\ce{Cl2} ratio?",
+      "marks": 1,
+      "note": "credit 2:1 only"
+     },
+     {
+      "heading": "\\ce{NaCl} moles, $6$ mol \\ce{Na}?",
+      "marks": 2,
+      "note": "1:1: $6$ mol \\ce{NaCl}"
+     },
+     {
+      "heading": "\\ce{Cl2} mass, $6$ mol \\ce{Na} (71 g/mol)?",
+      "marks": 3,
+      "note": "$3$ mol \\ce{Cl2} $\\times 71 = 213$ g"
+     }
+    ]
+   },
+   "how_marked": "Ratio, scaling, unit; no bare numbers."
+  },
+  "homework_key": [
+   {
+    "item": "\\ce{Na}:\\ce{Cl2} ratio?",
+    "answer": "2:1"
+   },
+   {
+    "item": "\\ce{CO}, $5$ mol \\ce{Fe2O3}?",
+    "answer": "$15$ mol"
+   },
+   {
+    "item": "$12.04\\times10^{23}$ molecules \\ce{CO2} = ? mol",
+    "answer": "$2$ mol"
+   }
+  ],
+  "next_period": "Mole/mole-volume chains; limiting reagents (SLOs 2-4, p.80).",
+  "not_going": "Not yet: limiting reagents, yield%, concentration.",
+  "coaching_lookfor": "Point to COEFFICIENT, not subscript."
+ },
+ "one_screen": "Objective: read a mole ratio from a balanced equation's coefficients and use it to calculate a mass or mole quantity. Prerequisite: molar mass of \\ce{O2}? (O=16) → 32 g/mol. Worked example: $100$ g \\ce{Mg} reacts with excess \\ce{HCl} (\\ce{Mg + 2HCl -> MgCl2 + H2}) — moles \\ce{Mg} = $100/24=4.17$ mol; ratio \\ce{Mg}:\\ce{H2}=1:1, so moles \\ce{H2}=$4.17$; volume = $4.17\\times22.4=93.4$ dm³. Practice: (1) \\ce{2Mg + O2 -> 2MgO} — ratio \\ce{Mg}:\\ce{O2}? → 2:1. (2) \\ce{Fe2O3 + 3CO -> 2Fe + 3CO2}, moles \\ce{CO} for $5$ mol \\ce{Fe2O3}? → $15$ mol. (3) $4$ g \\ce{H2} + $32$ g \\ce{O2} — is $4:32$ the mole ratio? → No, convert to moles first: 2:1. Misconception: pupils read the ratio off a SUBSCRIPT (the 2 in \\ce{H2O}) instead of the COEFFICIENT in front of the formula — always ask which number is in front. Exit question: \\ce{2K + Cl2 -> 2KCl} — mole ratio \\ce{K}:\\ce{Cl2}? → 2:1."
+}

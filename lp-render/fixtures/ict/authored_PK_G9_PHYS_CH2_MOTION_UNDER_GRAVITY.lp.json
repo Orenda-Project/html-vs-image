@@ -1,0 +1,497 @@
+{
+ "lesson_id": "PK_G9_PHYS_CH2_MOTION_UNDER_GRAVITY",
+ "schema_version": "2.0",
+ "lint_profile": "full",
+ "provenance": {
+  "book_stem": "grade_9_physics",
+  "grade": 9,
+  "subject": "Physics",
+  "medium": "en",
+  "chapter": "Ch. 2 · Kinematics",
+  "topic": "Motion due to gravity — g is the same for every freely falling body",
+  "printed_pages": "48-49",
+  "pdf_pages": "48-49",
+  "page_offset": 0,
+  "publisher": "NBF",
+  "curriculum": "National Curriculum 2022",
+  "source_quality_flags": [
+   "Example 2.5 (p.49) gives the block's mass as 2 kg but the printed working never uses it",
+   "p.48 prose is slightly ungrammatical ('drop a ball and large stone', 'For large object the presence of air resistance is neglected, however if we drop...')"
+  ]
+ },
+ "notes": {
+  "supplied": [
+   "supplied: naming the general form v = u + gt alongside the book's g = (vf − vi)/Δt (Example 2.5, p.49) — the book never states these are the same equation (see SLO P-09-B-10, p.35)"
+  ],
+  "defects": [
+   "Example 2.5 (p.49) prints 'mass of the block = 2 kg' but the worked solution (Δt = (vf − vi)/g) never uses the mass — this unused given is built into today's We-Do (re-solved with 20 kg, same 8 s answer)"
+  ],
+  "gaps": [
+   "The four empty 'CAN YOU TELL?' answer boxes on p.48 belong to an earlier period on distance-time behaviour, not this lesson — not used here"
+  ]
+ },
+ "needs_human_review": false,
+ "human_review_reason": null,
+ "slo": {
+  "code": "P-09-B-10",
+  "text_verbatim": "Use the approximate value 9.8m/s2 for free fall acceleration near Earth to solve problems.",
+  "source_page": "35",
+  "cognitive_level": "A",
+  "assessment_status": "Summative",
+  "command_word": "calculate",
+  "success_criterion": "By the end you can answer a 4-mark SRQ that asks you to calculate the time or speed of a freely falling body using g = 9.8 m/s², and explain why the object's mass never appears in the working."
+ },
+ "lp_type": "STEM-1",
+ "period_minutes": 40,
+ "board_weight": "FBISE SSC-I · ~4 marks",
+ "materials": [
+  "board marker",
+  "textbook p.48-49",
+  "a stone and a light ball for the drop demonstration",
+  "a coin and a small piece of paper (optional)"
+ ],
+ "warmup": {
+  "minutes": 5,
+  "items": [
+   {
+    "q": "Define acceleration; give formula.",
+    "a": "$a = \\dfrac{v_f - v_i}{\\Delta t}$.",
+    "kind": "prerequisite"
+   },
+   {
+    "q": "Equation linking vf, vi, a, t?",
+    "a": "$v_f = v_i + at$.",
+    "kind": "prerequisite"
+   },
+   {
+    "q": "Ch.1: mass vs weight?",
+    "a": "Mass (kg) constant; weight (N) = mg.",
+    "kind": "spaced",
+    "from": "Ch.1 · Physical Quantities and Measurement"
+   }
+  ],
+  "layout": "half"
+ },
+ "objectives": [
+  "I can state that g ≈ 9.8 m/s² is the same for every freely falling object, whatever its mass.",
+  "I can use v = u + gt to find the time or speed of a free fall."
+ ],
+ "sections": [
+  {
+   "id": "introduction",
+   "minutes": 5,
+   "blocks": [
+    {
+     "type": "ask",
+     "question": "Stone or ball: which first?",
+     "look_for": "Most: stone. Truth: together.",
+     "hook": true,
+     "closed_by": "close_hook"
+    },
+    {
+     "type": "say",
+     "id": "say_intro",
+     "text": "Read Section 2.5: 'If you drop a ball and a large stone from the roof of your school building, which of them will reach the bottom first?'"
+    },
+    {
+     "type": "watch_out",
+     "text": "List guesses; don't confirm.",
+     "misconception": false
+    },
+    {
+     "type": "board",
+     "text": "STONE vs BALL?"
+    }
+   ],
+   "layout": "half"
+  },
+  {
+   "id": "development",
+   "minutes": 10,
+   "blocks": [
+    {
+     "type": "paragraph",
+     "id": "close_hook",
+     "text": "Stone and ball hit ground together — mass irrelevant. Galileo dropped different masses from Pisa's Leaning Tower (p.48); same landing time. Every falling object near Earth has acceleration g ≈ 9.8 m/s². Falling: +g. Thrown up: −g."
+    },
+    {
+     "type": "latex",
+     "tex": "v = u + gt,\\ u=\\text{initial},\\ v=\\text{final},\\ g=9.8\\ \\text{m/s}^2,\\ t=\\text{time}. \\text{Ex 2.5: } 78.5 = 0 + 9.8t",
+     "caption": "Free-fall equation with Example 2.5's numbers."
+    },
+    {
+     "type": "diagram",
+     "spec": {
+      "type": "free_body",
+      "body": {
+       "shape": "box",
+       "label": "Stone or ball",
+       "mass": "m"
+      },
+      "forces": [
+       {
+        "name": "W",
+        "label": "weight, W = mg",
+        "angle": 270,
+        "magnitude": 50,
+        "color": "var(--warn)"
+       }
+      ],
+      "title": "FORCES IN FREE FALL",
+      "caption": "g has no mass term — all objects accelerate equally.",
+      "note": "Air resistance (ignored) slows real falling paper — Fig 2.11."
+     }
+    },
+    {
+     "type": "watch_out",
+     "text": "Pupils say 'heavier falls faster.' Ex 2.5 (p.49): 2 kg given, unused. Ask: 'If 20 kg, what changes in Δt=(vf−vi)/g?' Nothing — no mass in g, so Δt stays 8 s.",
+     "misconception": true
+    }
+   ]
+  },
+  {
+   "id": "activity",
+   "minutes": 15,
+   "blocks": [
+    {
+     "type": "worked_example",
+     "title": "EXAMPLE 2.5 (p.49)",
+     "prompt": "2 kg dropped, 78.5 m/s. Time?",
+     "steps": [
+      "$v_i=0$, $v_f=78.5$, $g=9.8$",
+      "$\\Delta t = \\dfrac{v_f - v_i}{g}$",
+      "$= \\dfrac{78.5 - 0}{9.8}$"
+     ],
+     "result": "$\\Delta t = 8$ s"
+    },
+    {
+     "type": "faded_example",
+     "title": "A HEAVIER BLOCK",
+     "prompt": "20 kg dropped, 78.5 m/s. Time?",
+     "steps": [
+      "$v_i=0$, $v_f=78.5$, $g=9.8$",
+      "$\\Delta t = \\dfrac{78.5 - 0}{____}$"
+     ],
+     "answer": "$\\Delta t = 8$ s"
+    },
+    {
+     "type": "diagram",
+     "spec": {
+      "type": "graph",
+      "xMin": 0,
+      "xMax": 10,
+      "yMin": 0,
+      "yMax": 100,
+      "xStep": 1,
+      "yStep": 10,
+      "functions": [
+       {
+        "expr": "9.8*x",
+        "label": "v=gt",
+        "color": "var(--navy)"
+       }
+      ],
+      "points": [
+       {
+        "x": 8,
+        "y": 78.5,
+        "label": "(8 s, 78.5 m/s)",
+        "color": "var(--warn)",
+        "dx": 10,
+        "dy": -10
+       }
+      ],
+      "title": "v–t: BOTH BLOCKS",
+      "caption": "Mass doesn't matter."
+     }
+    },
+    {
+     "type": "practice",
+     "title": "YOUR TURN",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "Falls 5 s from rest. v=?",
+       "a": "$v = 9.8(5) = 49$ m/s",
+       "tier": "support"
+      },
+      {
+       "q": "39.2 m/s from rest. t=?",
+       "a": "$t = 39.2/9.8 = 4$ s",
+       "tier": "support"
+      },
+      {
+       "q": "5 kg + 500 g together. First?",
+       "a": "Neither.",
+       "tier": "core"
+      },
+      {
+       "q": "Falls 0.6 s from shelf. v=?",
+       "a": "$v = 9.8(0.6) = 5.88$ m/s",
+       "tier": "core"
+      },
+      {
+       "q": "Thrown up. Sign of g rising?",
+       "a": "Negative (−g).",
+       "tier": "core"
+      },
+      {
+       "q": "Stone+paper: air, vacuum. Difference?",
+       "a": "Air slows paper; vacuum: none — both fall together (Figure 2.11).",
+       "tier": "extension"
+      },
+      {
+       "q": "10 kg, 3 s from rest. v=? Same for 50 kg?",
+       "a": "$v = 9.8(3) = 29.4$ m/s; same for 50 kg.",
+       "tier": "extension"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "conclusion",
+   "minutes": 5,
+   "blocks": [
+    {
+     "type": "board",
+     "text": "SRQ: 15 kg, v=58.8 m/s. Find t; why not mass? [4 marks]"
+    },
+    {
+     "type": "key_points",
+     "items": [
+      "(1) vi=0,vf=58.8,g=9.8",
+      "(1) Δt=(vf−vi)/g",
+      "(1) Δt=6 s",
+      "(1) g, no mass"
+     ]
+    },
+    {
+     "type": "practice",
+     "title": "EXIT TICKET",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "Falls 4s: v=?",
+       "a": "$v = 9.8(4) = 39.2$ m/s",
+       "tier": "core"
+      },
+      {
+       "q": "T/F: heavier falls faster (no air)?",
+       "a": "False — g same, all masses.",
+       "tier": "core"
+      }
+     ]
+    },
+    {
+     "type": "paragraph",
+     "id": "reteach",
+     "text": "Redo 20 kg vs 2 kg."
+    }
+   ]
+  },
+  {
+   "id": "homework",
+   "minutes": 0,
+   "blocks": [
+    {
+     "type": "practice",
+     "title": "HOMEWORK",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "[K] g=?",
+       "a": "g≈9.8 m/s²",
+       "tier": "support"
+      },
+      {
+       "q": "[P-09-B-10, A] Falls 6s rest → v=?",
+       "a": "$v = 9.8(6) = 58.8$ m/s",
+       "tier": "core"
+      },
+      {
+       "q": "[Earlier ch] Speed/velocity?",
+       "a": "Speed=distance/time (scalar); velocity=displacement/time (vector).",
+       "tier": "core"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "page2": {
+  "board_final": {
+   "draw_order": [
+    "1. Stone/ball: first?",
+    "2. Land together: g≈9.8, all mass",
+    "3. Free-body: weight, no mass in g",
+    "4. Ex 2.5: Δt=8s, 2kg & 20kg"
+   ],
+   "diagram": {
+    "type": "flow",
+    "direction": "lr",
+    "title": "MASS DOESN'T MATTER",
+    "steps": [
+     {
+      "title": "v = u + gt",
+      "lines": [
+       "no mass"
+      ]
+     },
+     {
+      "title": "2 kg",
+      "lines": [
+       "u=0, g=9.8",
+       "Δt = 8 s"
+      ],
+      "color": "var(--navy)"
+     },
+     {
+      "title": "20 kg",
+      "lines": [
+       "u=0, g=9.8",
+       "Δt = 8 s"
+      ],
+      "color": "var(--leaf)"
+     }
+    ],
+    "caption": "Same time, diff mass."
+   },
+   "caption": "After re-solve."
+  },
+  "model_answers": [
+   {
+    "label": "Ex 2.5 (I do)",
+    "answer": "Δt = 8 s",
+    "marking_note": "Show equation."
+   },
+   {
+    "label": "20kg (We do)",
+    "answer": "Δt = 8 s — same as 2 kg",
+    "marking_note": "Accept 'same, no mass term'."
+   },
+   {
+    "label": "Conclusion SRQ",
+    "answer": "Δt = 6 s",
+    "marking_note": "4mk: values, eqn, sub, explain."
+   }
+  ],
+  "mistakes": [
+   {
+    "pupil_says": "Heavier, faster.",
+    "you_ask": "Mass vs acceleration?"
+   },
+   {
+    "pupil_says": "g differs by mass?",
+    "you_ask": "Where's mass in Δt = (vf − vi)/g?"
+   },
+   {
+    "pupil_says": "Paper slower, lighter.",
+    "you_ask": "Still slower crumpled?"
+   }
+  ],
+  "differentiation": {
+   "stuck": "Give formula; pupil subs.",
+   "barrier": "Urdu ok warm-up; diagram free-body.",
+   "early": "Find height via $s = \\frac{1}{2}gt^2$, t=8 s."
+  },
+  "exam_bank": {
+   "mcq": [
+    {
+     "q": "Stone/feather in vacuum: outcome?",
+     "options": [
+      "Stone first",
+      "Feather first",
+      "Same time",
+      "Neither"
+     ],
+     "answer": "C",
+     "distractor_codes": [
+      "mass/timing",
+      "lighter floats",
+      "vacuum confusion"
+     ]
+    },
+    {
+     "q": "Ex 2.5: mass unused, why?",
+     "options": [
+      "Printing error",
+      "Mass-independent",
+      "Block massless",
+      "Heavy only"
+     ],
+     "answer": "B",
+     "distractor_codes": [
+      "textbook error",
+      "never matters",
+      "threshold myth"
+     ]
+    },
+    {
+     "q": "Ball rising: sign of g?",
+     "options": [
+      "+g down",
+      "−g opposes motion",
+      "g=0 rising",
+      "g neg. after fall"
+     ],
+     "answer": "B",
+     "distractor_codes": [
+      "sign confusion",
+      "zero at rise",
+      "flips at peak"
+     ]
+    }
+   ],
+   "srq": {
+    "q": "15kg block, rest→58.8 m/s. Find time; why no mass term?",
+    "marks": 4,
+    "mark_scheme": [
+     "1: given values",
+     "1: equation",
+     "1: sub+answer (6s)",
+     "1: no mass in g"
+    ]
+   },
+   "erq_skeleton": {
+    "q": "Galileo: describe experiment; explain equal acceleration.",
+    "parts": [
+     {
+      "heading": "(a) Describe Galileo's experiment",
+      "marks": 2,
+      "note": "Pisa: dropped together, landed together."
+     },
+     {
+      "heading": "(b) Explain using g",
+      "marks": 2,
+      "note": "g≈9.8 m/s² all mass; absent from v = u + gt."
+     },
+     {
+      "heading": "(c) Coin-paper case in air",
+      "marks": 2,
+      "note": "Air resistance slows paper, not mass; vacuum removes it (Fig 2.11)."
+     }
+    ]
+   },
+   "how_marked": "Marks: working, not answer; need 'no mass term'."
+  },
+  "homework_key": [
+   {
+    "item": "g near Earth's surface?",
+    "answer": "g ≈ 9.8 m/s²"
+   },
+   {
+    "item": "6 s fall from rest: speed?",
+    "answer": "58.8 m/s"
+   },
+   {
+    "item": "Speed vs velocity?",
+    "answer": "Speed=distance/time (scalar); velocity=displacement/time (vector)."
+   }
+  ],
+  "next_period": "2.6 Graphical Analysis (p.49).",
+  "not_going": "Skip distance/speed-time graphs (SLOs P-09-B-9, 11-15).",
+  "coaching_lookfor": "Ran demo live?"
+ },
+ "one_screen": "Objective: every freely falling object near Earth has the same acceleration, g ≈ 9.8 m/s², whatever its mass. Prerequisite: acceleration a = (vf−vi)/Δt (Q: define acceleration — A: rate of change of velocity with time). Worked example: a 2 kg block dropped from rest hits the ground at 78.5 m/s; using Δt = (vf−vi)/g = (78.5−0)/9.8, Δt = 8 s — the mass is never used. Practice: (1) ball falls 5 s, find speed — v = 9.8(5) = 49 m/s; (2) stone hits ground at 39.2 m/s, find time — t = 4 s; (3) do a 5 kg and 500 g mango land together when dropped together? — yes, g is the same for both. Misconception: pupils think heavier objects fall faster; repair by asking what changes in Δt = (vf−vi)/g if the mass is 20 kg instead of 2 kg — nothing, because g has no mass term. Exit question: calculate the time for a 15 kg block dropped from rest to hit the ground at 58.8 m/s, and explain why mass does not appear in the answer — Δt = 6 s, because g is independent of mass."
+}

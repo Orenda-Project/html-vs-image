@@ -1,0 +1,538 @@
+{
+ "lesson_id": "PK_G10_MATH_CH3_DETERMINANT_AND_INVERSE",
+ "schema_version": "2.0",
+ "lint_profile": "full",
+ "provenance": {
+  "book_stem": "grade_10_mathematics",
+  "grade": 10,
+  "subject": "Mathematics",
+  "medium": "en",
+  "chapter": "Ch. 3 · Matrices And Determinants",
+  "topic": "Determinant of a 2x2 matrix and the multiplicative inverse",
+  "printed_pages": "67-69",
+  "pdf_pages": "67-69",
+  "page_offset": 0,
+  "publisher": "not printed on the supplied pages",
+  "curriculum": "National Curriculum (as printed in the Grade 10 Mathematics textbook)",
+  "source_quality_flags": [
+   "p.69 worked example for B = [[5,2],[6,3]] is cut off after stating the adjoint, before the numeric division and the BB^-1 = B^-1B = I verification (both continue on p.70, not supplied)",
+   "p.68 singular/non-singular example is internally inconsistent: its prompt states B = [[5,5],[3,sqrt5]] but the printed grid and working use B = [[7,5],[3,sqrt5]]"
+  ]
+ },
+ "notes": {
+  "supplied": [
+   "the marked-incorrect-adjoint beat (forgetting to swap the primary diagonal) is authored for this lesson — the book shows only correct worked examples, never a marked wrong one (see pp.68-69)",
+   "the completion of B's inverse (the numeric division and the BB^-1 = B^-1B = I check) is supplied as a faded-example blank, using the book's own |B| = 3 and adj B = [[3,-2],[-6,5]] printed on p.69, because the book itself never finishes this derivation on the supplied pages",
+   "practice, exit-ticket, homework and exam-bank matrices beyond the book's own A and B (e.g. F = [[3,1],[2,4]], G = [[2,6],[1,3]], H = [[7,2],[3,1]], and the k-matrix) are original items written in the book's own exercise style — not printed on pp.67-69"
+  ],
+  "defects": [
+   "the book's worked example for B = [[5,2],[6,3]] (p.69) is cut off before its own promised numeric answer and verification",
+   "the book's singular/non-singular example (p.68) mixes two different versions of matrix B (5 vs 7 in the top-left entry) between its prompt and its working — this lesson avoids that example and uses the book's unambiguous A = [[5,6],[2,3]] and A = [[5,10],[3,6]] pair instead"
+  ],
+  "gaps": [
+   "no printed SLO code found anywhere on pp.67-69 or the chapter opener (p.55) — only the chapter-opener outcome list, quoted verbatim into slo.text_verbatim"
+  ]
+ },
+ "needs_human_review": false,
+ "human_review_reason": null,
+ "slo": {
+  "code": null,
+  "text_verbatim": "Evaluate the determinant and inverse of a matrix of order 2 by 2.",
+  "source_page": "55",
+  "cognitive_level": "A",
+  "assessment_status": "Summative",
+  "command_word": "evaluate",
+  "success_criterion": "By the end you can evaluate |A| for any 2x2 matrix, say whether it is singular or non-singular, and find A^-1 where it exists."
+ },
+ "lp_type": "STEM-2",
+ "period_minutes": 40,
+ "board_weight": "FBISE SSC-II · ~4-5 marks",
+ "materials": [
+  "board marker",
+  "textbook pp.67-69"
+ ],
+ "warmup": {
+  "minutes": 5,
+  "items": [
+   {
+    "q": "(5x3)-(6x2)?",
+    "a": "15 - 12 = 3",
+    "kind": "prerequisite"
+   },
+   {
+    "q": "A=[[1,0],[2,3]] (p.67,Q10) a,b,c,d?",
+    "a": "a = 1, b = 0, c = 2, d = 3",
+    "kind": "prerequisite"
+   },
+   {
+    "q": "A=[[1,0],[2,3]], B=[[2,1],[0,-3]]: AB=BA?",
+    "a": "No — not commutative.",
+    "kind": "spaced",
+    "from": "Ch.3, p.67"
+   }
+  ],
+  "layout": "half"
+ },
+ "objectives": [
+  "I can evaluate $|A| = ad - bc$ for a 2x2 matrix.",
+  "I can decide if a matrix is singular or non-singular from its determinant.",
+  "I can find the adjoint and the inverse of a non-singular 2x2 matrix."
+ ],
+ "sections": [
+  {
+   "id": "introduction",
+   "minutes": 5,
+   "blocks": [
+    {
+     "type": "ask",
+     "question": "$A = \\begin{bmatrix}5 & 6\\\\ 2 & 3\\end{bmatrix}$ (p.68) invertible; $A = \\begin{bmatrix}5 & 10\\\\ 3 & 6\\end{bmatrix}$ (p.68) not. Why?",
+     "look_for": "$|A| = ad - bc$: $3$ (first), $0$ (second).",
+     "hook": true,
+     "closed_by": "hook_close"
+    },
+    {
+     "type": "say",
+     "text": "Determinant decides invertibility."
+    },
+    {
+     "type": "watch_out",
+     "text": "Multiply diagonals, then subtract."
+    },
+    {
+     "type": "board",
+     "text": "$|A| = ad - bc$"
+    }
+   ],
+   "layout": "half"
+  },
+  {
+   "id": "development",
+   "minutes": 10,
+   "blocks": [
+    {
+     "type": "diagram",
+     "spec": {
+      "type": "geometry",
+      "height": 300,
+      "title": "THE DETERMINANT AS AN AREA",
+      "shapes": [
+       {
+        "kind": "polygon",
+        "points": [
+         [
+          0,
+          0
+         ],
+         [
+          5,
+          2
+         ],
+         [
+          11,
+          5
+         ],
+         [
+          6,
+          3
+         ]
+        ],
+        "fill": "var(--navy)"
+       },
+       {
+        "kind": "line",
+        "points": [
+         [
+          0,
+          0
+         ],
+         [
+          5,
+          2
+         ]
+        ],
+        "labels": [
+         "O",
+         "(5, 2)"
+        ]
+       },
+       {
+        "kind": "line",
+        "points": [
+         [
+          0,
+          0
+         ],
+         [
+          6,
+          3
+         ]
+        ],
+        "labels": [
+         "O",
+         "(6, 3)"
+        ]
+       }
+      ],
+      "caption": "Columns of $A = \\begin{bmatrix}5 & 6\\\\ 2 & 3\\end{bmatrix}$ span this parallelogram; area = $|A| = 3$."
+     }
+    },
+    {
+     "type": "key_points",
+     "items": [
+      "Determinant and inverse formulas are fixed: watch one, work one together, try one alone.",
+      "Determinant of $A = \\begin{bmatrix}a & b\\\\ c & d\\end{bmatrix}$ is $|A| = ad - bc$ — a number, not a matrix.",
+      "$A$ is singular when $|A| = 0$, non-singular when $|A| \\neq 0$.",
+      "Adjoint swaps primary-diagonal entries, then flips sign of secondary-diagonal entries.",
+      "$A^{-1} = \\frac{1}{|A|}\\,\\text{adj}\\,A$; satisfies $AA^{-1} = A^{-1}A = I$."
+     ]
+    },
+    {
+     "type": "watch_out",
+     "text": "If $|A| = 0$, pupils may try $A^{-1} = \\frac{1}{|A|}\\text{adj}\\,A$ — ask: what does dividing by zero give? No inverse exists.",
+     "misconception": true
+    }
+   ]
+  },
+  {
+   "id": "activity",
+   "minutes": 15,
+   "blocks": [
+    {
+     "type": "worked_example",
+     "title": "$A^{-1}$ (p.68)",
+     "prompt": "$A^{-1}$?",
+     "steps": [
+      "$|A| = 5(3)-6(2) = 15-12 = 3$",
+      "adj $A = \\begin{bmatrix}3 & -6\\\\ -2 & 5\\end{bmatrix}$",
+      "$A^{-1} = \\frac{1}{3}\\begin{bmatrix}3 & -6\\\\ -2 & 5\\end{bmatrix}$"
+     ],
+     "result": "$A^{-1} = \\begin{bmatrix}1 & -2\\\\ -\\frac{2}{3} & \\frac{5}{3}\\end{bmatrix}$"
+    },
+    {
+     "type": "faded_example",
+     "title": "Spot the marked error",
+     "prompt": "A pupil found $A^{-1}$ for $A=\\begin{bmatrix}3 & 4\\\\ 1 & 2\\end{bmatrix}$. One line is marked wrong. Write it correctly.",
+     "steps": [
+      "$|A| = (3)(2) - (4)(1) = 2$  ✓",
+      "adj $A = \\begin{bmatrix}2 & -4\\\\ -1 & 3\\end{bmatrix}$  ✗ INCORRECT — this swapped $b$ and $c$ instead of $a$ and $d$",
+      "correct: adj $A = \\begin{bmatrix}2 & -4\\\\ -1 & 3\\end{bmatrix}$ comes from swapping $a$ with $d$ and negating $b$ and $c$: ____"
+     ],
+     "answer": "adj $A = \\begin{bmatrix}2 & -4\\\\ -1 & 3\\end{bmatrix}$, so $A^{-1} = \\frac{1}{2}\\begin{bmatrix}2 & -4\\\\ -1 & 3\\end{bmatrix}$. The error was swapping the wrong pair."
+    },
+    {
+     "type": "diagram",
+     "spec": {
+      "type": "panels",
+      "title": "Error (p.69)",
+      "panels": [
+       {
+        "title": "WRONG",
+        "sub": "",
+        "glyph": "✗",
+        "lines": [
+         "adj = $\\begin{bmatrix}5 & -4\\\\ -2 & 6\\end{bmatrix}$"
+        ],
+        "foot": "",
+        "color": "var(--warn)"
+       },
+       {
+        "title": "CORRECT",
+        "sub": "",
+        "glyph": "✓",
+        "lines": [
+         "adj = $\\begin{bmatrix}6 & -4\\\\ -2 & 5\\end{bmatrix}$",
+         "$A^{-1} = \\frac{1}{22}\\begin{bmatrix}6 & -4\\\\ -2 & 5\\end{bmatrix}$"
+        ],
+        "foot": "",
+        "color": "var(--leaf)"
+       }
+      ]
+     }
+    },
+    {
+     "type": "practice",
+     "title": "Practice",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "$F = \\begin{bmatrix}3 & 1\\\\ 2 & 4\\end{bmatrix}$; $|F|$ = ?",
+       "a": "$12 - 2 = 10$.",
+       "tier": "support"
+      },
+      {
+       "q": "$F$: singular?",
+       "a": "$10 \\neq 0$: non-singular.",
+       "tier": "support"
+      },
+      {
+       "q": "adj $F$ = ?",
+       "a": "$\\begin{bmatrix}4 & -1\\\\ -2 & 3\\end{bmatrix}$.",
+       "tier": "core"
+      },
+      {
+       "q": "$F^{-1}$ = ?",
+       "a": "$\\frac{1}{10}\\begin{bmatrix}4 & -1\\\\ -2 & 3\\end{bmatrix}$.",
+       "tier": "core"
+      },
+      {
+       "q": "$G = \\begin{bmatrix}2 & 6\\\\ 1 & 3\\end{bmatrix}$; $G^{-1}$?",
+       "a": "$|G|=0$: singular, no $G^{-1}$.",
+       "tier": "core"
+      },
+      {
+       "q": "$H = \\begin{bmatrix}7 & 2\\\\ 3 & 1\\end{bmatrix}$: $H^{-1}$?",
+       "a": "$|H|=1$; $\\begin{bmatrix}1 & -2\\\\ -3 & 7\\end{bmatrix}$.",
+       "tier": "extension"
+      },
+      {
+       "q": "$\\begin{bmatrix}k & 4\\\\ 2 & 5\\end{bmatrix}$ singular: $k$ = ?",
+       "a": "$5k-8=0 \\Rightarrow k=\\frac{8}{5}$.",
+       "tier": "extension"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "conclusion",
+   "minutes": 5,
+   "blocks": [
+    {
+     "type": "paragraph",
+     "id": "hook_close",
+     "text": "$A=\\begin{bmatrix}5&6\\\\2&3\\end{bmatrix}$: $|A|=3$."
+    },
+    {
+     "type": "ask",
+     "question": "$|B|$, $B^{-1}$: $B=\\begin{bmatrix}4&1\\\\3&2\\end{bmatrix}$",
+     "look_for": "$|B|=5$; $B^{-1}=\\frac{1}{5}\\begin{bmatrix}2&-1\\\\-3&4\\end{bmatrix}$."
+    },
+    {
+     "type": "practice",
+     "title": "Exit Ticket",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "$C=\\begin{bmatrix}2&4\\\\1&2\\end{bmatrix}$: singular?",
+       "a": "$|C|=4-4=0$, singular.",
+       "tier": "core"
+      },
+      {
+       "q": "adj? $D=\\begin{bmatrix}3&1\\\\2&5\\end{bmatrix}$",
+       "a": "adj $D$=$\\begin{bmatrix}5&-1\\\\-2&3\\end{bmatrix}$.",
+       "tier": "core"
+      }
+     ]
+    },
+    {
+     "type": "paragraph",
+     "id": "reteach_rule",
+     "text": "Reteach adjoint: 3+ miss."
+    }
+   ]
+  },
+  {
+   "id": "homework",
+   "minutes": 0,
+   "blocks": [
+    {
+     "type": "practice",
+     "title": "Homework",
+     "mode": "independent",
+     "items": [
+      {
+       "q": "$E=\\begin{bmatrix}6&2\\\\5&3\\end{bmatrix}$ $|E|=?$",
+       "a": "$8$",
+       "tier": "core"
+      },
+      {
+       "q": "$E^{-1}=?$",
+       "a": "$\\frac{1}{8}\\begin{bmatrix}3&-2\\\\-5&6\\end{bmatrix}$",
+       "tier": "core"
+      },
+      {
+       "q": "$A=\\begin{bmatrix}1&0\\\\2&3\\end{bmatrix}$ $B=\\begin{bmatrix}2&1\\\\0&-3\\end{bmatrix}$ $A+B=?$",
+       "a": "$\\begin{bmatrix}3&1\\\\2&0\\end{bmatrix}$",
+       "tier": "core"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "page2": {
+  "board_final": {
+   "draw_order": [
+    "$A = \\begin{bmatrix}a & b\\\\ c & d\\end{bmatrix}$, $|A| = ad - bc$.",
+    "$|A| = 0 \\Rightarrow$ none.",
+    "swap primary, negate secondary.",
+    "$A^{-1} = \\frac{1}{|A|}\\,\\text{adj}\\,A$."
+   ],
+   "diagram": {
+    "type": "flow",
+    "direction": "lr",
+    "title": "$A^{-1}$",
+    "steps": [
+     {
+      "title": "Det",
+      "lines": [
+       "compute"
+      ]
+     },
+     {
+      "title": "Zero?",
+      "lines": [
+       "stop"
+      ],
+      "color": "var(--warn)"
+     },
+     {
+      "title": "Adjoint",
+      "lines": [
+       "swap",
+       "negate"
+      ],
+      "color": "var(--navy)"
+     },
+     {
+      "title": "Inverse",
+      "lines": [
+       "divide"
+      ],
+      "color": "var(--leaf)"
+     }
+    ]
+   },
+   "caption": "Sequence."
+  },
+  "model_answers": [
+   {
+    "label": "$B^{-1}$",
+    "answer": "$B^{-1} = \\begin{bmatrix}1 & -\\frac{2}{3}\\\\ -2 & \\frac{5}{3}\\end{bmatrix}$.",
+    "marking_note": "$|B| = 3$."
+   },
+   {
+    "label": "5",
+    "answer": "$|G| = 0$, singular.",
+    "marking_note": "$|G| = 0$."
+   }
+  ],
+  "mistakes": [
+   {
+    "pupil_says": "$|A| = ad + bc$",
+    "you_ask": "Read the formula off the board — is the second term added or subtracted?"
+   },
+   {
+    "pupil_says": "swaps $b$ and $c$ instead of $a$ and $d$",
+    "you_ask": "Which pair swaps places, and which pair only changes sign?"
+   },
+   {
+    "pupil_says": "$|A| = 0$, so divide by zero",
+    "you_ask": "If $|A| = 0$, does $A^{-1}$ exist at all? What do we call that matrix?"
+   }
+  ],
+  "differentiation": {
+   "stuck": "Fill $ad - bc = \\_\\_\\_ - \\_\\_\\_$.",
+   "barrier": "Label $a,b,c,d$.",
+   "early": "Find $k$: $\\begin{bmatrix}k & 3\\\\ 2 & 4\\end{bmatrix}$ singular."
+  },
+  "exam_bank": {
+   "mcq": [
+    {
+     "q": "$A = \\begin{bmatrix}3 & 5\\\\ 2 & 4\\end{bmatrix}$, $|A| = ?$",
+     "options": [
+      "2",
+      "22",
+      "-2",
+      "12"
+     ],
+     "answer": "A",
+     "distractor_codes": [
+      "$ad + bc$",
+      "$bc - ad$",
+      "$ad$"
+     ]
+    },
+    {
+     "q": "$|M| = 0$: $M^{-1}$?",
+     "options": [
+      "$I$",
+      "none",
+      "$M$",
+      "zero matrix"
+     ],
+     "answer": "B",
+     "distractor_codes": [
+      "assumes invertible",
+      "confuses $I$",
+      "zero det/inv"
+     ]
+    },
+    {
+     "q": "adj $A = \\begin{bmatrix}a & b\\\\ c & d\\end{bmatrix}$:",
+     "options": [
+      "swap primary, negate secondary",
+      "negate diagonals",
+      "swap diagonals",
+      "negate primary"
+     ],
+     "answer": "A",
+     "distractor_codes": [
+      "negates",
+      "swaps",
+      "primary"
+     ]
+    }
+   ],
+   "srq": {
+    "q": "Find $|A|$, $A^{-1}$: $A = \\begin{bmatrix}4 & 1\\\\ 3 & 2\\end{bmatrix}$.",
+    "marks": 4,
+    "mark_scheme": [
+     "1: $|A| = 4(2) - 1(3) = 5$",
+     "1: non-singular",
+     "1: adj $A = \\begin{bmatrix}2 & -1\\\\ -3 & 4\\end{bmatrix}$",
+     "1: $A^{-1} = \\frac{1}{5}\\begin{bmatrix}2 & -1\\\\ -3 & 4\\end{bmatrix}$"
+    ]
+   },
+   "erq_skeleton": {
+    "q": "$B = \\begin{bmatrix}6&3\\\\4&2\\end{bmatrix}$, $C = \\begin{bmatrix}5&2\\\\1&1\\end{bmatrix}$: (a) $|B|$; (b) $C^{-1}$; (c) $CC^{-1}$.",
+    "parts": [
+     {
+      "heading": "(a)",
+      "marks": 2,
+      "note": "$|B| = 12 - 12 = 0$, singular."
+     },
+     {
+      "heading": "(b)",
+      "marks": 3,
+      "note": "$|C| = 3$; $C^{-1} = \\frac{1}{3}\\begin{bmatrix}1 & -2\\\\ -1 & 5\\end{bmatrix}$."
+     },
+     {
+      "heading": "(c)",
+      "marks": 2,
+      "note": "$CC^{-1} = I$."
+     }
+    ]
+   },
+   "how_marked": "Standard."
+  },
+  "homework_key": [
+   {
+    "item": "$|E|$, $E = \\begin{bmatrix}6 & 2\\\\ 5 & 3\\end{bmatrix}$",
+    "answer": "$|E| = 8$"
+   },
+   {
+    "item": "$E^{-1}$",
+    "answer": "$E^{-1} = \\frac{1}{8}\\begin{bmatrix}3 & -2\\\\ -5 & 6\\end{bmatrix}$"
+   },
+   {
+    "item": "$A + B$, $A = \\begin{bmatrix}1&0\\\\2&3\\end{bmatrix}$, $B = \\begin{bmatrix}2&1\\\\0&-3\\end{bmatrix}$",
+    "answer": "$\\begin{bmatrix}3 & 1\\\\ 2 & 0\\end{bmatrix}$"
+   }
+  ],
+  "next_period": "Simultaneous equations, Cramer's rule.",
+  "not_going": "Later.",
+  "coaching_lookfor": "Adjoint flagged?"
+ },
+ "one_screen": "Objective: pupils evaluate $|A| = ad - bc$ for a 2x2 matrix, decide if it is singular or non-singular, and find $A^{-1}$ where it exists. Prerequisite check: work out $(5 \\times 3) - (6 \\times 2)$; answer $15 - 12 = 3$, this is exactly the determinant pattern used all lesson. Worked example, find $A^{-1}$ for $A = \\begin{bmatrix}5 & 6\\\\ 2 & 3\\end{bmatrix}$. Step 1: $|A| = 5(3) - 6(2) = 15 - 12 = 3$. Step 2: since $|A| \\neq 0$, $A$ is non-singular so an inverse exists. Step 3: form adj $A$ by swapping the primary diagonal and negating the secondary diagonal, giving $\\begin{bmatrix}3 & -6\\\\ -2 & 5\\end{bmatrix}$. Step 4: $A^{-1} = \\frac{1}{3}\\begin{bmatrix}3 & -6\\\\ -2 & 5\\end{bmatrix} = \\begin{bmatrix}1 & -2\\\\ -\\frac{2}{3} & \\frac{5}{3}\\end{bmatrix}$. Practice one, $F = \\begin{bmatrix}3 & 1\\\\ 2 & 4\\end{bmatrix}$, find $|F|$, answer $12 - 2 = 10$. Practice two, is $F$ singular, answer $10 \\neq 0$ so non-singular. Practice three, $G = \\begin{bmatrix}2 & 6\\\\ 1 & 3\\end{bmatrix}$, does $G^{-1}$ exist, answer $|G| = 0$ so $G$ is singular and has no inverse. Misconception to watch: when $|A| = 0$ some pupils still try $A^{-1} = \\frac{1}{|A|}\\text{adj}\\,A$ anyway, stop them and ask what dividing by zero gives, a singular matrix simply has no inverse. Exit question: for $C = \\begin{bmatrix}2 & 4\\\\ 1 & 2\\end{bmatrix}$, is $C$ singular?"
+}

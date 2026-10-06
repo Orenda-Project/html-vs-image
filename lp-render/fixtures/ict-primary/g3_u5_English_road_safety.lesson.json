@@ -1,0 +1,122 @@
+{
+  "kind": "ict-primary-lesson",
+  "version": 1,
+  "lesson_id": "g3_u5_English_road_safety",
+  "source": {
+    "from": "Punjab Textbook Board, English Grade 3 (Single National Curriculum 2020), Unit 5 'Road Safety', pp. 47–50 — public textbook PDF",
+    "method": "written for design testing by the Design lane from the textbook pages, in the approved lesson-plan structure. The textbook's own words (the dialogue, 'Steps for Road Safety', the ALWAYS / NEVER rules, the reading questions) are quoted word for word; the teaching steps around them are written for this test. Not a NIETE lesson.",
+    "presentation_fixes": []
+  },
+  "lang": "en",
+  "grade": 3,
+  "subject": "English",
+  "chapter": "Unit 5 · Road Safety",
+  "pages": "48-50",
+  "period_minutes": 40,
+  "title": "Road Safety Rules: three steps to cross the road + road signs",
+  "hero_visual": { "type": "traffic_light" },
+  "speakers": { "Nora": "girl", "Teacher": "woman" },
+  "day": { "n": 1, "of": 8 },
+  "journey": "Starting fresh today",
+  "coming_up": "Contractions with do and does: don't, doesn't",
+  "outcome": {
+    "code": "",
+    "text": "Students use pre-reading strategies to predict words of the text by looking at road and traffic signs, read 'Road Safety Rules' to learn the three steps for crossing a road, and match traffic signs with their messages."
+  },
+  "prepare": ["chalk", "board", "textbook p.48–50", "slates", "red and green chalk"],
+  "keywords": [
+    { "word": "road sign", "meaning": "a sign at the side of or above a road that gives an instruction or information to road users" },
+    { "word": "zebra crossing", "meaning": "black and white lines on the road where people cross" },
+    { "word": "footpath", "meaning": "the path at the side of the road for people to walk on" },
+    { "word": "traffic signal", "meaning": "lights that tell people and vehicles when to stop and when to go" },
+    { "word": "queue", "meaning": "a line of people waiting for their turn" },
+    { "word": "helmet", "meaning": "a hard hat that keeps your head safe on a cycle" }
+  ],
+  "board": [
+    { "title": "Steps for Road Safety",
+      "visual": { "type": "look_steps", "steps": [ { "dir": "right", "label": "Look right" }, { "dir": "left", "label": "Look left" }, { "dir": "right", "label": "Look right again" } ] },
+      "lines": ["Step 1: Stand on the side of the road and look to your right.", "Step 2: Look to your left.", "Step 3: Look to your right again and cross the road from the zebra crossing."] },
+    { "title": "Road signs → messages", "drawn": true,
+      "visual": { "type": "road_signs", "signs": [ { "sign": "stop", "label": "Stop & give way" }, { "sign": "parking", "label": "Parking lot" }, { "sign": "no_cycling", "label": "No cycling" }, { "sign": "hump", "label": "Hump" }, { "sign": "turn_left", "label": "Turn left ahead" }, { "sign": "crossroads", "label": "Crossroads ahead" } ] },
+      "lines": ["STOP → Stop & give way", "P → Parking lot", "bicycle in a red circle → No cycling", "bump in a triangle → Hump", "arrow in a blue circle → Turn left ahead", "+ in a triangle → Crossroads ahead"] }
+  ],
+  "stages": [
+    {
+      "id": "opening", "label": "Opening", "letter": "I", "minutes": 5,
+      "blocks": [
+        { "type": "warmup", "items": [
+          { "q": "How do you travel to school?", "a": "Students name a way: walking, van, bus, cycle or rickshaw.", "tag": "pre-reading" },
+          { "q": "What do you see on the roads early in the morning?", "a": "People, cycles, motorcycles, cars, buses and vans.", "tag": "pre-reading" },
+          { "q": "Point to something red in the classroom. What does a red light on the road tell us?", "a": "Stop.", "tag": "scaffold for today" }
+        ] },
+        { "type": "hook", "text": "Look at the road signs on page 48. How many do you know? Each sign gives a message without many words — a red STOP sign, a blue P for parking, a triangle that warns of a hump. Today we will read the messages in the signs, and then read 'Road Safety Rules' to learn how to cross a road safely, like the two children at the zebra crossing.",
+          "visual": { "type": "scene", "scene": "zebra_crossing" } },
+        { "type": "read_aloud", "label": "On the page · read aloud", "lines": [
+          "Nora: “Assalam-o-Alaikum teacher! What are these signs on the poster?”",
+          "Teacher: “Wa-Alaikumassalam Nora! These are road and traffic signs.”",
+          "Nora: “These are so many! How can we learn them?”",
+          "Teacher: “Actually, you just have to understand the signs. These are very clear.”",
+          "Nora: “Oh yes, Teacher! We get a lot of information from the pictures.”",
+          "Teacher: “Very good, you're very smart!”"
+        ] }
+      ]
+    },
+    {
+      "id": "explanation", "label": "Explanation", "letter": "D", "minutes": 6, "mode": "I DO",
+      "blocks": [
+        { "type": "teacher_models", "instruction": "Teacher reads 'Steps for Road Safety' on page 49 aloud, then acts out the three steps at the classroom door as if it were the side of a road: stand still, turn the head right, then left, then right again, and only then walk across.",
+          "script": ["Listen: “All human activities start in the morning. People rush to their work places. Children are in a hurry to reach their schools.”", "So we have to be very careful and watch around to be safe.", "Watch me. Step 1: I stand on the side of the road and look to my right.", "Step 2: I look to my left.", "Step 3: I look to my right again, and I cross the road from the zebra crossing.", "Right, left, right — then I cross."] },
+        { "type": "worked", "steps": ["Follow the traffic signal and cross the road when the light turns green, and stop when it is red.", "Red light: stop and wait on the footpath.", "Green light: look right, left, right again, then cross at the zebra crossing."],
+          "visual": { "type": "traffic_light", "labels": { "red": "Stop", "green": "Go" } } },
+        { "type": "ask_this", "text": "Ask 2–3 students: 'Why do we look to the right again before we cross?' and 'Why are the black and white lines for crossing the road called zebra crossing?' Listen for 'the stripes look like a zebra' and 'traffic comes from the right first'." },
+        { "type": "mistakes", "items": [ { "you_ask": "Pre-empt 'look once and run': many children look one way and run. Ask: 'Did you look right, left AND right again? Did you walk or run?' The text says: “Do not rush or run on the road.”" } ] }
+      ]
+    },
+    {
+      "id": "we_do", "label": "We Do", "letter": "A", "minutes": 9,
+      "blocks": [
+        { "type": "halfway", "text": "Halfway check · minute 14. By now the class should be starting WE DO." },
+        { "type": "together", "lines": ["The class reads the ALWAYS and NEVER lists on pages 49–50 together, one rule each, and shows a thumbs up for ALWAYS and a hand for NEVER.", "Circulate asking: 'Is this an ALWAYS rule or a NEVER rule?' and 'Why is it safe?'"] },
+        { "type": "teacher_models", "instruction": "Play 'Red light, green light': the teacher holds up red or green chalk; the class says the rule and acts it — stand still on red, look right-left-right and walk on green.",
+          "lead": ["ALWAYS: “Stop, look and cross the road.” “Walk on the footpath.” “Use the lane for your cycle and wear a helmet.” “Make the queue to get on your van / bus.” “Keep sitting till the bus/van stops.”", "NEVER: “Do not rush or run on the road.” “Do not cross the road at turnings or bends.” “Do not push anyone. Wait for your turn to ride the bus or get down.” “Do not get down from a moving bus / van.”"],
+          "script": ["Red! (class stands still: 'Stop!')", "Green! (class: 'Look right, look left, look right again — cross!')"] },
+        { "type": "frames", "lines": ["I always ___ because ___.", "I never ___ because it is not safe."] }
+      ]
+    },
+    {
+      "id": "you_do", "label": "You Do", "letter": "A", "minutes": 10,
+      "blocks": [
+        { "type": "set_task", "lines": ["In pairs, students match each road sign on page 48 with its message, then answer the reading questions on their slates."],
+          "say": "With your partner, look at each sign and say its message. Then write the answers on your slate. Use the words from the text." },
+        { "type": "alone", "items": [
+          { "q": "What is the message of this sign?", "answer": "Stop & give way.", "visual": { "type": "road_sign", "sign": "stop" } },
+          { "q": "What is the message of this sign?", "answer": "Parking lot.", "visual": { "type": "road_sign", "sign": "parking" } },
+          { "q": "What is the message of this sign?", "answer": "No cycling.", "visual": { "type": "road_sign", "sign": "no_cycling" } },
+          { "q": "Why are the black and white lines for crossing the road called zebra crossing?", "answer": "Because the black and white stripes look like a zebra.", "sample": true },
+          { "q": "Who runs carelessly on roads after school?", "answer": "Children run carelessly to cross the roads after school." },
+          { "q": "What are your duties on the road while travelling to school?", "answer": "Walk on the footpath, cross at the zebra crossing, make the queue and wait for my turn, and keep sitting till the bus/van stops.", "sample": true }
+        ] },
+        { "type": "differentiation",
+          "stuck": "Say-and-Point strategy: say each step aloud while pointing — 'right' (point right), 'left' (point left), 'right again' (point right) — and let the student copy you twice before writing. For the signs, cover the words and ask 'What do you see in the picture?' first.",
+          "early": "Students who finish early draw one more sign from page 48 (Hump, Roundabout or Crossroads ahead) on their slate and write its message under it, then tell a partner where they could see this sign on the way to school." }
+      ]
+    },
+    {
+      "id": "check", "label": "Check", "letter": "C",
+      "blocks": [
+        { "type": "exit", "items": [ { "q": "New context: How will you cross the road if there are no traffic signals?",
+          "criterion": "Correct if the student says the three steps in order — stand on the side, look right, look left, look right again — and crosses at the zebra crossing without running.",
+          "visual": { "type": "scene", "scene": "zebra_crossing", "signal": false } } ] }
+      ]
+    },
+    {
+      "id": "homework", "label": "Homework", "letter": "H",
+      "blocks": [
+        { "type": "homework", "lines": ["On your way home, look for two road or traffic signs. Draw them in your notebook and write their messages. Tell your family the three steps for crossing a road."] }
+      ]
+    }
+  ],
+  "coaching": {
+    "ask_yourself": "Watch whether students say all three steps in order (right, left, right again) or stop after two. During 'Red light, green light', notice who acts before they look; ask them to say the steps aloud next time."
+  }
+}

@@ -8,10 +8,14 @@ const fs = require('node:fs');
 const path = require('node:path');
 const https = require('node:https');
 const { buildShell } = require('./template/shell');
+const { resolveDirection } = require('./template/direction');
 const { htmlToPdf, closeBrowser } = require('./index');
 const { THEME_CSS } = require('./decorative/theme');
 const { renderDecorativeLesson } = require('./decorative/render');
 const { htmlToPixelPdf } = require('./render/png-to-pdf');
+const { htmlToFixedPagesPdf } = require('./render/fixed-pages-pdf');
+const { htmlToPhonePagesPdf } = require('./render/phone-pages-pdf');
+const { htmlToPartPagesPdf } = require('./render/part-pages-pdf');
 const { ensureCast } = require('./decorative/characters');
 const store = require('./store/assets');
 const { resolveRegion } = require('../imagegen/prompts/regions');
@@ -104,11 +108,11 @@ function readSkills(log) {
   log(`Read ${titles.length} skills from RULES.md first — applying them.`);
   return (policy || '').trim();
 }
-async function screenshot(html) {
+async function screenshot(html, width = 794) {
   const browser = await chromium.launch({ executablePath: chromePath(), args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu'] });
   try {
     const page = await browser.newPage();
-    await page.setViewportSize({ width: 794, height: 1123 });
+    await page.setViewportSize({ width, height: 1123 });
     await page.setContent(html, { waitUntil: 'networkidle' });
     await page.evaluate(async () => { await document.fonts.ready; });
     return await page.screenshot({ fullPage: true });
@@ -135,6 +139,13 @@ async function renderLessonImage(content, opts = {}) {
   const toGen = [];
   const cacheKey = (prompt, topic, model) => artCacheKey(prompt, { region: meta.region, locale, topic, model });
   for (const im of wanted) {
+    // A PICTURE THE PRODUCER ALREADY HAS is used as given — no cache key, no store, no
+    // generation, no cost. Only the ICT lp_doc adapter supplies one today (its diagrams are
+    // drawn in code by ICT's own engine); no other producer sets dataUri on an image.
+    if (im && typeof im.dataUri === 'string' && /^data:image\//.test(im.dataUri)) {
+      imagesMap[im.id] = { dataUri: im.dataUri, label: im.label, cover: false };
+      continue;
+    }
     const model = modelForImage(im, { region: meta.region, locale });
     const key = cacheKey(im.prompt, im.topic, model);
     if (GAVE_UP.has(key)) { statsOut.dropped++; log(`  ⊘ image "${im.id}" skipped — already rejected earlier in this run`); continue; }
@@ -230,7 +241,10 @@ async function renderLessonImage(content, opts = {}) {
   const cast = (anyImage || !castAllowed || process.env.LP_NO_IMAGES === '1')
     ? {} : await ensureCast({ apiKey, gatePolicy, locale });
   if (!anyImage && !castAllowed) log('  (no illustration in this lesson; this design set does not use the character cast)');
-  const { headerHtml, bodyHtml, headCss } = renderDecorativeLesson(content, imagesMap, cast);
+  // A pack may lay out its own page (ICT: NIETE's approved design, from guide.layout). It returns
+  // null for anything it does not draw; every other pack has no COMPOSE and renders as before.
+  const composed = regionPack && typeof regionPack.COMPOSE === 'function' ? regionPack.COMPOSE(content, imagesMap) : null;
+  const { headerHtml, bodyHtml, headCss } = composed || renderDecorativeLesson(content, imagesMap, cast);
   let html = buildShell({ headerHtml, bodyHtml, locale, title: meta.title || contentId });
   // Region DESIGN PACK: each region with an approved design set owns a folder
   // (decorative/regions/<region>/) holding its theme.js (CSS overrides, loaded AFTER
@@ -241,6 +255,7 @@ async function renderLessonImage(content, opts = {}) {
   let regionCss = '';
   let regionPageStyle = '';
   let regionMaxPages = null;
+  let regionLayout = null;
   let overflowFindings = [];
   if (regionPack) {
     try {
@@ -248,6 +263,11 @@ async function renderLessonImage(content, opts = {}) {
       regionCss = pack.THEME_OVERRIDE_CSS || '';
       regionPageStyle = pack.PAGE_NUMBER_STYLE || '';
       regionMaxPages = Number(pack.MAX_PAGES) || null;
+      // A pack may deliver a page format of its own (ICT: NIETE's fixed portrait pages).
+      // Absent for every other pack, which keeps the A4 composer below exactly as it was.
+      regionLayout = pack.PAGE_LAYOUT && pack.PAGE_LAYOUT.fixedPages ? pack.PAGE_LAYOUT : null;
+      // ...or the page it composed may name its own (ICT Grades 1–5: tall phone pages, flowed)
+      if (composed && composed.pageLayout) regionLayout = composed.pageLayout;
       log(`  ⛨ region design pack "${themeRegion}" applied`);
     } catch (_) { /* no design pack for this region — default look */ }
   }
@@ -276,8 +296,31 @@ async function renderLessonImage(content, opts = {}) {
         if ((list || []).length > 8) log(`  ⚠ …and ${list.length - 8} more overflow finding(s)`);
         overflowFindings = list || [];
       };
-      pdf = await htmlToPixelPdf(html, regionPageStyle
-        ? { pageStyle: regionPageStyle, footerText: (content.meta && content.meta.footer) || '', onFindings }
+      if (regionLayout && regionLayout.parts) {
+        // one page per part, each as tall as itself (ICT grades 6–12); the .html is the same pages
+        const printed = await htmlToPartPagesPdf(html, { pageWidth: regionLayout.width, onFindings });
+        pdf = printed.pdf;
+        html = printed.html;
+        for (const [k, h] of printed.heights.entries()) log(`  ▭ page ${k + 1}: part ${k + 1} · ${h}px tall`);
+      } else if (regionLayout && regionLayout.flow) {
+        // phone pages flow in the browser; the paginated page is also the .html deliverable
+        const printed = await htmlToPhonePagesPdf(html, { pageWidth: regionLayout.width, pageHeight: regionLayout.height, onFindings });
+        pdf = printed.pdf;
+        html = printed.html;
+        for (const [k, st] of printed.stages.entries()) log(`  ▭ page ${k + 1}: ${st}${printed.heights[k] !== regionLayout.height ? ` · grew to ${printed.heights[k]}px` : ''}`);
+      } else if (regionLayout && regionLayout.fixedPages) {
+        // fixed pages paginate in the browser; the paginated page is also the .html deliverable
+        const printed = await htmlToFixedPagesPdf(html, { pageWidth: regionLayout.width, pageHeight: regionLayout.height, onFindings });
+        pdf = printed.pdf;
+        html = printed.html;
+        for (const [k, st] of printed.stages.entries()) log(`  ▭ page ${k + 1}: ${st.replace(/\+$/, ' (continued)')} · scale ${printed.scales[k]}${printed.heights[k] !== regionLayout.height ? ` · grew to ${printed.heights[k]}px` : ''}`);
+      } else pdf = await htmlToPixelPdf(html, regionPageStyle
+        ? {
+          pageStyle: regionPageStyle, footerText: (content.meta && content.meta.footer) || '', onFindings,
+          // read only by the 'foot-band' page style, which no pack sets today (kept for an A4 ICT variant)
+          pageLabel: meta.pageLabel, runTitle: meta.runTitle, continuedLabel: meta.continuedLabel,
+          dir: resolveDirection(locale).dir,
+        }
         : { onFindings });
     } catch (e) {
       log(`  (pixel-perfect PDF unavailable — ${e.message}; using vector fallback)`);
@@ -285,13 +328,13 @@ async function renderLessonImage(content, opts = {}) {
       await closeBrowser();
     }
   }
-  const png = await screenshot(html);
+  const png = await screenshot(html, regionLayout ? regionLayout.width : 794);
   // Report how full the page is, so a caller with a page contract can not only shrink
   // figures to fit but GROW them to fill: a lesson that lands with 450px spare reads
   // as unfinished, and its figures were the thing that should have been bigger.
   let stripHeight = null;
   try { stripHeight = png && png.length > 24 ? Buffer.from(png).readUInt32BE(20) : null; } catch (_) { /* not a PNG buffer */ }
-  const usablePerPage = 1123 - 28 - (regionPageStyle === 'ar-bottom' ? 36 : 12);
+  const usablePerPage = 1123 - 28 - (regionPageStyle === 'ar-bottom' ? 36 : (regionPageStyle === 'foot-band' ? 34 : 12));
   const pageBudget = regionMaxPages ? regionMaxPages * usablePerPage : null;
   return { png, pdf, html, contentId, locale, stats: statsOut, maxPages: regionMaxPages, stripHeight, pageBudget, overflow: overflowFindings };
 }

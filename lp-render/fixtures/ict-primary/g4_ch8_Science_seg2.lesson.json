@@ -1,0 +1,147 @@
+{
+  "kind": "ict-primary-lesson",
+  "version": 1,
+  "lesson_id": "g4_ch8_Science_seg2",
+  "source": {
+    "from": "NIETE approved lesson plan g4_ch8_Science_seg2.pdf (lp_html v8.1; lesson_id GRADE_4_GENERAL_SCIENCE_CH8_SEG2, lp_doc 3.0), shared 2026-10-05",
+    "method": "REBUILT: transcribed field by field from the approved PDF's own text; nothing reworded. The lesson's lp_doc JSON is not reachable from here (not in NIETE-Rumi, its staging, or the skills pack), so this is not the real pipeline JSON.",
+    "presentation_fixes": [
+      "the three warm-up answers are empty in the approved PDF (an arrow with nothing after it); they are left empty, not invented, and no answer mark is drawn",
+      "the board's 'Sun (center) -> 8 orbits (unlabelled)' is also given as a board sketch of the solar system, with no labels written on it"
+    ]
+  },
+  "lang": "en",
+  "grade": 4,
+  "subject": "General Science",
+  "chapter": "Ch.8 · Space Safari",
+  "pages": "188",
+  "period_minutes": 40,
+  "title": "The Solar System — Sun, Planets, Asteroids & Comets (concept)",
+  "hero_visual": { "type": "solar_system" },
+  "day": { "n": 2, "of": 11 },
+  "journey": "Where does Earth live and who lives next door? (hook) → Cosmic Creations — model the solar system (investigate)",
+  "coming_up": "Is the Moon a shape-shifter? (hook) → Modelling the Moon's Phases (investigate)",
+  "outcome": {
+    "code": "S-04-ES-06",
+    "text": "The solar system is the Sun and everything held by its gravity — eight planets in their orbits, plus asteroids and comets — with distance from the Sun alone NOT deciding how hot a planet is."
+  },
+  "prepare": [
+    "chalk",
+    "blackboard",
+    "textbook pages 188-191",
+    "student notebooks",
+    "yesterday's stones/pebbles used to model the asteroid belt (kept, or the teacher's own memory of the activity, to point back to)"
+  ],
+  "video": {
+    "title": "Stars and Planets",
+    "note": "Eight planets revolving around the Sun is this Sun-at-centre solar-system SLO."
+  },
+  "keywords": [
+    { "word": "solar system", "meaning": "a family of planets, moons and other space objects that all orbit — go around — one star, held together by that star's pulling force (gravity)." },
+    { "word": "orbit", "meaning": "the curved path one space object follows as it travels around another, larger object, again and again." },
+    { "word": "asteroid", "meaning": "a rocky chunk, smaller than a planet, that orbits the Sun — many of them travel together in a wide band called the asteroid belt." },
+    { "word": "comet", "meaning": "a ball of ice, dust and frozen gas that orbits the Sun; when it passes close to the Sun, its ice starts to melt and it grows a long, glowing tail." },
+    { "word": "inner planets", "meaning": "the four rocky planets that orbit closest to the Sun." },
+    { "word": "outer planets", "meaning": "the planets that orbit farther from the Sun, most of them huge and made mostly of gas." }
+  ],
+  "board": [
+    {
+      "visual": { "type": "solar_system" },
+      "lines": ["Sun (center) -> 8 orbits (unlabelled). INNER PLANETS -> [blank] OUTER PLANETS -> [blank]. Also in our solar system: asteroids, comets."]
+    }
+  ],
+  "stages": [
+    {
+      "id": "opening", "label": "Opening", "letter": "I", "minutes": 3,
+      "blocks": [
+        { "type": "warmup", "items": [
+          { "q": "we placed rocks between Mars and Jupiter to model the asteroid belt", "a": "", "tag": "scaffold for today" },
+          { "q": "asteroids are small rocky chunks in space", "a": "", "tag": "prerequisite" },
+          { "q": "the belt sits between the fourth and fifth planets", "a": "", "tag": "prerequisite" }
+        ] },
+        { "type": "hook", "text": "Fatima wonders aloud: which planet do YOU think is the HOTTEST in our whole solar system — the one closest to the Sun, or a different one? And where does Bilal think Earth sits in the line-up of planets? Write your two guesses in your notebook now, and one reason for each, before we check together." },
+        { "type": "read_aloud", "label": "On the page · read aloud", "lines": ["Fatima: “Which planet do you think is the HOTTEST — the closest one, or a different one?”"] }
+      ]
+    },
+    {
+      "id": "explanation", "label": "Explanation", "letter": "D", "minutes": 7, "mode": "I DO",
+      "blocks": [
+        { "type": "teacher_models",
+          "instruction": "Reveal the hook's answer: Mercury is closest to the Sun but has no atmosphere to trap heat, so it cools quickly at night. Venus, though further away, has a thick atmosphere that traps heat like a blanket — making it the HOTTEST planet, hotter than Mercury. Earth sits third from the Sun, among the four rocky Inner Planets, held in its orbit by the Sun's gravity.",
+          "script": [
+            "Distance alone does not decide the heat — Venus proves it.",
+            "Mercury is closer but bare; Venus is further but wrapped in a heat-trapping blanket of air.",
+            "That blanket is the whole reason."
+          ],
+          "instruction2": "Fill in the board's two columns together: INNER PLANETS (Mercury, Venus, Earth, Mars — rocky, closer to the Sun) and OUTER PLANETS (Jupiter, Saturn, Uranus, Neptune — mostly gas, farther out). Explain: gravity from the Sun holds every one of them in its orbit, like a family held together by its parent.",
+          "script2": [
+            "Everything in this family — planets, moons, asteroids, comets — is held by the Sun's own gravity, the way a parent holds a family together."
+          ]
+        },
+        { "type": "worked", "steps": [
+          "Two OUTER planets, a different pair from the ones we already named. Saturn is the second-largest planet and, like Jupiter, a gas giant with no solid surface — but Saturn is so light for its size that, if there were an ocean big enough, it would actually FLOAT on water. It also carries a stunning collection of icy, rocky rings. Neptune, the farthest sibling of all, is dark, cold and constantly stormy — and because it orbits so far from the Sun, it takes a huge 165 Earth years just to complete ONE full circle. Same solar-system family as Mercury and Venus, a different, much farther-out pair of siblings. (Grounded in p.189's own Saturn/Neptune facts.)"
+        ] },
+        { "type": "ask_this", "text": "Explain in your own words: is a comet more like a planet, an asteroid, or something different from both? Use today's definitions." }
+      ]
+    },
+    {
+      "id": "we_do", "label": "We Do", "letter": "A", "minutes": 11,
+      "blocks": [
+        { "type": "halfway", "text": "Halfway check · minute 17. By now the class should be starting WE DO." },
+        { "type": "together", "lines": [
+          "Turn-and-talk during We-Do's asteroid-vs-comet comparison (2-minute exchange per pair, then report to the class).",
+          "circulate; for a pair stuck on the difference, ask 'which one is made of ice, and which one is solid rock?'"
+        ] },
+        { "type": "teacher_models",
+          "instruction": "In pairs, recall yesterday's asteroid-belt model (the rocks placed between Mars and Jupiter) and connect it to today's NEW term, comet. Model with one pair leading: Zainab names what the class's rocks stood for while Ahmed reasons out loud how a comet is different, then all pairs compare asteroids and comets using the board's keyWords definitions.",
+          "script": [
+            "Yesterday's rocks were asteroids — rocky chunks orbiting in a belt.",
+            "Today's new object is icy: a comet, which only grows its bright tail once it gets close enough to the Sun for its ice to start melting."
+          ]
+        },
+        { "type": "frames", "lines": [
+          "میرے خیال میں سیارچے اور دُم دار ستارے میں فرق یہ ہے کہ ... (I think the difference between an asteroid and a comet is ...)",
+          "کیونکہ صفحہ 190 پر لِکھا ہے کہ ... (Because page 190 says ...)"
+        ] }
+      ]
+    },
+    {
+      "id": "you_do", "label": "You Do", "letter": "A", "minutes": 11,
+      "blocks": [
+        { "type": "set_task", "lines": [
+          "Independently answer Skill Sharpener Q2, Q3 and Q5 (p.191), using today's Inner/Outer Planets board list and the solar-system family idea."
+        ], "say": "You have the board's two planet groups and today's family idea. Use them on your own now, working alone before we check together." },
+        { "type": "alone", "items": [
+          { "q": "Skill Sharpener Q1 (p.191): Which planet is closest to the Sun? A) Mars B) Earth C) Saturn D) Mercury", "answer": "D) Mercury — the innermost planet, closest to the Sun, as named on p.188." },
+          { "q": "Skill Sharpener Q2 (p.191): Which planet has the Giant Red Spot? A) Mars B) Jupiter C) Venus D) Saturn", "answer": "B) Jupiter — its massive storms are visible through space, and one of them is called the Giant Red Spot (p.189)." },
+          { "q": "Skill Sharpener Q3 (p.191): Name the four inner planets.", "answer": "Mercury, Venus, Earth and Mars — the four rocky planets closest to the Sun (p.188)." },
+          { "q": "Skill Sharpener Q4 (p.191): If the Sun's light suddenly vanished, how long would it take for you to notice?", "answer": "About 8 minutes — sunlight takes roughly 8 minutes to travel the 150,000,000 km from the Sun to Earth (p.188)." },
+          { "q": "Skill Sharpener Q5 (p.191): How is Earth optimal for life?", "answer": "Earth has water, breathable air, an ozone layer that protects us from the Sun's harmful rays, and a Moon — this combination makes it the only known planet supporting life (p.189)." }
+        ] },
+        { "type": "differentiation",
+          "stuck": "If a child cannot yet sort Inner vs Outer planets, drop to a smaller two-item ladder first: 'Mercury or Jupiter — which is small and rocky, which is huge and gassy?' before sorting the full eight.",
+          "early": "Pluto used to be called the ninth planet, but scientists now call it a Dwarf Planet because of its small size (p.190 Fun Facts). Using today's Inner/Outer Planets idea, explain why size matters for how we group space objects."
+        }
+      ]
+    },
+    {
+      "id": "check", "label": "Check", "letter": "C", "minutes": 3,
+      "blocks": [
+        { "type": "exit", "items": [
+          { "q": "Skill Sharpener Q4 (p.191): If the Sun's light suddenly vanished, how long would it take for you to notice, and why does it take that long at all?", "criterion": "Correct if the student says about 8 minutes AND explains that light takes time to travel the huge distance (150,000,000 km) from the Sun to Earth." }
+        ] }
+      ]
+    },
+    {
+      "id": "homework", "label": "Homework", "letter": "H",
+      "blocks": [
+        { "type": "homework", "lines": [
+          "Skill Sharpener Q1 (p.191) — which planet is closest to the Sun? Write the answer and one reason using today's Inner Planets idea."
+        ] }
+      ]
+    }
+  ],
+  "coaching": {
+    "ask_yourself": "Watch for children who think 'closer to the Sun always means hotter' — Venus is today's counter-example, and the atmosphere reasoning is the real target, not just the fact itself."
+  }
+}

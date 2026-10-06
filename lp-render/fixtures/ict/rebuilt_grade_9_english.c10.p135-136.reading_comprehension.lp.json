@@ -1,0 +1,458 @@
+{
+ "lesson_id": "grade_9_english.c10.p135-136.reading_comprehension",
+ "schema_version": "3.0",
+ "template_version": "v9",
+ "lint_profile": "full",
+ "provenance": {
+  "book_stem": "grade_9_english",
+  "grade": 9,
+  "subject": "English",
+  "medium": "en",
+  "chapter": "Ch. 10 — Two Mothers Remembered",
+  "topic": "Cause and Effect, Fact vs Opinion, and the One-Act Play",
+  "printed_pages": "135-136",
+  "pdf_pages": "135-136",
+  "page_offset": 0,
+  "brand": {
+   "name": "NIETE Teaching Assistant"
+  },
+  "version": "2026-09-01",
+  "source_quality_flags": [
+   "REBUILT from ICT's production PDF (lesson_id grade_9_english.c10.p135-136.reading_comprehension, v2026-09-01): the served lp_doc is not reachable from here. Every printed word is copied from that PDF; fields the page does not print (pdf_pages, page_offset, slo.text_verbatim, objectives.items, homework slo_code, next_period, not_going, one_screen) are placeholders."
+  ]
+ },
+ "slo": {
+  "code": null,
+  "text_verbatim": "Not printed on the production page (rebuilt from the PDF).",
+  "source_page": "135",
+  "cognitive_level": "U"
+ },
+ "fbise_slos": [
+  {
+   "code": "E-09-B3-04",
+   "status": null
+  },
+  {
+   "code": "E-09-B3-05",
+   "status": null
+  }
+ ],
+ "lp_type": "LL-2",
+ "period_minutes": 40,
+ "board_weight": null,
+ "materials": [
+  "board marker",
+  "textbook p.135-136"
+ ],
+ "sequence": {
+  "previous": "A writing task on Chapter 10",
+  "this": "Cause and effect, fact vs opinion, and the one-act play (p.135-136)",
+  "next": null,
+  "checkpoint": "Chapter 10 reading assessment"
+ },
+ "objectives": {
+  "outcome": "You can tell cause from effect, fact from opinion, and read a play's structure.",
+  "by_the_end": "By the end you answer a 3-mark short question naming a cause, a fact, and a play feature.",
+  "items": [
+   {
+    "text": "You can tell cause from effect, fact from opinion, and read a play's structure.",
+    "slo_code": null
+   }
+  ]
+ },
+ "sections": [
+  {
+   "id": "introduction",
+   "minutes": 10,
+   "warmup": {
+    "items": [
+     {
+      "ref": "W1",
+      "kind": "scaffold",
+      "q": "The road was wet, so the car skidded. Which part is the CAUSE and which is the EFFECT?",
+      "a": "Cause: the road was wet. Effect: the car skidded."
+     },
+     {
+      "ref": "W2",
+      "kind": "prerequisite",
+      "q": "Is this a fact or an opinion: 'Lahore is the capital of Punjab'?",
+      "a": "A fact — it can be checked and is true."
+     },
+     {
+      "ref": "W3",
+      "kind": "spaced",
+      "q": "Name one thing you noticed about the structure of the chapter's poem 'Two Mothers Remembered' in the last lesson.",
+      "a": "Any reasonable structural observation from the previous lesson (e.g. it is written in two voices/stanzas)."
+     }
+    ]
+   },
+   "blocks": [
+    {
+     "type": "ask",
+     "id": "hook",
+     "hook": true,
+     "question": "A newspaper says: 'Obesity in children is rising because of mobile phones.' Is that a fact, a cause-and-effect claim, or just someone's opinion — and how would you check?",
+     "look_for": "Pupils should notice it names a cause (phones) for an effect (rising obesity) but is stated as fact without evidence — so it needs checking, which is exactly today's three skills.",
+     "closed_by": "close-hook"
+    },
+    {
+     "type": "keywords",
+     "page": "135",
+     "items": [
+      {
+       "word": "cause",
+       "meaning": "what produces an event or condition"
+      },
+      {
+       "word": "effect",
+       "meaning": "what results from an event or condition"
+      },
+      {
+       "word": "fact",
+       "meaning": "a checkable, evidence-backed statement"
+      },
+      {
+       "word": "opinion",
+       "meaning": "a personal belief, open to challenge"
+      }
+     ]
+    },
+    {
+     "type": "diagram",
+     "id": "dia-three-skills",
+     "spec": {
+      "type": "mindmap",
+      "title": "TODAY'S THREE READING SKILLS",
+      "centre": {
+       "label": "READING CRITICALLY"
+      },
+      "branches": [
+       {
+        "label": "CAUSE & EFFECT",
+        "leaves": [
+         "cause produces",
+         "effect results"
+        ]
+       },
+       {
+        "label": "FACT vs OPINION",
+        "leaves": [
+         "fact: checkable",
+         "opinion: believed"
+        ]
+       },
+       {
+        "label": "ONE-ACT PLAY",
+        "leaves": [
+         "1 setting, few characters",
+         "tight structure"
+        ]
+       }
+      ],
+      "caption": "p.135-136 — the three skills this lesson applies to a non-poem passage."
+     }
+    },
+    {
+     "type": "board",
+     "text": "CAUSE -> EFFECT | FACT = checkable | OPINION = believed One-Act Play: 1 act, 1 setting, 15-60 min, few characters"
+    }
+   ]
+  },
+  {
+   "id": "development",
+   "minutes": 12,
+   "textbook_page": "135",
+   "blocks": [
+    {
+     "type": "paragraph",
+     "id": "close-hook",
+     "closes_hook": true,
+     "text": "It is an opinion dressed up as fact: the writer names a cause (phones) for an effect (rising obesity) but gives no evidence, so a careful reader has to ask for proof before believing it — that is the skill the page itself asks for in item 1."
+    },
+    {
+     "type": "key_points",
+     "items": [
+      "A cause produces an event; an effect is what results from it, p.135.",
+      "A fact is checkable and supported by evidence; an opinion is personal and open to challenge, p.135.",
+      "A one-act play has one act, one setting, few characters, and a tight structure, p.136."
+     ]
+    },
+    {
+     "type": "worked_example",
+     "id": "ido",
+     "title": "I do — p.135, thesis statement 1",
+     "prompt": "The growing childhood obesity epidemic is a result of technology. Identify the cause and the effect in this sentence.",
+     "steps": [
+      "Find the result named in the sentence: 'the growing childhood obesity epidemic' — this is the EFFECT.",
+      "Find what is blamed for producing it: 'technology' — this is the CAUSE.",
+      "Check the link: does the sentence give evidence, or just state the claim? It only states it — so it is a debatable cause-and-effect claim, not a proven one."
+     ],
+     "result": "Cause: technology. Effect: the childhood obesity epidemic. The link is asserted, not proven."
+    },
+    {
+     "type": "watch_out",
+     "misconception": true,
+     "text": "Pupils often label a claim 'fact' just because it sounds confident or is printed in a book — a fact must be checkable and supported by evidence, not merely stated firmly. They also tend to swap cause and effect by reading order rather than asking which one actually made the other happen."
+    }
+   ]
+  },
+  {
+   "id": "activity",
+   "minutes": 12,
+   "blocks": [
+    {
+     "type": "faded_example",
+     "id": "wedo",
+     "title": "We do — together on the board, p.135 thesis statement 2",
+     "prompt": "Much of the wildlife is dying because of the oil spill. Identify the cause and the effect.",
+     "steps": [
+      "Find the result: 'much of the wildlife is dying' — this is the effect.",
+      "Find what produced it: 'the oil spill' — this is the cause.",
+      "You check: is this link stated as fact or as a debatable claim? You decide and say why."
+     ],
+     "answer": "Cause: the oil spill. Effect: wildlife dying. This reads closer to fact, since oil spills are documented causes of wildlife deaths — but it would still need evidence from a specific case."
+    },
+    {
+     "type": "practice",
+     "id": "youdo",
+     "mode": "independent",
+     "items": [
+      {
+       "ref": "P1",
+       "tier": "support",
+       "q": "The town continued programs it could no longer afford, so it went bankrupt. Name the cause and the effect.",
+       "a": "Cause: continuing programs it could not afford. Effect: the town went bankrupt."
+      },
+      {
+       "ref": "P2",
+       "tier": "core",
+       "q": "From the Paleo Diet passage (p.135): 'The diet mainly centres on consuming meat and fish, fruit and vegetables, and nuts and seeds' — is this a fact or an opinion, and why?",
+       "a": "A fact — it describes what the diet contains, which can be checked against the diet's own definition; it is not a matter of belief."
+      },
+      {
+       "ref": "P3",
+       "tier": "extension",
+       "q": "From 'The Dear Departed' (p.136): How does Mrs. Slater plan to outshine the Jordans, and what does it reveal about her character?",
+       "a": "She plans to bring out grandfather's best furniture and belongings (including moving the bureau from his room) to appear wealthier than the Jordans before they arrive — this reveals her as vain, status-conscious, and willing to act dishonestly to impress others while her father is still alive."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "conclusion",
+   "minutes": 4,
+   "checkpoint": {
+    "ref": "C1",
+    "question": "Identify the cause and effect in this sentence, then state whether the sentence as a whole is a fact or an opinion: 'More young people became politically active as use of the Internet spread throughout society.'",
+    "marks": 3,
+    "mark_scheme": [
+     "1 mark: names the effect — more young people became politically active",
+     "1 mark: names the cause — the spread of Internet use",
+     "1 mark: correctly judges it closer to opinion/claim since no evidence is given for the link"
+    ]
+   },
+   "exit_ticket": [
+    {
+     "ref": "X1",
+     "q": "Name ONE structural feature of a one-act play from p.136 (other than length).",
+     "a": "Any one of: single setting/single event focus, fast-moving action, few characters, or tight/close-knit structure."
+    }
+   ],
+   "reteach_rule": "If more than a third of the class swap cause and effect on C1, redo the I-do on p.135 (thesis statement 1) before moving on.",
+   "blocks": [
+    {
+     "type": "board",
+     "text": "Cause makes it happen. Effect is what happens. Fact = checkable. Opinion = believed. One-act play: 1 setting, few characters, tight structure."
+    }
+   ]
+  },
+  {
+   "id": "homework",
+   "minutes": 2,
+   "homework": {
+    "items": [
+     {
+      "ref": "H1",
+      "format": "mcq",
+      "level": "K",
+      "marks": 1,
+      "slo_code": "not printed",
+      "text": "Which of these is an OPINION, not a fact? (A) Water boils at 100°C at sea level. (B) The Paleo diet includes meat, fish, fruit and vegetables. (C) The Paleo diet is the best diet for everyone. (D) Dr Cordain researched the optimal human diet."
+     },
+     {
+      "ref": "H2",
+      "format": "mcq",
+      "level": "U",
+      "marks": 1,
+      "slo_code": "not printed",
+      "text": "In 'While many experts believed the rise in violence was due to the poor economy, it was really due to the summer-long heat wave' (p.135), what is the TRUE cause the sentence names? (A) the poor economy (B) the rise in violence (C) the summer-long heat wave (D) the experts' belief"
+     },
+     {
+      "ref": "H3",
+      "format": "short",
+      "level": "A",
+      "marks": 3,
+      "slo_code": "not printed",
+      "source": {
+       "page": "136",
+       "questions": "The Dear Departed, Q5"
+      },
+      "text": "What change does grandfather make in his new will, and what effect does it have on his daughters? (From 'The Dear Departed', p.136.)"
+     }
+    ]
+   },
+   "blocks": [
+    {
+     "type": "key_points",
+     "title": "",
+     "items": [
+      "Answers are checked at the start of the next period."
+     ]
+    }
+   ]
+  }
+ ],
+ "page2": {
+  "board_final": {
+   "draw_order": [
+    "Write CAUSE -> EFFECT at the top left.",
+    "Write FACT = checkable, with evidence below it.",
+    "Write OPINION = personal, believed, debatable beside FACT.",
+    "Write One-Act Play: 1 act, 1 setting, 15-60 min, few characters, tight structure along the bottom."
+   ],
+   "diagram": {
+    "type": "flow",
+    "direction": "lr",
+    "title": "BOARD — FINAL STATE",
+    "steps": [
+     {
+      "title": "CAUSE -> EFFECT",
+      "lines": [
+       "cause makes it happen"
+      ]
+     },
+     {
+      "title": "FACT = checkable",
+      "lines": [
+       "has evidence"
+      ]
+     },
+     {
+      "title": "OPINION = believed",
+      "lines": [
+       "personal, debatable"
+      ],
+      "color": "var(--amber, #F2A20C)"
+     },
+     {
+      "title": "ONE-ACT PLAY",
+      "lines": [
+       "1 setting, few characters, tight structure"
+      ],
+      "color": "var(--leaf, #1F7A4D)"
+     }
+    ]
+   }
+  },
+  "mistakes": [
+   {
+    "pupil_says": "The effect is always the thing written first in the sentence.",
+    "you_ask": "Which one actually happened because of the other — does word order tell you that, or does the meaning?"
+   },
+   {
+    "pupil_says": "It sounds true, so it's a fact.",
+    "you_ask": "Could we check this claim against evidence, or is it really someone's judgement dressed up as certainty?"
+   },
+   {
+    "pupil_says": "A one-act play is just a short version of a normal play.",
+    "you_ask": "Look at p.136 again — what does it say about setting and number of characters, not just length?"
+   }
+  ],
+  "differentiation": {
+   "stuck": "Underline the result first in the sentence, then ask 'what made this happen?' to find the cause.",
+   "barrier": "English vocabulary around 'epidemic', 'bankrupt' and 'Paleolithic' may need a quick gloss before pupils attempt P1-P3.",
+   "early": "Ask them to write their own one-sentence cause-and-effect claim about something in their own town, then say whether it is fact or opinion."
+  },
+  "exam_bank": {
+   "mcq": [
+    {
+     "q": "Which word best completes: 'A ___ is a statement that is true and supported by evidence.' (A) opinion (B) fact (C) claim (D) thesis",
+     "options": [
+      "opinion",
+      "fact",
+      "claim",
+      "thesis"
+     ],
+     "answer": "B",
+     "distractor_codes": [
+      "confuses fact with any confident statement",
+      "treats an unproven claim as equivalent to a fact",
+      "mistakes the essay's thesis for the definition being asked about"
+     ]
+    },
+    {
+     "q": "A one-act play usually runs for how long? (A) 2-3 hours (B) 15 minutes to an hour (C) a full day (D) under 5 minutes",
+     "options": [
+      "2-3 hours",
+      "15 minutes to an hour",
+      "a full day",
+      "under 5 minutes"
+     ],
+     "answer": "B",
+     "distractor_codes": [
+      "confuses a one-act play with a full-length multi-act play",
+      "wildly overestimates run time",
+      "wildly underestimates run time, ignoring the printed range"
+     ]
+    }
+   ],
+   "srq": {
+    "q": "Explain, with one example from p.135, why cause-and-effect claims often lead to debate rather than settled agreement.",
+    "marks": 4,
+    "mark_scheme": [
+     "1 mark: states that the link between cause and effect is often unclear",
+     "1 mark: gives a relevant example from p.135 (e.g. the heat wave vs the economy)",
+     "2 marks: explains why the example shows the link is debatable, not proven"
+    ]
+   },
+   "erq_skeleton": {
+    "q": "Using 'The Dear Departed' (p.136) and the chapter's definition of a one-act play, explain how the play's structure supports its single-setting, single-event focus.",
+    "parts": [
+     {
+      "heading": "Identify the single event/problem the play focuses on",
+      "marks": 2
+     },
+     {
+      "heading": "Identify the single setting and explain why it suits a one-act play",
+      "marks": 2
+     },
+     {
+      "heading": "Explain how the characters and plot turns stay few but strong, citing one example",
+      "marks": 4
+     }
+    ]
+   },
+   "how_marked": "Full marks need a named example from the text, not just the definition restated; half marks are given for a correct definition with no textual example."
+  },
+  "homework_key": [
+   {
+    "ref": "H1",
+    "answer": "C — 'The Paleo diet is the best diet for everyone' is a value judgement (best) that cannot be proven true for everyone; the others state checkable facts about boiling point, diet contents, or that research was done."
+   },
+   {
+    "ref": "H2",
+    "answer": "C — the sentence states the real cause was the summer-long heat wave, correcting the experts' mistaken belief that it was the poor economy."
+   },
+   {
+    "ref": "H3",
+    "answer": "Grandfather changes his will to leave everything to Abel (and Mrs. Slater's family is cut out), after overhearing his daughters' true, selfish feelings about him while they thought he had died. The effect on the daughters is that their greed and hypocrisy cost them the inheritance they schemed for — his new will punishes exactly the behaviour the play has shown."
+   }
+  ],
+  "next_period": "Not printed on the production page (rebuilt from the PDF).",
+  "not_going": "Not printed on the production page (rebuilt from the PDF).",
+  "coaching_lookfor": "Watch whether pupils justify their fact/opinion judgement with a reason, not just a label — a bare 'fact' or 'opinion' answer with no 'because' is the gap to close today.",
+  "coaching_reflection": "Which of my pupils labelled a statement without giving a reason, and how will I get them justifying it tomorrow?"
+ },
+ "one_screen": "Not printed on the production page (rebuilt from the PDF)."
+}
